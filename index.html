@@ -442,11 +442,16 @@ function saveIcal(idx){
     'LOCATION:ELVER 59',
     'END:VEVENT','END:VCALENDAR'
   ].join('\r\n');
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+  if(isIOS){
+    window.open('data:text/calendar;charset=utf-8,'+encodeURIComponent(ics));
+  } else {
   const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
   a.href=url; a.download=`ELVER59_${t.titel.replace(/[^a-zA-Z0-9]/g,'_').slice(0,30)}.ics`;
   a.click(); URL.revokeObjectURL(url);
+  }
 }
 
 // ── SHOOTING STARS ──────────────────────────────────────────
