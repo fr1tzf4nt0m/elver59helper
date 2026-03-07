@@ -200,11 +200,98 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 .logo-mark:hover{transform:scale(1.08);box-shadow:0 0 18px rgba(95,217,138,.25);}
 .logo-mark:active{transform:scale(.95);}
 
+/* NAME MODAL */
+.modal-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(14,18,16,.92);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  animation:fadeDown .3s ease both;
+}
+.modal-overlay.hidden{display:none;}
+.modal-box{
+  width:100%;max-width:360px;
+  background:var(--surface2);
+  border:1px solid rgba(95,217,138,.2);
+  border-radius:20px;
+  padding:32px 28px;
+  text-align:center;
+}
+.modal-icon{font-size:36px;margin-bottom:16px;}
+.modal-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px;}
+.modal-sub{font-size:12.5px;color:var(--muted);margin-bottom:24px;line-height:1.5;}
+.modal-input{
+  width:100%;background:rgba(95,217,138,.06);
+  border:1.5px solid rgba(95,217,138,.2);border-radius:10px;
+  padding:12px 14px;font-size:15px;color:var(--text);
+  font-family:'Syne',sans-serif;font-weight:600;
+  outline:none;text-align:center;letter-spacing:.04em;
+  transition:border-color .2s,background .2s;
+}
+.modal-input:focus{border-color:rgba(95,217,138,.5);background:rgba(95,217,138,.1);}
+.modal-input::placeholder{color:var(--muted2);font-weight:400;letter-spacing:0;}
+.modal-btn{
+  width:100%;margin-top:14px;padding:13px;
+  background:linear-gradient(135deg,rgba(95,217,138,.25),rgba(95,217,138,.1));
+  border:1px solid rgba(95,217,138,.35);border-radius:10px;
+  color:var(--accent);font-family:'Syne',sans-serif;
+  font-size:14px;font-weight:700;cursor:pointer;
+  transition:all .2s;letter-spacing:.05em;
+}
+.modal-btn:hover{background:rgba(95,217,138,.3);transform:translateY(-1px);}
+.modal-btn:active{transform:scale(.98);}
+.modal-note{font-size:10.5px;color:var(--muted2);margin-top:10px;line-height:1.5;}
 
+/* USER CHIP */
+.user-chip{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(95,217,138,.07);
+  border:1px solid rgba(95,217,138,.15);
+  border-radius:100px;padding:5px 12px 5px 8px;
+  margin-bottom:14px;cursor:pointer;
+  transition:border-color .2s,background .2s;
+}
+.user-chip:hover{border-color:rgba(95,217,138,.3);background:rgba(95,217,138,.12);}
+.user-avatar{
+  width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(135deg,#5fd98a,#3ab86a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#0e1210;font-family:'Syne',sans-serif;
+}
+.user-name{font-size:12px;font-weight:600;color:var(--accent2);font-family:'Syne',sans-serif;letter-spacing:.04em;}
+.user-change{font-size:10px;color:var(--muted);margin-left:2px;}
+
+/* PERSONAL LINK BOX */
+.plink-box{
+  background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);
+  border-radius:10px;padding:10px 12px;margin-top:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.plink-text{flex:1;font-size:11px;color:var(--muted);word-break:break-all;line-height:1.4;}
+.plink-copy{
+  background:none;border:1px solid var(--muted2);border-radius:6px;
+  color:var(--muted);font-size:11px;padding:4px 8px;cursor:pointer;
+  white-space:nowrap;transition:all .2s;font-family:'Inter',sans-serif;
+}
+.plink-copy:hover{border-color:var(--accent);color:var(--accent);}
 </style>
 </head>
 <body>
 <canvas id="starfield"></canvas>
+
+<!-- NAME MODAL -->
+<div class="modal-overlay hidden" id="modal">
+  <div class="modal-box">
+    <div class="modal-icon">👋</div>
+    <div class="modal-title">Wie heißt du?</div>
+    <div class="modal-sub">Dein Name wird lokal gespeichert.<br>Seminararbeit, Tasks & Einstellungen gehören dann dir.</div>
+    <input class="modal-input" id="modal-name" placeholder="Dein Vorname…" maxlength="30" autocomplete="off"/>
+    <button class="modal-btn" onclick="saveUser()">Los geht's →</button>
+    <div class="modal-note">Kein Account nötig · nur auf diesem Gerät gespeichert</div>
+  </div>
+</div>
+
 <div class="container">
 
   <div class="header">
@@ -217,6 +304,13 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
       </svg>
     </div>
     <div class="title">ELVER<em> 59</em></div>
+    <div id="user-chip-wrap" style="margin-top:12px;display:none;">
+      <div class="user-chip" onclick="showModal()" id="user-chip">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <span class="user-name" id="user-name-display">–</span>
+        <span class="user-change">wechseln</span>
+      </div>
+    </div>
     <p class="subtitle">Peergroup · Ausbildung · Ressourcen</p>
   </div>
 
@@ -245,7 +339,108 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 </div>
 
 <script>
+// ── USER & STORAGE ───────────────────────────────────────────
 const UPLOAD_EMAIL = 'gmbh@elver.at';
+
+// Get user from URL ?u=name or localStorage
+function getUser(){
+  const params = new URLSearchParams(window.location.search);
+  const urlUser = params.get('u');
+  if(urlUser){ localStorage.setItem('elver59_user', urlUser); return urlUser; }
+  return localStorage.getItem('elver59_user');
+}
+
+function saveUser(){
+  const name = document.getElementById('modal-name').value.trim();
+  if(!name) return;
+  localStorage.setItem('elver59_user', name);
+  hideModal();
+  initUser(name);
+  // reload saves to reload with this user's data
+  loadUserData(name);
+}
+
+function showModal(){
+  document.getElementById('modal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('modal-name').focus(),100);
+}
+function hideModal(){
+  document.getElementById('modal').classList.add('hidden');
+}
+document.getElementById('modal-name').addEventListener('keydown', e=>{ if(e.key==='Enter') saveUser(); });
+
+function initUser(name){
+  document.getElementById('user-chip-wrap').style.display='block';
+  document.getElementById('user-name-display').textContent = name;
+  document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+}
+
+// Storage key per user
+function skey(key){ return `elver59_${getUser()||'_'}_${key}`; }
+
+function saveData(key,val){ try{ localStorage.setItem(skey(key), JSON.stringify(val)); }catch(e){} }
+function loadData(key,def){ try{ const v=localStorage.getItem(skey(key)); return v!==null?JSON.parse(v):def; }catch(e){ return def; } }
+
+function loadUserData(name){
+  // Restore SA fields
+  const thema = loadData('sa_thema', 'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr');
+  const datum = loadData('sa_datum', '2026-03-10');
+  const el1 = document.getElementById('sa-thema');
+  const el2 = document.getElementById('sa-datum');
+  if(el1) el1.value = thema;
+  if(el2) el2.value = datum;
+
+  // Restore tasks
+  for(let i=0;i<100;i++){
+    const done = loadData('task_'+i, false);
+    const box = document.getElementById('t'+i);
+    if(!box) break;
+    if(done){
+      box.classList.add('done');
+      const l=document.getElementById('t'+i+'l');
+      if(l){ l.style.opacity='.38'; l.style.textDecoration='line-through'; }
+    }
+  }
+
+  // Show personal link
+  buildPersonalLink(name);
+}
+
+function buildPersonalLink(name){
+  const base = window.location.href.split('?')[0];
+  const link = `${base}?u=${encodeURIComponent(name)}`;
+  const box = document.getElementById('plink-area');
+  if(box){
+    box.innerHTML=`<div class="plink-box">
+      <span class="plink-text">🔗 Dein persönlicher Link:<br><strong style="color:var(--accent2)">${link}</strong></span>
+      <button class="plink-copy" onclick="copyLink('${link}')">Kopieren</button>
+    </div>`;
+  }
+}
+
+function copyLink(url){
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn = event.target;
+    btn.textContent='✓ Kopiert!';
+    btn.style.color='var(--accent)';
+    setTimeout(()=>{ btn.textContent='Kopieren'; btn.style.color=''; },2000);
+  });
+}
+
+// Auto-save SA fields on input
+document.addEventListener('input', e=>{
+  if(e.target.id==='sa-thema') saveData('sa_thema', e.target.value);
+  if(e.target.id==='sa-datum') saveData('sa_datum', e.target.value);
+});
+
+// Init on load
+const currentUser = getUser();
+if(!currentUser){
+  showModal();
+} else {
+  initUser(currentUser);
+}
+
 
 const TERMINE = [
   { datum:'Fr. diese Woche', titel:'SA: Titel, Untertitel & Forschungsfrage', sub:'v.miklautz@elver.at', u:true, ical:'20260313' },
@@ -322,7 +517,8 @@ function buildSeminar(){
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Einreichen per E-Mail
     </button>
-    <div class="snote" id="snote">Öffnet deinen Mail-Client mit Datei-Hinweis · Empfänger: <strong style="color:var(--accent2)">${UPLOAD_EMAIL}</strong></div>`;
+    <div class="snote" id="snote">Öffnet deinen Mail-Client mit Datei-Hinweis · Empfänger: <strong style="color:var(--accent2)">${UPLOAD_EMAIL}</strong></div>
+    <div id="plink-area"></div>`;
   return xcard('c-sa','🎓','Seminararbeit','Thema bearbeiten · Deadline · Einreichen',b);
 }
 
@@ -370,6 +566,9 @@ document.getElementById('root').innerHTML =
     <div class="carrow">→</div>
   </a>`;
 
+// Load saved data after render
+if(currentUser) loadUserData(currentUser);
+
 // ── INTERAKTION ──────────────────────────────────────────────
 
 function tog(id){document.getElementById(id).classList.toggle('open');}
@@ -380,6 +579,7 @@ function togT(id){
   const d=b.classList.contains('done');
   l.style.opacity=d?'.38':'1';
   l.style.textDecoration=d?'line-through':'';
+  saveData('task_'+id.replace('t',''), d);
 }
 
 let files=[];
