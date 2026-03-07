@@ -130,13 +130,25 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 .sbtn:hover{background:rgba(95,217,138,.24);transform:translateY(-1px);}
 .snote{display:none;font-size:10.5px;color:var(--muted);text-align:center;margin-top:6px;line-height:1.5;}
 
+/* CAL BUTTON */
+.cal-btn{
+  background:none;border:1px solid var(--muted2);border-radius:7px;
+  color:var(--muted);font-size:11px;padding:3px 7px;cursor:pointer;
+  flex-shrink:0;margin-left:auto;white-space:nowrap;
+  transition:border-color .2s,color .2s,background .2s;
+  font-family:'Inter',sans-serif;letter-spacing:.02em;
+  display:flex;align-items:center;gap:4px;
+}
+.cal-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(95,217,138,.07);}
+.cal-btn:active{transform:scale(.95);}
+
 /* TIMELINE */
 .tl{display:flex;flex-direction:column;}
-.tlrow{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);}
+.tlrow{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);align-items:center;}
 .tlrow:last-child{border-bottom:none;}
-.tldot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;background:var(--accent);}
+.tldot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--accent);}
 .tldot.u{background:var(--red);}
-.tldate{font-size:11px;font-weight:500;white-space:nowrap;padding-top:1px;min-width:82px;color:var(--accent);}
+.tldate{font-size:11px;font-weight:500;white-space:nowrap;min-width:82px;color:var(--accent);}
 .tldate.u{color:var(--red);}
 .tltitle{font-size:13px;font-weight:500;line-height:1.3;}
 .tlsub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
@@ -179,13 +191,24 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 @keyframes beat{0%,100%{transform:scale(1)}40%{transform:scale(1.3)}60%{transform:scale(1.1)}}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* SHOOTING STARS */
+#starfield{position:fixed;inset:0;pointer-events:none;z-index:0;}
+
+/* LOGO BUTTON */
+.logo-mark{cursor:pointer;transition:transform .15s,box-shadow .2s;}
+.logo-mark:hover{transform:scale(1.08);box-shadow:0 0 18px rgba(95,217,138,.25);}
+.logo-mark:active{transform:scale(.95);}
+
+
 </style>
 </head>
 <body>
+<canvas id="starfield"></canvas>
 <div class="container">
 
   <div class="header">
-    <div class="logo-mark">
+    <div class="logo-mark" id="logo-btn" onclick="danceTitle()" title="Klick mich!">
       <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
         <circle cx="15" cy="15" r="3.5" fill="#5fd98a" opacity=".8"/>
         <path d="M15 7C10.58 7 7 10.58 7 15s3.58 8 8 8" stroke="#5fd98a" stroke-width="1.7" stroke-linecap="round"/>
@@ -225,16 +248,15 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 const UPLOAD_EMAIL = 'gmbh@elver.at';
 
 const TERMINE = [
-  { datum:'Fr. diese Woche', titel:'SA: Titel, Untertitel & Forschungsfrage', sub:'v.miklautz@elver.at', u:true },
-  { datum:'Fr. 07:00 Uhr',   titel:'Präsentation (10.3.) abgeben',           sub:'gmbh@elver.at · .pptx + Handout Word', u:true },
-  { datum:'Di. 10.03.',      titel:'Seminar: Entwicklungspsychologie',        sub:'Alle Gruppen · je 50 Min.' },
-
-  { datum:'So. 16.03.',      titel:'Biografie-Präsentation vorbereiten',      sub:'Eigene Kindheit · 15 Min.' },
-  { datum:'Mo. 17.03.',      titel:'SA-Workshop mit Larissa',                 sub:'5 Fragen zum SA-Leitfaden mitbringen' },
-  { datum:'Do. 27.03.',      titel:'Selbstkonzept abgeben',                   sub:'2 A4-Seiten · l.znidaric@buteo.at' },
-  { datum:'So. 13.04. 23:59',titel:'April-Präsentationen abgeben',            sub:'TEAMS-Ordner: ReferentInnen Seminarunterlagen' },
-  { datum:'Mo. 14.04.',      titel:'Seminar: Grundlagendokumente Teil 1',     sub:'Gruppen 1–3 · je 90 Min.' },
-  { datum:'Mi. 16.04.',      titel:'Seminar: Grundlagendokumente Teil 2',     sub:'Gruppen 4–5 · je 90 Min.' },
+  { datum:'Fr. diese Woche', titel:'SA: Titel, Untertitel & Forschungsfrage', sub:'v.miklautz@elver.at', u:true, ical:'20260313' },
+  { datum:'Fr. 07:00 Uhr',   titel:'Präsentation (10.3.) abgeben',           sub:'gmbh@elver.at · .pptx + Handout Word', u:true, ical:'20260313T070000' },
+  { datum:'Di. 10.03.',      titel:'Seminar: Entwicklungspsychologie',        sub:'Alle Gruppen · je 50 Min.', ical:'20260310' },
+  { datum:'So. 16.03.',      titel:'Biografie-Präsentation vorbereiten',      sub:'Eigene Kindheit · 15 Min.', ical:'20260316' },
+  { datum:'Mo. 17.03.',      titel:'SA-Workshop mit Larissa',                 sub:'5 Fragen zum SA-Leitfaden mitbringen', ical:'20260317' },
+  { datum:'Do. 27.03.',      titel:'Selbstkonzept abgeben',                   sub:'2 A4-Seiten · l.znidaric@buteo.at', ical:'20260327' },
+  { datum:'So. 13.04. 23:59',titel:'April-Präsentationen abgeben',            sub:'TEAMS-Ordner: ReferentInnen Seminarunterlagen', ical:'20260413T235900' },
+  { datum:'Mo. 14.04.',      titel:'Seminar: Grundlagendokumente Teil 1',     sub:'Gruppen 1–3 · je 90 Min.', ical:'20260414' },
+  { datum:'Mi. 16.04.',      titel:'Seminar: Grundlagendokumente Teil 2',     sub:'Gruppen 4–5 · je 90 Min.', ical:'20260416' },
 ];
 
 const TASKS = [
@@ -306,11 +328,18 @@ function buildSeminar(){
 
 function buildTermine(){
   const next=TERMINE.find(t=>t.u)||TERMINE[0];
-  const rows=TERMINE.map(t=>`
+  const rows=TERMINE.map((t,i)=>`
     <div class="tlrow">
       <div class="tldot${t.u?' u':''}"></div>
       <div class="tldate${t.u?' u':''}">${t.datum}</div>
-      <div><div class="tltitle">${t.titel}</div>${t.sub?`<div class="tlsub">${t.sub}</div>`:''}</div>
+      <div style="flex:1">
+        <div class="tltitle">${t.titel}</div>
+        ${t.sub?`<div class="tlsub">${t.sub}</div>`:''}
+      </div>
+      <button class="cal-btn" onclick="saveIcal(${i})" title="In Kalender speichern">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1" y="2" width="9" height="8.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 1v2M7.5 1v2M1 5h9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        +
+      </button>
     </div>`).join('');
   return xcard('c-tm','📅','Termine & Fristen',`${TERMINE.length} Einträge · nächste: ${next.datum}`,`<div class="tl">${rows}</div>`);
 }
@@ -386,6 +415,197 @@ function submitFiles(){
   const names=files.map(f=>f.name).join(', ');
   const body=`Hallo,\n\nanbei meine Seminararbeit-Unterlagen zur Abgabe:\n\nThema: ${thema}\nAbgabedatum: ${datum}\nDateien: ${names}\n\nLiebe Grüße`;
   window.location.href=`mailto:${UPLOAD_EMAIL}?subject=Seminararbeit Abgabe – ELVER 59&body=${encodeURIComponent(body)}`;
+}
+
+// ── KALENDER EXPORT ──────────────────────────────────────────
+function saveIcal(idx){
+  const t = TERMINE[idx];
+  const dt = t.ical;
+  const isDateTime = dt.includes('T');
+  let dtEnd;
+  if(isDateTime){
+    const base=dt.slice(0,8), h=+dt.slice(9,11), m=dt.slice(11,13)||'00';
+    dtEnd=`${base}T${String((h+1)%24).padStart(2,'0')}${m}00`;
+  } else {
+    const y=+dt.slice(0,4),mo=+dt.slice(4,6)-1,d=+dt.slice(6,8);
+    const nx=new Date(y,mo,d+1);
+    dtEnd=`${nx.getFullYear()}${String(nx.getMonth()+1).padStart(2,'0')}${String(nx.getDate()).padStart(2,'0')}`;
+  }
+  const desc=(t.sub||'').replace(/,/g,'\\,');
+  const ics=[
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//ELVER59//DE',
+    'BEGIN:VEVENT',
+    `SUMMARY:${t.titel}`,
+    isDateTime?`DTSTART:${dt}`:`DTSTART;VALUE=DATE:${dt}`,
+    isDateTime?`DTEND:${dtEnd}`:`DTEND;VALUE=DATE:${dtEnd}`,
+    `DESCRIPTION:${desc}`,
+    'LOCATION:ELVER 59',
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`ELVER59_${t.titel.replace(/[^a-zA-Z0-9]/g,'_').slice(0,30)}.ics`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ── SHOOTING STARS ──────────────────────────────────────────
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [];
+
+function resize(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function newStar(){
+  const angle = Math.PI / 5 + Math.random() * Math.PI / 8;
+  const startX = Math.random() * canvas.width * 1.4 - canvas.width * 0.2;
+  return {
+    x: startX, y: -10,
+    len: 80 + Math.random() * 140,
+    speed: 3 + Math.random() * 5,
+    opacity: 0,
+    fade: 0,   // 0=in, 1=hold, 2=out
+    angle,
+    dx: Math.cos(angle) * (3 + Math.random() * 5),
+    dy: Math.sin(angle) * (3 + Math.random() * 5),
+    width: .5 + Math.random() * 1,
+    life: 0, maxLife: 60 + Math.random() * 40,
+  };
+}
+
+function spawnStar(){
+  stars.push(newStar());
+}
+
+setInterval(spawnStar, 3500 + Math.random() * 1500);
+// initial stagger
+setTimeout(spawnStar, 300);
+setTimeout(spawnStar, 1100);
+
+function drawStars(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  stars = stars.filter(s => {
+    s.life++;
+    s.x += s.dx;
+    s.y += s.dy;
+    if(s.life < 12) s.opacity = s.life / 12;
+    else if(s.life > s.maxLife - 15) s.opacity = Math.max(0, (s.maxLife - s.life) / 15);
+    else s.opacity = 1;
+
+    const tailX = s.x - Math.cos(s.angle) * s.len;
+    const tailY = s.y - Math.sin(s.angle) * s.len;
+    const grad = ctx.createLinearGradient(tailX, tailY, s.x, s.y);
+    grad.addColorStop(0, `rgba(95,217,138,0)`);
+    grad.addColorStop(.7, `rgba(95,217,138,${s.opacity * .35})`);
+    grad.addColorStop(1, `rgba(200,255,220,${s.opacity * .9})`);
+
+    ctx.beginPath();
+    ctx.moveTo(tailX, tailY);
+    ctx.lineTo(s.x, s.y);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = s.width;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // sparkle head
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.width * 1.2, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(220,255,235,${s.opacity * .9})`;
+    ctx.fill();
+
+    return s.life < s.maxLife && s.x < canvas.width + 100 && s.y < canvas.height + 100;
+  });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+// ── DANCE / SCREENSAVER BOUNCE ───────────────────────────────
+let danceTimer = null;
+let danceRaf = null;
+let floatEl = null;
+
+function danceTitle(){
+  if(floatEl) return; // already dancing
+
+  const title = document.querySelector('.title');
+  const origParent = title.parentElement;
+  const origNextSibling = title.nextSibling;
+
+  // Clone into a fixed floating element
+  floatEl = document.createElement('div');
+  floatEl.innerHTML = title.outerHTML;
+  floatEl.style.cssText = `
+    position:fixed;z-index:9999;pointer-events:none;
+    font-family:'Syne',sans-serif;font-size:clamp(52px,12vw,72px);
+    font-weight:800;letter-spacing:-0.01em;line-height:1;
+    color:#eef2ee;white-space:nowrap;
+    text-shadow:0 0 40px rgba(95,217,138,.5);
+    transition:color .3s;
+  `;
+  floatEl.querySelector('em').style.color = '#5fd98a';
+  document.body.appendChild(floatEl);
+
+  // Hide original
+  title.style.opacity = '0';
+
+  const W = () => window.innerWidth;
+  const H = () => window.innerHeight;
+  const elW = () => floatEl.offsetWidth;
+  const elH = () => floatEl.offsetHeight;
+
+  // Start near original position
+  let x = W()/2 - elW()/2;
+  let y = 80;
+  let vx = 0.9 + Math.random() * 0.6;
+  let vy = 0.6 + Math.random() * 0.5;
+  // random direction
+  if(Math.random()>.5) vx *= -1;
+  if(Math.random()>.5) vy *= -1;
+
+  let wobble = 0;
+  const colors = ['#5fd98a','#a3e4bc','#f0c96e','#eef2ee','#7ee8a2'];
+  let colorIdx = 0;
+
+  function step(){
+    wobble += 0.04;
+    const rot = Math.sin(wobble) * 4;
+    x += vx;
+    y += vy;
+
+    const maxX = W() - elW();
+    const maxY = H() - elH();
+
+    if(x <= 0){ x=0; vx=Math.abs(vx); bounceColor(); }
+    if(x >= maxX){ x=maxX; vx=-Math.abs(vx); bounceColor(); }
+    if(y <= 0){ y=0; vy=Math.abs(vy); bounceColor(); }
+    if(y >= maxY){ y=maxY; vy=-Math.abs(vy); bounceColor(); }
+
+    floatEl.style.transform = `translate(${x}px,${y}px) rotate(${rot}deg)`;
+    danceRaf = requestAnimationFrame(step);
+  }
+
+  function bounceColor(){
+    colorIdx = (colorIdx+1) % colors.length;
+    floatEl.style.color = colors[colorIdx];
+    floatEl.querySelector('em').style.color = colors[(colorIdx+2)%colors.length];
+    for(let i=0;i<3;i++) setTimeout(spawnStar, i*100);
+  }
+
+  floatEl.style.transform = `translate(${x}px,${y}px)`;
+  danceRaf = requestAnimationFrame(step);
+
+  // Stop after 12s
+  danceTimer = setTimeout(()=>{
+    cancelAnimationFrame(danceRaf);
+    floatEl.remove();
+    floatEl = null;
+    title.style.opacity = '1';
+  }, 12000);
 }
 </script>
 </body>
