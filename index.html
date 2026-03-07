@@ -275,6 +275,94 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
   white-space:nowrap;transition:all .2s;font-family:'Inter',sans-serif;
 }
 .plink-copy:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── ADMIN ─────────────────────────────────────────────────── */
+.admin-trigger{
+  position:fixed;bottom:18px;right:18px;z-index:500;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;transition:all .2s;
+  opacity:.4;
+}
+.admin-trigger:hover{opacity:1;background:rgba(95,217,138,.18);border-color:rgba(95,217,138,.4);}
+
+.admin-overlay{position:fixed;inset:0;z-index:2000;background:rgba(14,18,16,.96);backdrop-filter:blur(10px);overflow-y:auto;padding:20px 16px 60px;}
+.admin-overlay.hidden{display:none;}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.admin-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent);}
+.admin-close{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);padding:6px 12px;cursor:pointer;font-size:13px;transition:all .2s;}
+.admin-close:hover{border-color:var(--red);color:var(--red);}
+
+.admin-pin{
+  max-width:360px;margin:80px auto 0;
+  background:var(--surface2);border:1px solid rgba(95,217,138,.2);
+  border-radius:20px;padding:32px 28px;text-align:center;
+}
+.admin-pin-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px;}
+.admin-pin-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.pin-dots{display:flex;justify-content:center;gap:10px;margin-bottom:20px;}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:var(--border);transition:background .15s;}
+.pin-dot.filled{background:var(--accent);}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:240px;margin:0 auto;}
+.pin-key{
+  padding:14px;border-radius:10px;background:var(--surface);
+  border:1px solid var(--border);font-family:'Syne',sans-serif;
+  font-size:18px;font-weight:700;cursor:pointer;color:var(--text);
+  transition:all .15s;user-select:none;
+}
+.pin-key:hover{background:var(--surface2);border-color:rgba(95,217,138,.3);}
+.pin-key:active{transform:scale(.93);}
+.pin-err{color:var(--red);font-size:12px;margin-top:10px;min-height:18px;}
+
+.admin-panel{max-width:500px;margin:0 auto;}
+.admin-section{margin-bottom:28px;}
+.admin-section-title{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.admin-section-title::after{content:'';flex:1;height:1px;background:rgba(95,217,138,.12);}
+
+.user-row{
+  display:flex;align-items:center;gap:12px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:12px 14px;margin-bottom:8px;
+}
+.user-row-avatar{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#5fd98a,#3ab86a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;color:#0e1210;font-family:'Syne',sans-serif;
+}
+.user-row-info{flex:1;min-width:0;}
+.user-row-name{font-size:14px;font-weight:600;font-family:'Syne',sans-serif;}
+.user-row-meta{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-row-actions{display:flex;gap:6px;}
+.abtn{
+  background:none;border:1px solid var(--border);border-radius:7px;
+  color:var(--muted);font-size:11px;padding:5px 9px;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap;
+}
+.abtn:hover{border-color:var(--accent);color:var(--accent);}
+.abtn.del:hover{border-color:var(--red);color:var(--red);}
+
+.admin-form{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.admin-form label{font-size:10.5px;color:var(--muted);letter-spacing:.08em;display:block;margin-bottom:4px;text-transform:uppercase;}
+.admin-form input,.admin-form textarea,.admin-form select{
+  width:100%;background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);
+  border-radius:8px;padding:8px 10px;font-size:13px;color:var(--text);
+  font-family:'Inter',sans-serif;outline:none;margin-bottom:12px;
+  transition:border-color .2s;
+}
+.admin-form input:focus,.admin-form textarea:focus{border-color:rgba(95,217,138,.4);}
+.admin-form textarea{resize:vertical;min-height:60px;}
+.admin-save-btn{
+  width:100%;padding:10px;background:rgba(95,217,138,.15);
+  border:1px solid rgba(95,217,138,.3);border-radius:8px;
+  color:var(--accent);font-family:'Syne',sans-serif;font-size:13px;
+  font-weight:700;cursor:pointer;transition:all .2s;
+}
+.admin-save-btn:hover{background:rgba(95,217,138,.25);}
+.admin-empty{font-size:13px;color:var(--muted);text-align:center;padding:20px;font-style:italic;}
+
+.broadcast-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;}
 </style>
 </head>
 <body>
@@ -865,6 +953,253 @@ function danceTitle(){
     title.style.opacity = '1';
   }, 12000);
 }
+
+// ── ADMIN ─────────────────────────────────────────────────────
+const DEFAULT_PIN = '1234';
+let pinInput = '';
+let editingUser = null;
+
+function getPin(){ return localStorage.getItem('elver59_admin_pin') || DEFAULT_PIN; }
+
+function openAdmin(){
+  pinInput = '';
+  updatePinDots();
+  document.getElementById('pin-err').textContent = '';
+  document.getElementById('admin-pin-screen').classList.remove('hidden');
+  document.getElementById('admin-main-screen').classList.add('hidden');
+  document.getElementById('admin-overlay').classList.remove('hidden');
+}
+function closeAdmin(){
+  document.getElementById('admin-overlay').classList.add('hidden');
+  pinInput = '';
+}
+
+function pinKey(k){
+  if(pinInput.length >= 4) return;
+  pinInput += k;
+  updatePinDots();
+  if(pinInput.length === 4) setTimeout(checkPin, 150);
+}
+function pinBackspace(){ pinInput = pinInput.slice(0,-1); updatePinDots(); }
+function pinClear(){ pinInput = ''; updatePinDots(); }
+function updatePinDots(){
+  for(let i=0;i<4;i++){
+    const d = document.getElementById('pd'+i);
+    if(d) d.classList.toggle('filled', i < pinInput.length);
+  }
+}
+function checkPin(){
+  if(pinInput === getPin()){
+    document.getElementById('admin-pin-screen').classList.add('hidden');
+    document.getElementById('admin-main-screen').classList.remove('hidden');
+    renderAdminUsers();
+  } else {
+    document.getElementById('pin-err').textContent = 'Falscher PIN – versuch nochmal';
+    pinInput = ''; updatePinDots();
+    setTimeout(()=>{ document.getElementById('pin-err').textContent=''; },2000);
+  }
+}
+
+function changePin(){
+  const p = document.getElementById('new-pin').value.trim();
+  if(!/^\d{4}$/.test(p)){ alert('PIN muss genau 4 Ziffern sein'); return; }
+  localStorage.setItem('elver59_admin_pin', p);
+  document.getElementById('new-pin').value='';
+  flashMsg('✓ PIN gespeichert');
+}
+
+// ── GET ALL USERS FROM LOCALSTORAGE ───────────────────────────
+function getAllUsers(){
+  const users = [];
+  for(let i=0;i<localStorage.length;i++){
+    const k = localStorage.key(i);
+    if(k && k.startsWith('elver59_') && k !== 'elver59_lastuser' && k !== 'elver59_admin_pin'){
+      try{
+        const v = JSON.parse(localStorage.getItem(k));
+        if(v && v.name) users.push(v);
+      }catch(e){}
+    }
+  }
+  return users.sort((a,b)=>a.name.localeCompare(b.name));
+}
+
+function renderAdminUsers(){
+  const list = document.getElementById('admin-user-list');
+  const users = getAllUsers();
+  if(!users.length){
+    list.innerHTML='<div class="admin-empty">Noch keine Benutzer registriert.</div>';
+    return;
+  }
+  list.innerHTML = users.map(u=>`
+    <div class="user-row">
+      <div class="user-row-avatar">${u.name.charAt(0).toUpperCase()}</div>
+      <div class="user-row-info">
+        <div class="user-row-name">${u.name}</div>
+        <div class="user-row-meta">SA: ${u.thema ? u.thema.slice(0,40)+'…' : '–'} · ${u.datum||'kein Datum'}</div>
+      </div>
+      <div class="user-row-actions">
+        <button class="abtn" onclick="startEdit('${u.name}')">✏ Edit</button>
+        <button class="abtn del" onclick="deleteUser('${u.name}')">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function deleteUser(name){
+  if(!confirm(`Benutzer "${name}" wirklich löschen?`)) return;
+  localStorage.removeItem('elver59_' + name.toLowerCase());
+  if(localStorage.getItem('elver59_lastuser') === name)
+    localStorage.removeItem('elver59_lastuser');
+  renderAdminUsers();
+  flashMsg(`✓ ${name} gelöscht`);
+}
+
+function startEdit(name){
+  const data = JSON.parse(localStorage.getItem('elver59_' + name.toLowerCase())||'{}');
+  editingUser = name;
+  document.getElementById('admin-edit-title').textContent = `✏ Bearbeiten: ${name}`;
+  document.getElementById('edit-name').value = data.name||name;
+  document.getElementById('edit-thema').value = data.thema||'';
+  document.getElementById('edit-datum').value = data.datum||'';
+  document.getElementById('admin-edit-section').style.display = 'block';
+  document.getElementById('admin-edit-section').scrollIntoView({behavior:'smooth'});
+}
+
+function saveEditedUser(){
+  if(!editingUser) return;
+  const oldKey = 'elver59_' + editingUser.toLowerCase();
+  const existing = JSON.parse(localStorage.getItem(oldKey)||'{}');
+  const newName = document.getElementById('edit-name').value.trim();
+  if(!newName){ alert('Name darf nicht leer sein'); return; }
+  const updated = {
+    ...existing,
+    name: newName,
+    thema: document.getElementById('edit-thema').value,
+    datum: document.getElementById('edit-datum').value,
+  };
+  // remove old key if name changed
+  if(newName.toLowerCase() !== editingUser.toLowerCase())
+    localStorage.removeItem(oldKey);
+  localStorage.setItem('elver59_' + newName.toLowerCase(), JSON.stringify(updated));
+  editingUser = null;
+  document.getElementById('admin-edit-section').style.display='none';
+  renderAdminUsers();
+  flashMsg('✓ Gespeichert');
+}
+
+function adminAddUser(){
+  const name = document.getElementById('new-name').value.trim();
+  if(!name){ alert('Name eingeben'); return; }
+  const thema = document.getElementById('new-thema').value.trim();
+  const datum = document.getElementById('new-datum').value;
+  const data = { name, thema: thema||'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr', datum: datum||'2026-03-10', tasks:{} };
+  localStorage.setItem('elver59_' + name.toLowerCase(), JSON.stringify(data));
+  document.getElementById('new-name').value='';
+  document.getElementById('new-thema').value='';
+  renderAdminUsers();
+  flashMsg(`✓ ${name} angelegt`);
+}
+
+function flashMsg(msg){
+  const el = document.createElement('div');
+  el.textContent = msg;
+  el.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(95,217,138,.2);border:1px solid rgba(95,217,138,.4);color:var(--accent);padding:8px 18px;border-radius:100px;font-size:13px;z-index:3000;pointer-events:none;';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 2500);
+}
+
 </script>
+
+<!-- ADMIN TRIGGER (hidden gear) -->
+<button class="admin-trigger" onclick="openAdmin()" title="Admin">⚙</button>
+
+<!-- ADMIN OVERLAY -->
+<div class="admin-overlay hidden" id="admin-overlay">
+
+  <!-- PIN SCREEN -->
+  <div id="admin-pin-screen">
+    <div class="admin-pin">
+      <div style="font-size:32px;margin-bottom:12px;">🔐</div>
+      <div class="admin-pin-title">Admin Zugang</div>
+      <div class="admin-pin-sub">Gib den 4-stelligen PIN ein</div>
+      <div class="pin-dots">
+        <div class="pin-dot" id="pd0"></div>
+        <div class="pin-dot" id="pd1"></div>
+        <div class="pin-dot" id="pd2"></div>
+        <div class="pin-dot" id="pd3"></div>
+      </div>
+      <div class="pin-grid">
+        <div class="pin-key" onclick="pinKey('1')">1</div>
+        <div class="pin-key" onclick="pinKey('2')">2</div>
+        <div class="pin-key" onclick="pinKey('3')">3</div>
+        <div class="pin-key" onclick="pinKey('4')">4</div>
+        <div class="pin-key" onclick="pinKey('5')">5</div>
+        <div class="pin-key" onclick="pinKey('6')">6</div>
+        <div class="pin-key" onclick="pinKey('7')">7</div>
+        <div class="pin-key" onclick="pinKey('8')">8</div>
+        <div class="pin-key" onclick="pinKey('9')">9</div>
+        <div class="pin-key" onclick="pinClear()" style="font-size:13px;color:var(--muted)">✕</div>
+        <div class="pin-key" onclick="pinKey('0')">0</div>
+        <div class="pin-key" onclick="pinBackspace()" style="font-size:13px">⌫</div>
+      </div>
+      <div class="pin-err" id="pin-err"></div>
+    </div>
+  </div>
+
+  <!-- MAIN ADMIN PANEL -->
+  <div id="admin-main-screen" class="hidden">
+    <div class="admin-panel">
+      <div class="admin-header">
+        <div class="admin-title">⚙ Admin · ELVER 59</div>
+        <button class="admin-close" onclick="closeAdmin()">✕ Schließen</button>
+      </div>
+
+      <!-- USER LIST -->
+      <div class="admin-section">
+        <div class="admin-section-title">Benutzer</div>
+        <div id="admin-user-list"></div>
+      </div>
+
+      <!-- EDIT USER -->
+      <div class="admin-section" id="admin-edit-section" style="display:none">
+        <div class="admin-section-title" id="admin-edit-title">Benutzer bearbeiten</div>
+        <div class="admin-form">
+          <label>Name</label>
+          <input id="edit-name" type="text" placeholder="Vorname"/>
+          <label>SA-Thema</label>
+          <textarea id="edit-thema" rows="2"></textarea>
+          <label>SA-Abgabedatum</label>
+          <input id="edit-datum" type="date"/>
+          <button class="admin-save-btn" onclick="saveEditedUser()">Änderungen speichern</button>
+        </div>
+      </div>
+
+      <!-- ADD NEW USER -->
+      <div class="admin-section">
+        <div class="admin-section-title">Neuen Benutzer anlegen</div>
+        <div class="admin-form">
+          <label>Vorname</label>
+          <input id="new-name" type="text" placeholder="z.B. Anna"/>
+          <label>SA-Thema (optional)</label>
+          <textarea id="new-thema" rows="2" placeholder="Entwicklung des Kindes…"></textarea>
+          <label>SA-Abgabedatum (optional)</label>
+          <input id="new-datum" type="date" value="2026-03-10"/>
+          <button class="admin-save-btn" onclick="adminAddUser()">✚ Benutzer anlegen</button>
+        </div>
+      </div>
+
+      <!-- CHANGE PIN -->
+      <div class="admin-section">
+        <div class="admin-section-title">Admin PIN ändern</div>
+        <div class="admin-form">
+          <label>Neuer PIN (4 Ziffern)</label>
+          <input id="new-pin" type="password" maxlength="4" inputmode="numeric" placeholder="····"/>
+          <button class="admin-save-btn" onclick="changePin()">PIN speichern</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
