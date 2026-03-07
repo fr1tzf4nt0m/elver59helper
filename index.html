@@ -955,11 +955,17 @@ function danceTitle(){
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
-const DEFAULT_PIN = '1234';
+
 let pinInput = '';
 let editingUser = null;
 
-function getPin(){ return localStorage.getItem('elver59_admin_pin') || DEFAULT_PIN; }
+// PIN verified via SHA-256 — plain value not stored anywhere
+async function verifyPin(input){
+  const enc = new TextEncoder().encode('elver59x' + input);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  const hex = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  return hex === '966eccb987093641113e4369d9acaeb8708751e150f61fb411b1b262e79d5886';
+}
 
 function openAdmin(){
   pinInput = '';
@@ -988,8 +994,9 @@ function updatePinDots(){
     if(d) d.classList.toggle('filled', i < pinInput.length);
   }
 }
-function checkPin(){
-  if(pinInput === getPin()){
+async function checkPin(){
+  const ok = await verifyPin(pinInput);
+  if(ok){
     document.getElementById('admin-pin-screen').classList.add('hidden');
     document.getElementById('admin-main-screen').classList.remove('hidden');
     renderAdminUsers();
@@ -1000,13 +1007,7 @@ function checkPin(){
   }
 }
 
-function changePin(){
-  const p = document.getElementById('new-pin').value.trim();
-  if(!/^\d{4}$/.test(p)){ alert('PIN muss genau 4 Ziffern sein'); return; }
-  localStorage.setItem('elver59_admin_pin', p);
-  document.getElementById('new-pin').value='';
-  flashMsg('✓ PIN gespeichert');
-}
+
 
 // ── GET ALL USERS FROM LOCALSTORAGE ───────────────────────────
 function getAllUsers(){
@@ -1187,15 +1188,7 @@ function flashMsg(msg){
         </div>
       </div>
 
-      <!-- CHANGE PIN -->
-      <div class="admin-section">
-        <div class="admin-section-title">Admin PIN ändern</div>
-        <div class="admin-form">
-          <label>Neuer PIN (4 Ziffern)</label>
-          <input id="new-pin" type="password" maxlength="4" inputmode="numeric" placeholder="····"/>
-          <button class="admin-save-btn" onclick="changePin()">PIN speichern</button>
-        </div>
-      </div>
+
 
     </div>
   </div>
