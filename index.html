@@ -12,33 +12,43 @@
   --border:#263029;--accent:#5fd98a;--accent2:#a3e4bc;
   --warm:#f0c96e;--red:#e8614d;--text:#eef2ee;--muted:#5a7060;--muted2:#3d5244;
 }
+body.light{
+  --bg:#f2f7f3;--surface:#ffffff;--surface2:#eaf3ed;
+  --border:#d0e4d6;--accent:#2d8a56;--accent2:#1a6640;
+  --warm:#b07800;--red:#c0392b;--text:#1a2e1f;--muted:#5a7060;--muted2:#8aab92;
+}
 body{
   background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;
   min-height:100dvh;display:flex;flex-direction:column;align-items:center;
-  padding:40px 18px 64px;position:relative;overflow-x:hidden;
+  padding:40px 18px 80px;position:relative;overflow-x:hidden;transition:background .3s,color .3s;
 }
-body::before{
-  content:'';position:fixed;top:-120px;left:50%;transform:translateX(-50%);
-  width:500px;height:400px;
-  background:radial-gradient(ellipse,rgba(95,217,138,.06) 0%,transparent 70%);
-  pointer-events:none;z-index:0;
-}
+body::before{content:'';position:fixed;top:-120px;left:50%;transform:translateX(-50%);width:500px;height:400px;background:radial-gradient(ellipse,rgba(95,217,138,.06) 0%,transparent 70%);pointer-events:none;z-index:0;}
 .container{width:100%;max-width:430px;position:relative;z-index:1;}
+.theme-btn{position:fixed;top:14px;right:14px;z-index:400;width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;opacity:.55;transition:all .2s;}
+.theme-btn:hover{opacity:1;border-color:rgba(95,217,138,.4);}
 
 /* HEADER */
-.header{text-align:center;margin-bottom:36px;animation:fadeDown .7s ease both;}
-.logo-mark{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:58px;height:58px;border-radius:18px;
-  background:linear-gradient(135deg,rgba(95,217,138,.15),rgba(95,217,138,.04));
-  border:1px solid rgba(95,217,138,.2);margin:0 auto 16px;
-}
-.title{
-  font-family:'Syne',sans-serif;font-size:clamp(52px,15vw,80px);
-  font-weight:800;letter-spacing:-0.01em;line-height:1;
-}
+.header{text-align:center;margin-bottom:32px;animation:fadeDown .7s ease both;}
+.logo-mark{display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,rgba(95,217,138,.15),rgba(95,217,138,.04));border:1px solid rgba(95,217,138,.2);margin:0 auto 16px;cursor:pointer;transition:transform .15s,box-shadow .2s;}
+.logo-mark:hover{transform:scale(1.08);box-shadow:0 0 18px rgba(95,217,138,.25);}
+.logo-mark:active{transform:scale(.95);}
+.title{font-family:'Syne',sans-serif;font-size:clamp(52px,15vw,80px);font-weight:800;letter-spacing:-0.01em;line-height:1;}
 .title em{color:var(--accent);font-style:normal;}
 .subtitle{margin-top:10px;font-size:12px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;}
+
+/* USER CHIP */
+.user-chip{display:inline-flex;align-items:center;gap:7px;background:rgba(95,217,138,.07);border:1px solid rgba(95,217,138,.15);border-radius:100px;padding:5px 12px 5px 8px;margin-bottom:6px;cursor:pointer;transition:border-color .2s,background .2s;}
+.user-chip:hover{border-color:rgba(95,217,138,.3);background:rgba(95,217,138,.12);}
+.user-avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#5fd98a,#3ab86a);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#0e1210;font-family:'Syne',sans-serif;}
+.user-name{font-size:12px;font-weight:600;color:var(--accent2);font-family:'Syne',sans-serif;letter-spacing:.04em;}
+.user-change{font-size:10px;color:var(--muted);margin-left:2px;}
+.group-badge{display:inline-flex;align-items:center;gap:5px;border-radius:100px;padding:3px 10px;margin-bottom:14px;font-size:11px;font-weight:600;font-family:'Syne',sans-serif;letter-spacing:.03em;}
+.gb0{background:rgba(90,112,96,.1);border:1px solid var(--border);color:var(--muted);}
+.gb1{background:rgba(95,217,138,.12);border:1px solid rgba(95,217,138,.3);color:var(--accent);}
+.gb2{background:rgba(240,201,110,.1);border:1px solid rgba(240,201,110,.3);color:var(--warm);}
+.gb3{background:rgba(147,112,219,.1);border:1px solid rgba(147,112,219,.3);color:#9370db;}
+.gb4{background:rgba(232,97,77,.1);border:1px solid rgba(232,97,77,.3);color:var(--red);}
+.gb5{background:rgba(100,180,230,.1);border:1px solid rgba(100,180,230,.3);color:#64b4e6;}
 
 /* DIVIDER */
 .sdiv{display:flex;align-items:center;gap:10px;margin-bottom:14px;animation:fadeUp .6s .15s ease both;}
@@ -48,17 +58,12 @@ body::before{
 /* CARDS */
 .cards{display:flex;flex-direction:column;gap:10px;}
 .cards>*{animation:fadeUp .5s ease both;}
-.cards>*:nth-child(1){animation-delay:.18s}.cards>*:nth-child(2){animation-delay:.26s}
-.cards>*:nth-child(3){animation-delay:.34s}.cards>*:nth-child(4){animation-delay:.42s}
+.cards>*:nth-child(1){animation-delay:.12s}.cards>*:nth-child(2){animation-delay:.20s}
+.cards>*:nth-child(3){animation-delay:.28s}.cards>*:nth-child(4){animation-delay:.36s}
+.cards>*:nth-child(5){animation-delay:.44s}.cards>*:nth-child(6){animation-delay:.52s}
 
 /* LINK CARD */
-.lcard{
-  display:flex;align-items:center;gap:14px;padding:15px 18px;
-  background:var(--surface);border:1px solid var(--border);border-radius:16px;
-  text-decoration:none;color:var(--text);
-  transition:border-color .2s,transform .15s,background .2s;
-  position:relative;overflow:hidden;
-}
+.lcard{display:flex;align-items:center;gap:14px;padding:15px 18px;background:var(--surface);border:1px solid var(--border);border-radius:16px;text-decoration:none;color:var(--text);transition:border-color .2s,transform .15s,background .2s;position:relative;overflow:hidden;}
 .lcard:hover{border-color:rgba(95,217,138,.3);transform:translateY(-2px);background:var(--surface2);}
 .lcard:active{transform:scale(.98);}
 .carrow{color:var(--muted2);font-size:13px;transition:color .2s,transform .2s;margin-left:auto;flex-shrink:0;}
@@ -72,41 +77,29 @@ body::before{
 .xchev{color:var(--muted2);font-size:14px;flex-shrink:0;margin-left:auto;transition:transform .28s,color .2s;}
 .xcard.open .xchev{transform:rotate(90deg);color:var(--accent);}
 .xbody{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1);padding:0 18px;}
-.xcard.open .xbody{max-height:2400px;padding:0 18px 18px;}
-
-/* ICON */
+.xcard.open .xbody{max-height:5000px;padding:0 18px 18px;}
 .cicon{width:40px;height:40px;border-radius:11px;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.13);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;}
 .clabel{font-size:14.5px;font-weight:600;font-family:'Syne',sans-serif;}
-.cdesc{font-size:11.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cdesc{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.prog-bar-wrap{display:flex;align-items:center;gap:6px;margin-top:3px;}
+.prog-bar{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;max-width:80px;}
+.prog-bar-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s;}
+.prog-label{font-size:10px;color:var(--accent);font-weight:600;}
 
-/* INNER SECTION */
+/* INNER */
 .idiv{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
 .idiv::after{content:'';flex:1;height:1px;background:rgba(95,217,138,.1);}
-
-/* INFO ROWS */
 .irow{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
 .irow:last-child{border-bottom:none;}
-.ikey{font-size:10.5px;color:var(--muted);min-width:76px;padding-top:3px;flex-shrink:0;letter-spacing:.02em;}
+.ikey{font-size:10.5px;color:var(--muted);min-width:76px;padding-top:3px;flex-shrink:0;}
 .ival{flex:1;font-size:13px;line-height:1.5;color:var(--text);}
-
-/* EDITABLE */
-.editable{
-  background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);
-  border-radius:8px;padding:6px 10px;font-size:13px;color:var(--text);
-  font-family:'Inter',sans-serif;width:100%;line-height:1.5;outline:none;
-  transition:border-color .2s,background .2s;resize:none;
-}
+.editable{background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);border-radius:8px;padding:6px 10px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;width:100%;line-height:1.5;outline:none;transition:border-color .2s;resize:none;}
 .editable:focus{border-color:rgba(95,217,138,.4);background:rgba(95,217,138,.09);}
 input[type="date"].editable{cursor:pointer;color-scheme:dark;max-width:180px;}
 input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4) sepia(1) saturate(4) hue-rotate(90deg);cursor:pointer;}
 
 /* UPLOAD */
-.uzone{
-  border:1.5px dashed rgba(95,217,138,.2);border-radius:12px;
-  padding:20px 16px;text-align:center;cursor:pointer;
-  transition:border-color .2s,background .2s;margin-top:10px;
-  position:relative;
-}
+.uzone{border:1.5px dashed rgba(95,217,138,.2);border-radius:12px;padding:20px 16px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-top:10px;position:relative;}
 .uzone:hover,.uzone.drag{border-color:rgba(95,217,138,.5);background:rgba(95,217,138,.04);}
 .uzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
 .uzone-icon{font-size:26px;margin-bottom:6px;}
@@ -116,259 +109,178 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 .fitem{display:flex;align-items:center;gap:10px;background:rgba(95,217,138,.06);border:1px solid rgba(95,217,138,.12);border-radius:8px;padding:8px 12px;}
 .fname{flex:1;font-size:12px;color:var(--accent2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .fsize{font-size:10.5px;color:var(--muted);}
-.fdel{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0;line-height:1;transition:color .15s;}
+.fdel{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0;transition:color .15s;}
 .fdel:hover{color:var(--red);}
-.sbtn{
-  display:none;align-items:center;justify-content:center;gap:8px;
-  width:100%;margin-top:11px;padding:11px;
-  background:linear-gradient(135deg,rgba(95,217,138,.18),rgba(95,217,138,.08));
-  border:1px solid rgba(95,217,138,.28);border-radius:10px;
-  color:var(--accent);font-family:'Syne',sans-serif;
-  font-size:13px;font-weight:700;cursor:pointer;
-  transition:all .2s;letter-spacing:.04em;
-}
+.sbtn{display:none;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:11px;padding:11px;background:linear-gradient(135deg,rgba(95,217,138,.18),rgba(95,217,138,.08));border:1px solid rgba(95,217,138,.28);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.04em;}
 .sbtn:hover{background:rgba(95,217,138,.24);transform:translateY(-1px);}
 .snote{display:none;font-size:10.5px;color:var(--muted);text-align:center;margin-top:6px;line-height:1.5;}
+.plink-box{background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);border-radius:10px;padding:10px 12px;margin-top:14px;display:flex;align-items:center;gap:8px;}
+.plink-copy{background:none;border:1px solid var(--muted2);border-radius:6px;color:var(--muted);font-size:11px;padding:4px 8px;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:'Inter',sans-serif;}
+.plink-copy:hover{border-color:var(--accent);color:var(--accent);}
 
 /* CAL BUTTON */
-.cal-btn{
-  background:none;border:1px solid var(--muted2);border-radius:7px;
-  color:var(--muted);font-size:11px;padding:3px 7px;cursor:pointer;
-  flex-shrink:0;margin-left:auto;white-space:nowrap;
-  transition:border-color .2s,color .2s,background .2s;
-  font-family:'Inter',sans-serif;letter-spacing:.02em;
-  display:flex;align-items:center;gap:4px;
-}
+.cal-btn{background:none;border:1px solid var(--muted2);border-radius:7px;color:var(--muted);font-size:11px;padding:3px 7px;cursor:pointer;flex-shrink:0;margin-left:4px;white-space:nowrap;transition:border-color .2s,color .2s,background .2s;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:4px;}
 .cal-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(95,217,138,.07);}
-.cal-btn:active{transform:scale(.95);}
 
-/* TIMELINE */
+/* TIMELINE (Termine) */
 .tl{display:flex;flex-direction:column;}
-.tlrow{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);align-items:center;}
+.tlrow{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:center;}
 .tlrow:last-child{border-bottom:none;}
 .tldot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--accent);}
 .tldot.u{background:var(--red);}
-.tldate{font-size:11px;font-weight:500;white-space:nowrap;min-width:82px;color:var(--accent);}
+.tlinfo{flex:1;min-width:0;}
+.tldate{font-size:11px;font-weight:500;color:var(--accent);}
 .tldate.u{color:var(--red);}
 .tltitle{font-size:13px;font-weight:500;line-height:1.3;}
-.tlsub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
+.tlsub{font-size:11px;color:var(--muted);margin-top:1px;}
+.tlcountdown{font-size:10px;font-weight:600;color:var(--warm);margin-top:2px;font-family:'Syne',sans-serif;}
+.tlcountdown.urgent{color:var(--red);}
+.tlcountdown.past{color:var(--muted2);font-weight:400;}
+
+/* STUNDENPLAN */
+.sp-filter{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.sp-fbtn{background:none;border:1px solid var(--border);border-radius:100px;color:var(--muted);font-size:11px;padding:4px 10px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap;}
+.sp-fbtn.active{border-color:var(--accent);color:var(--accent);background:rgba(95,217,138,.08);}
+.sp-week{margin-bottom:14px;}
+.sp-week-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.sp-week-label::after{content:'';flex:1;height:1px;background:rgba(95,217,138,.08);}
+.sp-day{display:flex;gap:10px;padding:8px 10px;border-radius:10px;margin-bottom:4px;background:var(--surface2);border:1px solid var(--border);transition:border-color .15s;}
+.sp-day.today{border-color:rgba(95,217,138,.35);background:rgba(95,217,138,.06);}
+.sp-day.peer{border-color:rgba(240,201,110,.25);background:rgba(240,201,110,.04);}
+.sp-day.frei{opacity:.45;}
+.sp-day.pruef{border-color:rgba(232,97,77,.3);background:rgba(232,97,77,.04);}
+.sp-date-col{min-width:42px;flex-shrink:0;}
+.sp-day-name{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.sp-day-num{font-size:17px;font-weight:800;font-family:'Syne',sans-serif;line-height:1.1;}
+.sp-day.today .sp-day-num{color:var(--accent);}
+.sp-content{flex:1;min-width:0;}
+.sp-time{font-size:10px;color:var(--muted);margin-bottom:2px;}
+.sp-lesson{font-size:12.5px;font-weight:500;line-height:1.3;margin-bottom:1px;}
+.sp-ref{font-size:11px;color:var(--muted);}
+.sp-multi{display:flex;flex-direction:column;gap:4px;}
+.sp-multi-item{padding:4px 8px;background:rgba(95,217,138,.04);border-left:2px solid rgba(95,217,138,.2);border-radius:0 5px 5px 0;}
+.sp-peer-tag{display:inline-block;font-size:10px;color:var(--warm);background:rgba(240,201,110,.1);border:1px solid rgba(240,201,110,.2);border-radius:100px;padding:1px 7px;margin-top:2px;}
+.sp-search{width:100%;background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none;margin-bottom:10px;transition:border-color .2s;}
+.sp-search:focus{border-color:rgba(95,217,138,.4);}
+.sp-search::placeholder{color:var(--muted2);}
+.sp-empty{font-size:13px;color:var(--muted);text-align:center;padding:20px;font-style:italic;}
 
 /* TASKS */
 .tsec{margin-top:12px;}.tsec:first-child{margin-top:0;}
 .tglabel{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:7px;}
 .titem{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);}
 .titem:last-child{border-bottom:none;}
-.tcheck{
-  width:17px;height:17px;border-radius:5px;border:1.5px solid var(--muted2);
-  flex-shrink:0;margin-top:1px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;color:transparent;
-  transition:background .15s,border-color .15s;
-}
+.tcheck{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--muted2);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;transition:background .15s,border-color .15s;}
 .tcheck.done{background:var(--accent);border-color:var(--accent);color:#0e1210;}
 .tlabel{font-size:13px;line-height:1.35;}
 .tdue{font-size:11px;color:var(--muted);margin-top:2px;}
 
+/* PEER GROUPS */
+.pgroup{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:8px;transition:border-color .2s;}
+.pgroup.mine{border-color:rgba(95,217,138,.3);background:rgba(95,217,138,.04);}
+.pgroup-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.pgroup-num{width:28px;height:28px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;font-family:'Syne',sans-serif;color:#0e1210;}
+.gn1{background:#5fd98a;}.gn2{background:#f0c96e;}.gn3{background:#9370db;}
+.gn4{background:#e8614d;}.gn5{background:#64b4e6;}
+.pgroup-title{font-size:13px;font-weight:600;font-family:'Syne',sans-serif;flex:1;}
+.pgroup-you{font-size:10px;color:var(--accent);background:rgba(95,217,138,.12);border-radius:100px;padding:2px 7px;font-weight:600;}
+.pgroup-members{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.pmember{font-size:11px;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:2px 9px;color:var(--muted);}
+.pmember.me{border-color:rgba(95,217,138,.3);color:var(--accent2);background:rgba(95,217,138,.07);}
+.pgroup-thema-static{font-size:11.5px;color:var(--muted);font-style:italic;margin-bottom:6px;}
+.pgroup-thema-input{width:100%;background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.15);border-radius:7px;padding:5px 8px;font-size:12px;color:var(--text);font-family:'Inter',sans-serif;outline:none;margin-bottom:5px;resize:none;transition:border-color .2s;}
+.pgroup-thema-input:focus{border-color:rgba(95,217,138,.4);}
+.pgroup-save-btn{font-size:11px;padding:4px 12px;background:rgba(95,217,138,.15);border:1px solid rgba(95,217,138,.3);border-radius:6px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+.pgroup-save-btn:hover{background:rgba(95,217,138,.25);}
+
 /* FOOTER */
 .footer{margin-top:44px;text-align:center;animation:fadeUp .5s .65s ease both;}
 .ftop{font-size:10.5px;color:var(--muted2);letter-spacing:.08em;margin-bottom:10px;}
-.fcredit{
-  display:inline-flex;align-items:center;gap:7px;
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:100px;padding:6px 14px;
-}
+.fcredit{display:inline-flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:6px 14px;}
 .fctext{font-size:11px;color:var(--muted);}
 .heart{display:inline-block;animation:beat 1.6s ease-in-out infinite;}
 .bo-wrap{display:inline-flex;align-items:center;gap:4px;}
-.bo-box{
-  width:22px;height:22px;border-radius:7px;
-  background:linear-gradient(135deg,rgba(95,217,138,.28),rgba(95,217,138,.08));
-  border:1px solid rgba(95,217,138,.3);
-  display:flex;align-items:center;justify-content:center;
-}
+.bo-box{width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,rgba(95,217,138,.28),rgba(95,217,138,.08));border:1px solid rgba(95,217,138,.3);display:flex;align-items:center;justify-content:center;}
 .bo-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.04em;}
 
 @keyframes beat{0%,100%{transform:scale(1)}40%{transform:scale(1.3)}60%{transform:scale(1.1)}}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-/* SHOOTING STARS */
 #starfield{position:fixed;inset:0;pointer-events:none;z-index:0;}
 
-/* LOGO BUTTON */
-.logo-mark{cursor:pointer;transition:transform .15s,box-shadow .2s;}
-.logo-mark:hover{transform:scale(1.08);box-shadow:0 0 18px rgba(95,217,138,.25);}
-.logo-mark:active{transform:scale(.95);}
-
-/* NAME MODAL */
-.modal-overlay{
-  position:fixed;inset:0;z-index:1000;
-  background:rgba(14,18,16,.92);
-  backdrop-filter:blur(8px);
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;
-  animation:fadeDown .3s ease both;
-}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(14,18,16,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeDown .3s ease both;}
 .modal-overlay.hidden{display:none;}
-.modal-box{
-  width:100%;max-width:360px;
-  background:var(--surface2);
-  border:1px solid rgba(95,217,138,.2);
-  border-radius:20px;
-  padding:32px 28px;
-  text-align:center;
-}
+.modal-box{width:100%;max-width:360px;background:var(--surface2);border:1px solid rgba(95,217,138,.2);border-radius:20px;padding:32px 28px;text-align:center;}
 .modal-icon{font-size:36px;margin-bottom:16px;}
 .modal-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px;}
 .modal-sub{font-size:12.5px;color:var(--muted);margin-bottom:24px;line-height:1.5;}
-.modal-input{
-  width:100%;background:rgba(95,217,138,.06);
-  border:1.5px solid rgba(95,217,138,.2);border-radius:10px;
-  padding:12px 14px;font-size:15px;color:var(--text);
-  font-family:'Syne',sans-serif;font-weight:600;
-  outline:none;text-align:center;letter-spacing:.04em;
-  transition:border-color .2s,background .2s;
-}
+.modal-input{width:100%;background:rgba(95,217,138,.06);border:1.5px solid rgba(95,217,138,.2);border-radius:10px;padding:12px 14px;font-size:15px;color:var(--text);font-family:'Syne',sans-serif;font-weight:600;outline:none;text-align:center;letter-spacing:.04em;transition:border-color .2s;}
 .modal-input:focus{border-color:rgba(95,217,138,.5);background:rgba(95,217,138,.1);}
 .modal-input::placeholder{color:var(--muted2);font-weight:400;letter-spacing:0;}
-.modal-btn{
-  width:100%;margin-top:14px;padding:13px;
-  background:linear-gradient(135deg,rgba(95,217,138,.25),rgba(95,217,138,.1));
-  border:1px solid rgba(95,217,138,.35);border-radius:10px;
-  color:var(--accent);font-family:'Syne',sans-serif;
-  font-size:14px;font-weight:700;cursor:pointer;
-  transition:all .2s;letter-spacing:.05em;
-}
+.modal-btn{width:100%;margin-top:14px;padding:13px;background:linear-gradient(135deg,rgba(95,217,138,.25),rgba(95,217,138,.1));border:1px solid rgba(95,217,138,.35);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
 .modal-btn:hover{background:rgba(95,217,138,.3);transform:translateY(-1px);}
-.modal-btn:active{transform:scale(.98);}
-.modal-note{font-size:10.5px;color:var(--muted2);margin-top:10px;line-height:1.5;}
+.modal-note{font-size:10.5px;color:var(--muted2);margin-top:10px;}
 
-/* USER CHIP */
-.user-chip{
-  display:inline-flex;align-items:center;gap:7px;
-  background:rgba(95,217,138,.07);
-  border:1px solid rgba(95,217,138,.15);
-  border-radius:100px;padding:5px 12px 5px 8px;
-  margin-bottom:14px;cursor:pointer;
-  transition:border-color .2s,background .2s;
-}
-.user-chip:hover{border-color:rgba(95,217,138,.3);background:rgba(95,217,138,.12);}
-.user-avatar{
-  width:22px;height:22px;border-radius:50%;
-  background:linear-gradient(135deg,#5fd98a,#3ab86a);
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:700;color:#0e1210;font-family:'Syne',sans-serif;
-}
-.user-name{font-size:12px;font-weight:600;color:var(--accent2);font-family:'Syne',sans-serif;letter-spacing:.04em;}
-.user-change{font-size:10px;color:var(--muted);margin-left:2px;}
-
-/* PERSONAL LINK BOX */
-.plink-box{
-  background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);
-  border-radius:10px;padding:10px 12px;margin-top:14px;
-  display:flex;align-items:center;gap:8px;
-}
-.plink-text{flex:1;font-size:11px;color:var(--muted);word-break:break-all;line-height:1.4;}
-.plink-copy{
-  background:none;border:1px solid var(--muted2);border-radius:6px;
-  color:var(--muted);font-size:11px;padding:4px 8px;cursor:pointer;
-  white-space:nowrap;transition:all .2s;font-family:'Inter',sans-serif;
-}
-.plink-copy:hover{border-color:var(--accent);color:var(--accent);}
-
-/* ── ADMIN ─────────────────────────────────────────────────── */
-.admin-trigger{
-  position:fixed;bottom:18px;right:18px;z-index:500;
-  width:36px;height:36px;border-radius:50%;
-  background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:16px;transition:all .2s;
-  opacity:.4;
-}
+/* ADMIN */
+.admin-trigger{position:fixed;bottom:18px;right:18px;z-index:500;width:36px;height:36px;border-radius:50%;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;opacity:.4;transition:all .2s;}
 .admin-trigger:hover{opacity:1;background:rgba(95,217,138,.18);border-color:rgba(95,217,138,.4);}
-
-.admin-overlay{position:fixed;inset:0;z-index:2000;background:rgba(14,18,16,.96);backdrop-filter:blur(10px);overflow-y:auto;padding:20px 16px 60px;}
+.admin-overlay{position:fixed;inset:0;z-index:2000;background:rgba(14,18,16,.97);backdrop-filter:blur(10px);overflow-y:auto;padding:20px 16px 80px;}
 .admin-overlay.hidden{display:none;}
-.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .admin-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent);}
 .admin-close{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);padding:6px 12px;cursor:pointer;font-size:13px;transition:all .2s;}
 .admin-close:hover{border-color:var(--red);color:var(--red);}
-
-.admin-pin{
-  max-width:360px;margin:80px auto 0;
-  background:var(--surface2);border:1px solid rgba(95,217,138,.2);
-  border-radius:20px;padding:32px 28px;text-align:center;
-}
+.admin-tabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--border);}
+.admin-tab{padding:8px 14px;font-size:12px;font-family:'Syne',sans-serif;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px;}
+.admin-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.admin-tabpanel{display:none;}.admin-tabpanel.active{display:block;}
+.admin-panel{max-width:500px;margin:0 auto;}
+.admin-section{margin-bottom:22px;}
+.admin-section-title{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.admin-section-title::after{content:'';flex:1;height:1px;background:rgba(95,217,138,.12);}
+.admin-pin{max-width:360px;margin:60px auto 0;background:var(--surface2);border:1px solid rgba(95,217,138,.2);border-radius:20px;padding:32px 28px;text-align:center;}
 .admin-pin-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px;}
 .admin-pin-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
 .pin-dots{display:flex;justify-content:center;gap:10px;margin-bottom:20px;}
 .pin-dot{width:14px;height:14px;border-radius:50%;background:var(--border);transition:background .15s;}
 .pin-dot.filled{background:var(--accent);}
 .pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:240px;margin:0 auto;}
-.pin-key{
-  padding:14px;border-radius:10px;background:var(--surface);
-  border:1px solid var(--border);font-family:'Syne',sans-serif;
-  font-size:18px;font-weight:700;cursor:pointer;color:var(--text);
-  transition:all .15s;user-select:none;
-}
+.pin-key{padding:14px;border-radius:10px;background:var(--surface);border:1px solid var(--border);font-family:'Syne',sans-serif;font-size:18px;font-weight:700;cursor:pointer;color:var(--text);transition:all .15s;user-select:none;}
 .pin-key:hover{background:var(--surface2);border-color:rgba(95,217,138,.3);}
 .pin-key:active{transform:scale(.93);}
 .pin-err{color:var(--red);font-size:12px;margin-top:10px;min-height:18px;}
-
-.admin-panel{max-width:500px;margin:0 auto;}
-.admin-section{margin-bottom:28px;}
-.admin-section-title{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.admin-section-title::after{content:'';flex:1;height:1px;background:rgba(95,217,138,.12);}
-
-.user-row{
-  display:flex;align-items:center;gap:12px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:12px 14px;margin-bottom:8px;
-}
-.user-row-avatar{
-  width:34px;height:34px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,#5fd98a,#3ab86a);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:800;color:#0e1210;font-family:'Syne',sans-serif;
-}
+.user-row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px 13px;margin-bottom:7px;}
+.user-row-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#5fd98a,#3ab86a);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#0e1210;font-family:'Syne',sans-serif;}
 .user-row-info{flex:1;min-width:0;}
-.user-row-name{font-size:14px;font-weight:600;font-family:'Syne',sans-serif;}
-.user-row-meta{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.user-row-actions{display:flex;gap:6px;}
-.abtn{
-  background:none;border:1px solid var(--border);border-radius:7px;
-  color:var(--muted);font-size:11px;padding:5px 9px;cursor:pointer;
-  font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap;
-}
+.user-row-name{font-size:13px;font-weight:600;font-family:'Syne',sans-serif;}
+.user-row-meta{font-size:10.5px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-row-actions{display:flex;gap:5px;flex-shrink:0;}
+.abtn{background:none;border:1px solid var(--border);border-radius:7px;color:var(--muted);font-size:11px;padding:4px 8px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap;}
 .abtn:hover{border-color:var(--accent);color:var(--accent);}
 .abtn.del:hover{border-color:var(--red);color:var(--red);}
-
-.admin-form{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.admin-form{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;}
 .admin-form label{font-size:10.5px;color:var(--muted);letter-spacing:.08em;display:block;margin-bottom:4px;text-transform:uppercase;}
-.admin-form input,.admin-form textarea,.admin-form select{
-  width:100%;background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);
-  border-radius:8px;padding:8px 10px;font-size:13px;color:var(--text);
-  font-family:'Inter',sans-serif;outline:none;margin-bottom:12px;
-  transition:border-color .2s;
-}
+.admin-form input,.admin-form textarea,.admin-form select{width:100%;background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none;margin-bottom:10px;transition:border-color .2s;}
 .admin-form input:focus,.admin-form textarea:focus{border-color:rgba(95,217,138,.4);}
-.admin-form textarea{resize:vertical;min-height:60px;}
-.admin-save-btn{
-  width:100%;padding:10px;background:rgba(95,217,138,.15);
-  border:1px solid rgba(95,217,138,.3);border-radius:8px;
-  color:var(--accent);font-family:'Syne',sans-serif;font-size:13px;
-  font-weight:700;cursor:pointer;transition:all .2s;
-}
+.admin-form textarea{resize:vertical;min-height:50px;}
+.admin-form select{cursor:pointer;}
+.admin-save-btn{width:100%;padding:10px;background:rgba(95,217,138,.15);border:1px solid rgba(95,217,138,.3);border-radius:8px;color:var(--accent);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
 .admin-save-btn:hover{background:rgba(95,217,138,.25);}
-.admin-empty{font-size:13px;color:var(--muted);text-align:center;padding:20px;font-style:italic;}
-
-.broadcast-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.admin-empty{font-size:13px;color:var(--muted);text-align:center;padding:16px;font-style:italic;}
+.agroup-row{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 13px;margin-bottom:7px;}
+.agroup-row-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.agroup-chips{display:flex;flex-wrap:wrap;gap:4px;}
+.agroup-chip{display:flex;align-items:center;gap:4px;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);border-radius:100px;padding:2px 8px;font-size:11px;cursor:pointer;transition:all .15s;}
+.agroup-chip:hover{border-color:var(--red);color:var(--red);}
+.agroup-add{display:flex;align-items:center;gap:3px;background:var(--surface2);border:1px dashed var(--border);border-radius:100px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--muted);transition:all .15s;}
+.agroup-add:hover{border-color:var(--accent);color:var(--accent);}
 </style>
 </head>
 <body>
 <canvas id="starfield"></canvas>
+<button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️</button>
 
-<!-- NAME MODAL -->
 <div class="modal-overlay hidden" id="modal">
   <div class="modal-box">
     <div class="modal-icon">👋</div>
@@ -381,7 +293,6 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 </div>
 
 <div class="container">
-
   <div class="header">
     <div class="logo-mark" id="logo-btn" onclick="danceTitle()" title="Klick mich!">
       <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
@@ -391,13 +302,14 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
         <path d="M22 8l-1.4 1.4M9.4 20.6L8 22M22 22l-1.4-1.4M9.4 9.4L8 8" stroke="#5fd98a" stroke-width="1.2" stroke-linecap="round" opacity=".2"/>
       </svg>
     </div>
-    <div class="title">ELVER<em> 59</em></div>
+    <div class="title" id="main-title">ELVER<em> 59</em></div>
     <div id="user-chip-wrap" style="margin-top:12px;display:none;">
-      <div class="user-chip" onclick="showModal()" id="user-chip">
+      <div class="user-chip" onclick="showModal()">
         <div class="user-avatar" id="user-avatar">?</div>
         <span class="user-name" id="user-name-display">–</span>
         <span class="user-change">wechseln</span>
       </div>
+      <div id="group-badge-wrap"></div>
     </div>
     <p class="subtitle">Peergroup · Ausbildung · Ressourcen</p>
   </div>
@@ -408,239 +320,471 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
   <div class="footer">
     <div class="ftop">ELVER 59 · Alle Rechte vorbehalten</div>
     <div class="fcredit">
-      <span class="heart">
-        <svg width="12" height="11" viewBox="0 0 12 11" fill="none">
-          <path d="M6 10C6 10 1 6.5 1 3.5A2.5 2.5 0 016 2a2.5 2.5 0 015 1.5C11 6.5 6 10 6 10Z" fill="#5fd98a"/>
-        </svg>
-      </span>
+      <span class="heart"><svg width="12" height="11" viewBox="0 0 12 11" fill="none"><path d="M6 10C6 10 1 6.5 1 3.5A2.5 2.5 0 016 2a2.5 2.5 0 015 1.5C11 6.5 6 10 6 10Z" fill="#5fd98a"/></svg></span>
       <span class="fctext">created with love by</span>
-      <span class="bo-wrap">
-        <span class="bo-box">
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-            <text x="1.5" y="11" font-family="Syne,sans-serif" font-size="11" font-weight="800" fill="#5fd98a">b</text>
-          </svg>
-        </span>
-        <span class="bo-name">bo</span>
-      </span>
+      <span class="bo-wrap"><span class="bo-box"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><text x="1.5" y="11" font-family="Syne,sans-serif" font-size="11" font-weight="800" fill="#5fd98a">b</text></svg></span><span class="bo-name">bo</span></span>
+    </div>
+  </div>
+</div>
+
+<button class="admin-trigger" onclick="openAdmin()">⚙</button>
+
+<div class="admin-overlay hidden" id="admin-overlay">
+  <div id="admin-pin-screen">
+    <div class="admin-pin">
+      <div style="font-size:32px;margin-bottom:12px;">🔐</div>
+      <div class="admin-pin-title">Admin Zugang</div>
+      <div class="admin-pin-sub">Gib den 4-stelligen PIN ein</div>
+      <div class="pin-dots">
+        <div class="pin-dot" id="pd0"></div><div class="pin-dot" id="pd1"></div>
+        <div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div>
+      </div>
+      <div class="pin-grid">
+        <div class="pin-key" onclick="pinKey('1')">1</div><div class="pin-key" onclick="pinKey('2')">2</div><div class="pin-key" onclick="pinKey('3')">3</div>
+        <div class="pin-key" onclick="pinKey('4')">4</div><div class="pin-key" onclick="pinKey('5')">5</div><div class="pin-key" onclick="pinKey('6')">6</div>
+        <div class="pin-key" onclick="pinKey('7')">7</div><div class="pin-key" onclick="pinKey('8')">8</div><div class="pin-key" onclick="pinKey('9')">9</div>
+        <div class="pin-key" onclick="pinClear()" style="font-size:13px;color:var(--muted)">✕</div>
+        <div class="pin-key" onclick="pinKey('0')">0</div>
+        <div class="pin-key" onclick="pinBackspace()" style="font-size:13px">⌫</div>
+      </div>
+      <div class="pin-err" id="pin-err"></div>
+    </div>
+  </div>
+  <div id="admin-main-screen" class="hidden">
+    <div class="admin-panel">
+      <div class="admin-header">
+        <div class="admin-title">⚙ Admin · ELVER 59</div>
+        <button class="admin-close" onclick="closeAdmin()">✕ Schließen</button>
+      </div>
+      <div class="admin-tabs">
+        <div class="admin-tab active" onclick="switchTab('users')">👤 Benutzer</div>
+        <div class="admin-tab" onclick="switchTab('groups')">👥 Gruppen</div>
+        <div class="admin-tab" onclick="switchTab('add')">✚ Neu</div>
+      </div>
+
+      <div class="admin-tabpanel active" id="tab-users">
+        <div class="admin-section">
+          <div class="admin-section-title">Alle Benutzer</div>
+          <div id="admin-user-list"></div>
+        </div>
+        <div class="admin-section" id="admin-edit-section" style="display:none">
+          <div class="admin-section-title" id="admin-edit-title">Bearbeiten</div>
+          <div class="admin-form">
+            <label>Name</label><input id="edit-name" type="text"/>
+            <label>SA-Thema</label><textarea id="edit-thema" rows="2"></textarea>
+            <label>SA-Datum</label><input id="edit-datum" type="date"/>
+            <label>Gruppe</label>
+            <select id="edit-group">
+              <option value="0">Keine Gruppe</option>
+              <option value="1">Gruppe 1 – Schwangerschaft &amp; Säuglingsalter</option>
+              <option value="2">Gruppe 2 – Krippenkindalter</option>
+              <option value="3">Gruppe 3 – Kindergartenalter</option>
+              <option value="4">Gruppe 4 – Schulalter</option>
+              <option value="5">Gruppe 5 – Jugendalter</option>
+            </select>
+            <button class="admin-save-btn" onclick="saveEditedUser()">Speichern</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-tabpanel" id="tab-groups">
+        <div class="admin-section">
+          <div class="admin-section-title">Gruppenzuweisung</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Chip antippen = entfernen · unten zuweisen</div>
+          <div id="admin-group-list"></div>
+        </div>
+        <div class="admin-section">
+          <div class="admin-section-title">Nicht zugewiesen</div>
+          <div id="admin-unassigned"></div>
+        </div>
+      </div>
+
+      <div class="admin-tabpanel" id="tab-add">
+        <div class="admin-section">
+          <div class="admin-section-title">Neuen Benutzer anlegen</div>
+          <div class="admin-form">
+            <label>Vorname</label><input id="new-name" type="text" placeholder="z.B. Anna"/>
+            <label>SA-Thema (optional)</label><textarea id="new-thema" rows="2" placeholder="Entwicklung des Kindes…"></textarea>
+            <label>SA-Datum (optional)</label><input id="new-datum" type="date" value="2026-03-10"/>
+            <label>Gruppe (optional)</label>
+            <select id="new-group">
+              <option value="0">Keine Gruppe</option>
+              <option value="1">Gruppe 1</option><option value="2">Gruppe 2</option>
+              <option value="3">Gruppe 3</option><option value="4">Gruppe 4</option>
+              <option value="5">Gruppe 5</option>
+            </select>
+            <button class="admin-save-btn" onclick="adminAddUser()">✚ Anlegen</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-// ── USER & STATE ─────────────────────────────────────────────
+// ── CONSTANTS ─────────────────────────────────────────────────
 const UPLOAD_EMAIL = 'gmbh@elver.at';
+const GROUP_NAMES_DEFAULT = ['','Schwangerschaft & Säuglingsalter','Krippenkindalter','Kindergartenalter','Schulalter','Jugendalter'];
+const GC = ['gb0','gb1','gb2','gb3','gb4','gb5'];
+const DEFAULT_THEMEN = ['','Schwangerschaft (pränatale Phase) & Säuglingsalter (0–1 Jahr)','Krippenkindalter (1–3 Jahre)','Kindergartenalter (3–6 Jahre)','Schulalter (6–11 Jahre)','Jugendalter (12–15 Jahre)'];
 
-// State object — everything that belongs to the user
-let STATE = {
-  name: '',
-  thema: 'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',
-  datum: '2026-03-10',
-  tasks: {}   // { 't0': true, 't3': true, ... }
-};
+// Dynamic group name (reads from groups data, falls back to default)
+function groupName(gn){ const g=loadGroups(); return (g[gn]&&g[gn].label)||GROUP_NAMES_DEFAULT[gn]||'Gruppe '+gn; }
 
-// ── ENCODE / DECODE URL HASH ─────────────────────────────────
-function encodeState(){
-  try{ return btoa(unescape(encodeURIComponent(JSON.stringify(STATE)))); }
-  catch(e){ return ''; }
+// ── STATE ─────────────────────────────────────────────────────
+let STATE = { name:'', thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr', datum:'2026-03-10', tasks:{}, group:0 };
+
+function loadGroups(){
+  try{ return JSON.parse(localStorage.getItem('elver59_groups'))||createGroups(); }catch(e){ return createGroups(); }
 }
-function decodeState(hash){
-  try{ return JSON.parse(decodeURIComponent(escape(atob(hash)))); }
-  catch(e){ return null; }
+function createGroups(){
+  const g={};
+  const members=[
+    [],
+    ['Anna Gedl','Ana Nikolic','Boris Grünwald','Selina Hammelhofer'],
+    ['Jacqueline Intichar','Leticia Silva-Plesa','Uranzul Jigjidsuren','Nicole Luder'],
+    ['Anesa Asani','Arnela Omerovic','Sahar Vafa'],
+    ['Paula Konda','Anna Purkarthofer','Laura Geada','Adrian Schöberl'],
+    ['Andelka Dozan','Maria Miguel-Nimmerfall','Raji Kauther','Irem Sumaktas'],
+  ];
+  for(let i=1;i<=5;i++) g[i]={label:GROUP_NAMES_DEFAULT[i], thema:DEFAULT_THEMEN[i], members:members[i]||[]};
+  return g;
 }
+function saveGroups(g){ try{ localStorage.setItem('elver59_groups',JSON.stringify(g)); }catch(e){} }
 
-function buildLink(){
-  const base = window.location.origin + window.location.pathname;
-  return `${base}#${encodeState()}`;
-}
+function encodeState(){ try{ return btoa(unescape(encodeURIComponent(JSON.stringify(STATE)))); }catch(e){ return ''; } }
+function decodeState(h){ try{ return JSON.parse(decodeURIComponent(escape(atob(h)))); }catch(e){ return null; } }
+function buildLink(){ return window.location.origin+window.location.pathname+'#'+encodeState(); }
 
-// ── APPLY STATE TO DOM ───────────────────────────────────────
-function applyState(){
-  const el1 = document.getElementById('sa-thema');
-  const el2 = document.getElementById('sa-datum');
-  if(el1) el1.value = STATE.thema;
-  if(el2) el2.value = STATE.datum;
-
-  for(let i=0;i<100;i++){
-    const box = document.getElementById('t'+i);
-    if(!box) break;
-    const done = !!STATE.tasks['t'+i];
-    if(done){
-      box.classList.add('done');
-      const l=document.getElementById('t'+i+'l');
-      if(l){ l.style.opacity='.38'; l.style.textDecoration='line-through'; }
-    } else {
-      box.classList.remove('done');
-      const l=document.getElementById('t'+i+'l');
-      if(l){ l.style.opacity='1'; l.style.textDecoration=''; }
-    }
-  }
-  refreshLink();
-}
-
-// ── PERSONAL LINK AREA ───────────────────────────────────────
-function refreshLink(){
-  const box = document.getElementById('plink-area');
-  if(!box || !STATE.name) return;
-  const link = buildLink();
-  box.innerHTML=`
-    <div class="plink-box">
-      <div style="flex:1">
-        <div style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">🔗 Dein persönlicher Link</div>
-        <div style="font-size:10.5px;color:var(--accent2);word-break:break-all;line-height:1.5">${link.slice(0,60)}…</div>
-        <div style="font-size:10px;color:var(--muted2);margin-top:3px;">Enthält deinen aktuellen Stand · auf jedem Gerät öffenbar</div>
-      </div>
-      <button class="plink-copy" id="copy-btn" onclick="copyLink()">Kopieren</button>
-    </div>`;
-}
-
-function copyLink(){
-  const link = buildLink();
-  navigator.clipboard.writeText(link).then(()=>{
-    const btn = document.getElementById('copy-btn');
-    if(btn){ btn.textContent='✓ Kopiert!'; btn.style.color='var(--accent)'; }
-    setTimeout(()=>{ if(btn){ btn.textContent='Kopieren'; btn.style.color=''; } },2500);
-  });
-}
-
-// ── SAVE: per-user localStorage key + refresh link ──────────
 function saveState(){
   if(!STATE.name) return;
-  try{ localStorage.setItem('elver59_' + STATE.name.toLowerCase(), JSON.stringify(STATE)); localStorage.setItem('elver59_lastuser', STATE.name); }catch(e){}
-  refreshLink();
+  try{ localStorage.setItem('elver59_'+STATE.name.toLowerCase(),JSON.stringify(STATE)); localStorage.setItem('elver59_lastuser',STATE.name); }catch(e){}
+  refreshLink(); updateTaskProgress();
 }
 
-// ── MODAL ────────────────────────────────────────────────────
-function showModal(){
-  document.getElementById('modal').classList.remove('hidden');
-  setTimeout(()=>document.getElementById('modal-name').focus(),100);
-}
-function hideModal(){
-  document.getElementById('modal').classList.add('hidden');
-}
-document.getElementById('modal-name').addEventListener('keydown', e=>{ if(e.key==='Enter') saveUser(); });
+// ── MODAL ─────────────────────────────────────────────────────
+function showModal(){ document.getElementById('modal').classList.remove('hidden'); setTimeout(()=>document.getElementById('modal-name').focus(),100); }
+function hideModal(){ document.getElementById('modal').classList.add('hidden'); }
+document.getElementById('modal-name').addEventListener('keydown',e=>{ if(e.key==='Enter') saveUser(); });
 
 function saveUser(){
-  const name = document.getElementById('modal-name').value.trim();
-  if(!name) return;
-  // Try to load existing data for this name
-  try{
-    const existing = localStorage.getItem('elver59_' + name.toLowerCase());
-    if(existing){ const parsed = JSON.parse(existing); if(parsed && parsed.name) STATE = parsed; }
-  }catch(e){}
-  STATE.name = name;
-  saveState();
-  hideModal();
-  initUser(name);
-  applyState(); // ← populate fields with this user's saved data
+  const name=document.getElementById('modal-name').value.trim(); if(!name) return;
+  try{ const ex=localStorage.getItem('elver59_'+name.toLowerCase()); if(ex){ const p=JSON.parse(ex); if(p&&p.name) STATE=p; } }catch(e){}
+  STATE.name=name; saveState(); hideModal(); initUser(name); applyState();
 }
 
 function initUser(name){
   document.getElementById('user-chip-wrap').style.display='block';
-  document.getElementById('user-name-display').textContent = name;
-  document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('user-name-display').textContent=name;
+  document.getElementById('user-avatar').textContent=name.charAt(0).toUpperCase();
+  updateGroupBadge(); requestNotifPermission();
 }
 
-// ── AUTO-SAVE FIELDS on every keystroke ──────────────────────
-document.addEventListener('input', e=>{
+function updateGroupBadge(){
+  const w=document.getElementById('group-badge-wrap'); if(!w) return;
+  const g=STATE.group||0;
+  w.innerHTML=g>0
+    ? `<div class="group-badge ${GC[g]}">Gruppe ${g} · ${groupName(g)}</div>`
+    : `<div class="group-badge gb0">Noch keiner Gruppe zugewiesen</div>`;
+}
+
+// ── APPLY STATE ───────────────────────────────────────────────
+function applyState(){
+  const e1=document.getElementById('sa-thema'), e2=document.getElementById('sa-datum');
+  if(e1) e1.value=STATE.thema;
+  if(e2) e2.value=STATE.datum;
+  for(let i=0;i<100;i++){
+    const b=document.getElementById('t'+i); if(!b) break;
+    const d=!!STATE.tasks['t'+i];
+    b.classList.toggle('done',d);
+    const l=document.getElementById('t'+i+'l');
+    if(l){ l.style.opacity=d?'.38':'1'; l.style.textDecoration=d?'line-through':''; }
+  }
+  updateGroupBadge(); refreshLink(); updateTaskProgress(); updateGroupThemaInput();
+}
+
+function updateTaskProgress(){
+  let tot=0,done=0;
+  for(let i=0;i<100;i++){ const b=document.getElementById('t'+i); if(!b) break; tot++; if(b.classList.contains('done')) done++; }
+  const pct=tot>0?Math.round(done/tot*100):0;
+  const f=document.getElementById('task-prog-fill'), l=document.getElementById('task-prog-label'), d=document.getElementById('c-tk-d');
+  if(f) f.style.width=pct+'%';
+  if(l) l.textContent=done+'/'+tot;
+  if(d) d.textContent=done+' von '+tot+' erledigt';
+}
+
+function refreshLink(){
+  const box=document.getElementById('plink-area'); if(!box||!STATE.name) return;
+  const link=buildLink();
+  box.innerHTML=`<div class="plink-box">
+    <div style="flex:1">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">🔗 Dein persönlicher Link</div>
+      <div style="font-size:10.5px;color:var(--accent2);word-break:break-all;line-height:1.5">${link.slice(0,70)}…</div>
+      <div style="font-size:10px;color:var(--muted2);margin-top:3px;">Enthält deinen aktuellen Stand · auf jedem Gerät öffenbar</div>
+    </div>
+    <button class="plink-copy" id="copy-btn" onclick="copyLink()">Kopieren</button>
+  </div>`;
+}
+function copyLink(){
+  navigator.clipboard.writeText(buildLink()).then(()=>{
+    const b=document.getElementById('copy-btn');
+    if(b){ b.textContent='✓ Kopiert!'; b.style.color='var(--accent)'; }
+    setTimeout(()=>{ if(b){ b.textContent='Kopieren'; b.style.color=''; } },2500);
+  });
+}
+
+document.addEventListener('input',e=>{
   if(e.target.id==='sa-thema'){ STATE.thema=e.target.value; saveState(); }
   if(e.target.id==='sa-datum'){ STATE.datum=e.target.value; saveState(); }
 });
 
-// ── INIT: URL hash → per-user localStorage → modal ───────────
+// ── INIT ──────────────────────────────────────────────────────
 (function(){
-  const hash = window.location.hash.slice(1);
-  let loaded = false;
-
-  // 1. Try URL hash (portable link — has full state encoded)
-  if(hash){
-    const decoded = decodeState(hash);
-    if(decoded && decoded.name){ STATE = decoded; loaded = true; }
-  }
-
-  // 2. Try per-user localStorage (same device, no hash)
+  const hash=window.location.hash.slice(1); let loaded=false;
+  if(hash){ const d=decodeState(hash); if(d&&d.name){ STATE=d; loaded=true; } }
   if(!loaded){
-    try{
-      // check if we know a name from a previous visit on this device
-      const lastName = localStorage.getItem('elver59_lastuser');
-      if(lastName){
-        const s = localStorage.getItem('elver59_' + lastName.toLowerCase());
-        if(s){ const p = JSON.parse(s); if(p && p.name){ STATE = p; loaded = true; } }
-      }
-    }catch(e){}
+    try{ const ln=localStorage.getItem('elver59_lastuser'); if(ln){ const s=localStorage.getItem('elver59_'+ln.toLowerCase()); if(s){ const p=JSON.parse(s); if(p&&p.name){ STATE=p; loaded=true; } } } }catch(e){}
   }
-
-  if(loaded && STATE.name){
-    localStorage.setItem('elver59_lastuser', STATE.name);
-    initUser(STATE.name);
-  } else {
-    showModal();
-  }
+  if(loaded&&STATE.name){ localStorage.setItem('elver59_lastuser',STATE.name); initUser(STATE.name); }
+  else showModal();
 })();
 
-
+// ── DATA ──────────────────────────────────────────────────────
 const TERMINE = [
-  { datum:'Fr. diese Woche', titel:'SA: Titel, Untertitel & Forschungsfrage', sub:'v.miklautz@elver.at', u:true, ical:'20260313' },
-  { datum:'Fr. 07:00 Uhr',   titel:'Präsentation (10.3.) abgeben',           sub:'gmbh@elver.at · .pptx + Handout Word', u:true, ical:'20260313T070000' },
-  { datum:'Di. 10.03.',      titel:'Seminar: Entwicklungspsychologie',        sub:'Alle Gruppen · je 50 Min.', ical:'20260310' },
-  { datum:'So. 16.03.',      titel:'Biografie-Präsentation vorbereiten',      sub:'Eigene Kindheit · 15 Min.', ical:'20260316' },
-  { datum:'Mo. 17.03.',      titel:'SA-Workshop mit Larissa',                 sub:'5 Fragen zum SA-Leitfaden mitbringen', ical:'20260317' },
-  { datum:'Do. 27.03.',      titel:'Selbstkonzept abgeben',                   sub:'2 A4-Seiten · l.znidaric@buteo.at', ical:'20260327' },
-  { datum:'So. 13.04. 23:59',titel:'April-Präsentationen abgeben',            sub:'TEAMS-Ordner: ReferentInnen Seminarunterlagen', ical:'20260413T235900' },
-  { datum:'Mo. 14.04.',      titel:'Seminar: Grundlagendokumente Teil 1',     sub:'Gruppen 1–3 · je 90 Min.', ical:'20260414' },
-  { datum:'Mi. 16.04.',      titel:'Seminar: Grundlagendokumente Teil 2',     sub:'Gruppen 4–5 · je 90 Min.', ical:'20260416' },
+  // ── DRINGEND / DIESE WOCHE ─────────────────────────────────
+  { d:'Fr. 07.03. 07:00', t:'Präsentation Entwicklungspsychologie abgeben', s:'stmk@elver.at · PowerPoint (.pptx) + Handout Word (min. 10 Seiten)', u:true, i:'20260307T070000', ts:new Date('2026-03-07T07:00:00').getTime() },
+  { d:'Fr. 07.03. 23:59', t:'SA: Titel, Untertitel & Forschungsfrage', s:'gmbh@elver.at · Seminararbeitsvorlage ausfüllen', u:true, i:'20260307T235900', ts:new Date('2026-03-07T23:59:00').getTime() },
+  // ── MÄRZ ──────────────────────────────────────────────────
+  { d:'So. 15.03.',       t:'Biografie-Präsentation vorbereiten', s:'15 Min. · eigene Kindheit & prägende Bezugspersonen · für Seminar Mo. 16.03.', i:'20260315', ts:new Date('2026-03-15T20:00:00').getTime() },
+  { d:'Mo. 16.03. 08:30', t:'Seminar: Überdenken der eigenen Kindheit', s:'Viktoria Miklautz · Biografie-Präsentation vor Gruppe (15 Min.)', i:'20260316T083000', ts:new Date('2026-03-16T08:30:00').getTime() },
+  { d:'Di. 17.03.',       t:'Peergroup + SA-Workshop mit Larissa', s:'5 Fragen zum SA-Leitfaden mitbringen · l.znidaric@elver.at', i:'20260317', ts:new Date('2026-03-17T08:30:00').getTime() },
+  { d:'Do. 27.03. 23:59', t:'Selbstkonzept abgeben', s:'l.znidaric@buteo.at · 2 A4-Seiten · Cambria 12 · Zeilenabstand 1,5', i:'20260327T235900', ts:new Date('2026-03-27T23:59:00').getTime() },
+  { d:'Mo. 30.03. 08:30', t:'Seminararbeitsbesprechung', s:'Znidaric / Grüner-Lawal', i:'20260330T083000', ts:new Date('2026-03-30T08:30:00').getTime() },
+  // ── APRIL ─────────────────────────────────────────────────
+  { d:'Di. 07.04. 08:30', t:'1. LZK', s:'Grüner-Lawal · 08:30–11:30 Uhr', i:'20260407T083000', ts:new Date('2026-04-07T08:30:00').getTime() },
+  { d:'So. 13.04. 23:59', t:'April-Präsentationen + Handouts abgeben', s:'TEAMS-Ordner „ReferentInnen Seminarunterlagen – Viktoria Miklautz"', i:'20260413T235900', ts:new Date('2026-04-13T23:59:00').getTime() },
+  { d:'Di. 14.04.',       t:'Peergroup · Seminar Grundlagendokumente Teil 1', s:'Gruppen 1–3 · je 90 Min. · (Raum besetzt)', i:'20260414T083000', ts:new Date('2026-04-14T08:30:00').getTime() },
+  { d:'Do. 16.04.',       t:'Seminar Grundlagendokumente Teil 2', s:'Gruppen 4–5 · je 90 Min.', i:'20260416T083000', ts:new Date('2026-04-16T08:30:00').getTime() },
+  // ── MAI ───────────────────────────────────────────────────
+  { d:'Mo. 04.05.',       t:'Peergroup', s:'', i:'20260504', ts:new Date('2026-05-04T08:30:00').getTime() },
+  { d:'Mi. 27.05. 08:30', t:'2. LZK', s:'Grüner-Lawal Irmi · 08:30–11:30 Uhr', i:'20260527T083000', ts:new Date('2026-05-27T08:30:00').getTime() },
+  { d:'Fr. 29.05. 08:00', t:'KNF Rotes Kreuz', s:'Ganztag · 08:00–16:00 Uhr', i:'20260529T080000', ts:new Date('2026-05-29T08:00:00').getTime() },
+  // ── ABSCHLUSS ─────────────────────────────────────────────
+  { d:'Fr. 28.08. 07:00', t:'Abschlussprüfung', s:'Viktoria Miklautz / Sandra Peham · 07:00–16:00 Uhr', i:'20260828T070000', ts:new Date('2026-08-28T07:00:00').getTime() },
+  { d:'Mo. 31.08. 07:00', t:'Abschlussprüfung', s:'Viktoria Miklautz / Gloria Ramic · 07:00–14:00 Uhr', i:'20260831T070000', ts:new Date('2026-08-31T07:00:00').getTime() },
+];
+
+// Full Stundenplan
+const SP = [
+  {d:'2026-03-02',z:'08:30–11:30',l:'Einführungsseminar',r:'Grüner-Lawal',typ:'org'},
+  {d:'2026-03-03',z:'07:30–14:30',l:'Teamarbeit Management und Organisation',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-03-04',z:'08:30–14:30',l:'Kommunikationsformen und Techniken',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-03-05',z:'08:30–14:30',l:'Grundbedürfnisse von Kindern und Jugendlichen\nGrundlagen der Bindungstheorien',r:'Sandra Peham',typ:'entw'},
+  {d:'2026-03-06',z:'08:30–14:30',l:'Grundlagen der Bindungstheorien\nDidaktische und methodische Prinzipien',r:'Sandra Peham',typ:'entw'},
+  {d:'2026-03-09',z:'',l:'Peergroup',r:'',typ:'peer'},
+  {d:'2026-03-10',z:'08:30–14:30',l:'Selbstkonzept und Rollenbild von Erziehenden',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-03-11',z:'',l:'frei',r:'',typ:'frei'},
+  {d:'2026-03-12',z:'08:30–15:30',l:'Selbstkonzept und Rollenbild von Erziehenden\nGeschichte der eigenen Kindheit',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-03-13',z:'08:30–14:30',l:'Kriterien der Beobachtung',r:'Sandra Peham',typ:'entw'},
+  {d:'2026-03-16',z:'08:30–14:30',l:'Überdenken der eigenen Kindheit und der eigenen Erziehung',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-03-17',z:'',l:'Peergroup',r:'',typ:'peer'},
+  {d:'2026-03-18',z:'08:30–16:30',l:'Sprachentwicklung',r:'Sandra Peham',typ:'entw'},
+  {d:'2026-03-19',z:'08:30–14:30',l:'Entwicklung von Geburt bis zum 15. LJ',r:'Viktoria Miklautz',typ:'entw'},
+  {d:'2026-03-20',z:'08:30–14:30',l:'Didaktische und methodische Prinzipien\nSozialformen\nRegel und Ordnung',r:'Sandra Peham',typ:'did'},
+  {d:'2026-03-23',z:'07:30–14:30',l:'Entwicklung von Geburt bis zum 15. LJ',r:'Viktoria Miklautz',typ:'entw'},
+  {d:'2026-03-24',z:'08:30–12:30',l:'Gesprächsführung',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-03-25',z:'08:30–16:30',l:'Bildungsprozesse im Sozialen Netzwerk\nKennenlernen von Bildungs- und Spielmittel',r:'Sandra Peham',typ:'did'},
+  {d:'2026-03-26',z:'08:30–14:30',l:'Aufgaben der Kinderbildungs- und -Betreuungseinrichtungen\nAufgaben der Kinderbetreuerin & TM-TV',r:'Viktoria Miklautz',typ:'org'},
+  {d:'2026-03-27',z:'08:30–13:30',l:'Spiel und Spielformen',r:'Sandra Peham',typ:'did'},
+  {d:'2026-03-28',z:'08:30–12:30',l:'Erziehungsstile und -konzepte (Montessori)',r:'Judith Ernst',typ:'did'},
+  {d:'2026-03-30',z:'08:30–14:30',l:'Seminararbeitsbesprechung',r:'Znidaric / Grüner-Lawal',typ:'org'},
+  {d:'2026-03-31',z:'',l:'frei (Raum besetzt)',r:'',typ:'frei'},
+  {d:'2026-04-01',z:'08:30–14:30',l:'Verhaltensauffälligkeiten',r:'Maria Brandstetter',typ:'entw'},
+  {d:'2026-04-02',z:'08:30–15:30',l:'Musik, Tanz und elementare Instrumente',r:'Gloria Ramic',typ:'did'},
+  {d:'2026-04-03',z:'08:30–15:30',l:'Gesunde Ernährung',r:'Michaela Fux',typ:'did'},
+  {d:'2026-04-06',z:'',l:'Ostermontag – frei',r:'',typ:'frei'},
+  {d:'2026-04-07',z:'08:30–11:30',l:'1. LZK',r:'Grüner-Lawal',typ:'org'},
+  {d:'2026-04-08',z:'08:30–13:30',l:'Konfliktmanagement',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-04-09',z:'08:30–14:30',l:'Selbsterfahrung',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-04-10',z:'08:30–13:30',l:'Spiel und Spielformen',r:'Sandra Peham',typ:'did'},
+  {d:'2026-04-11',z:'08:30–14:30',l:'Darstellendes Spiel (Jeux Dramatique)',r:'Judith Ernst',typ:'did'},
+  {d:'2026-04-13',z:'07:30–12:30',l:'Geschlechtssensible Pädagogik',r:'Sandra Peham',typ:'entw'},
+  {d:'2026-04-14',z:'',l:'Peergroup (Raum besetzt)',r:'',typ:'peer'},
+  {d:'2026-04-15',z:'08:30–14:30',l:'Religiöse Erziehung\nFeste und Brauchtum',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-04-16',z:'',l:'frei (Raum besetzt)',r:'',typ:'frei'},
+  {d:'2026-04-17',z:'08:30–14:30',l:'Bildnerisches Gestalten und Werken',r:'Sandra Peham',typ:'did'},
+  {d:'2026-04-18',z:'08:30–14:30',l:'Bildnerisches Gestalten und Werken',r:'Sandra Peham',typ:'did'},
+  {d:'2026-04-20',z:'08:30–13:30',l:'Kommunikation und Kooperation mit Eltern',r:'Maria Brandstetter',typ:'pers'},
+  {d:'2026-04-21',z:'08:30–13:30',l:'Konfliktmanagement',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-04-22',z:'08:30–14:30',l:'Interkulturelle Erziehung',r:'Sandra Peham',typ:'entw'},
+  {d:'2026-04-23',z:'08:30–14:30',l:'Soziale und Emotionale Erziehung',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-04-24',z:'08:30–16:30',l:'Spracherziehung',r:'Sandra Peham',typ:'entw'},
+  {d:'2026-04-27',z:'08:30–12:30',l:'Wirkung von Verlusterlebnissen',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-04-28',z:'08:30–15:30',l:'Bewegungserziehung',r:'Elke Forstner',typ:'did'},
+  {d:'2026-04-29',z:'',l:'frei (Raum besetzt)',r:'',typ:'frei'},
+  {d:'2026-04-30',z:'',l:'frei (Raum besetzt)',r:'',typ:'frei'},
+  {d:'2026-05-01',z:'',l:'Staatsfeiertag – frei',r:'',typ:'frei'},
+  {d:'2026-05-04',z:'',l:'Peergroup',r:'',typ:'peer'},
+  {d:'2026-05-05',z:'08:30–12:30',l:'Gesundheit und Hygiene',r:'Barbara Petanjek',typ:'entw'},
+  {d:'2026-05-06',z:'08:30–16:30',l:'Lernformen und Lerntypen',r:'Sandra Peham',typ:'did'},
+  {d:'2026-05-07',z:'08:30–12:30',l:'Umwelt\nErnährung im 1. Lebensjahr',r:'Barbara Petanjek',typ:'entw'},
+  {d:'2026-05-08',z:'08:30–12:30',l:'Kooperation mit Institutionen',r:'Sandra Peham',typ:'org'},
+  {d:'2026-05-09',z:'08:30–15:30',l:'Experimentieren und Erkunden, Naturwissenschaft und Technik',r:'Sandra Peham',typ:'did'},
+  {d:'2026-05-11',z:'08:30–15:30',l:'Wahrnehmung und Denkförderung',r:'Elke Forstner',typ:'entw'},
+  {d:'2026-05-12',z:'08:30–15:30',l:'Musik, Tanz und elementare Instrumente',r:'Gloria Ramic',typ:'did'},
+  {d:'2026-05-13',z:'08:30–13:30',l:'Selbstkonzept und Rollenbild von Erziehenden\nRahmenbedingungen Raum und Zeitstruktur\nPraktikumsvorbesprechung',r:'Sandra Peham',typ:'pers'},
+  {d:'2026-05-14',z:'',l:'Feiertag – frei',r:'',typ:'frei'},
+  {d:'2026-05-15',z:'08:30–15:30',l:'Gesunde Ernährung',r:'Michaela Fux',typ:'did'},
+  {d:'2026-05-18',z:'08:30–14:30',l:'Grundbegriffe der Heilpädagogik',r:'Maria Brandstetter',typ:'entw'},
+  {d:'2026-05-19',z:'08:30–13:30',l:'Körper und Sexualität\nKenntnisse der einschlägigen Gesetze',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-05-20',z:'08:30–14:30',l:'Körper und Sexualität',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-05-21',z:'08:30–14:30',l:'Behördenkontakte\nKinderrechte',r:'Viktoria Miklautz',typ:'org'},
+  {d:'2026-05-22',z:'08:30–12:30',l:'Erziehungsstile und -konzepte',r:'Sandra Peham',typ:'did'},
+  {d:'2026-05-25',z:'',l:'Feiertag – frei',r:'',typ:'frei'},
+  {d:'2026-05-26',z:'08:30–14:30',l:'Sozialisation',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-05-27',z:'08:30–11:30',l:'2. LZK',r:'Grüner-Lawal Irmi',typ:'org'},
+  {d:'2026-05-28',z:'08:30–14:30',l:'Haftungs- und Versicherungsfragen\nDienst-/Arbeitsrecht und Betriebsmittel\nKenntnisse der einschlägigen Gesetze',r:'Viktoria Miklautz',typ:'org'},
+  {d:'2026-05-29',z:'08:00–16:00',l:'KNF Rotes Kreuz',r:'Rotes Kreuz',typ:'org'},
+  {d:'2026-08-03',z:'08:30–14:30',l:'Gesprächsführung\nTeamarbeit, Management, Organisation',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-08-04',z:'08:30–14:30',l:'Kommunikationsformen und Techniken',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-08-11',z:'08:30–14:30',l:'Selbstkonzept und Rollenbild von Erziehenden\nKriterien der Beobachtung\nPraktikumsnachbesprechung',r:'Sandra Peham',typ:'pers'},
+  {d:'2026-08-28',z:'07:00–16:00',l:'Abschlussprüfung',r:'Miklautz / Sandra Peham',typ:'pruef'},
+  {d:'2026-08-31',z:'07:00–14:00',l:'Abschlussprüfung',r:'Miklautz / Gloria Ramic',typ:'pruef'},
 ];
 
 const TASKS = [
   { g:'Diese Woche', items:[
     { l:'Titel, Untertitel & Forschungsfrage formulieren', d:'Freitag · v.miklautz@elver.at' },
-    { l:'Präsentation (.pptx) für 10.3. fertigstellen',   d:'Fr. bis 07:00 · gmbh@elver.at' },
-    { l:'Handout (min. 10 Seiten, Word) erstellen',       d:'Fr. bis 07:00 · gmbh@elver.at' },
+    { l:'Präsentation (.pptx) für 10.3. fertigstellen', d:'Fr. bis 07:00 · gmbh@elver.at' },
+    { l:'Handout (min. 10 Seiten, Word) erstellen', d:'Fr. bis 07:00 · gmbh@elver.at' },
   ]},
   { g:'Bis 17. März', items:[
-    { l:'SA-Leitfaden lesen & 5 Fragen ausarbeiten',    d:'17.03. · Workshop mit Larissa' },
-    { l:'Biografie-Präsentation vorbereiten (15 Min.)', d:'Seminar 16.03. – Eigene Kindheit & Bezugspersonen' },
+    { l:'SA-Leitfaden lesen & 5 Fragen ausarbeiten', d:'17.03. · Workshop mit Larissa' },
+    { l:'Biografie-Präsentation vorbereiten (15 Min.)', d:'Seminar 16.03.' },
   ]},
   { g:'Bis 27. März', items:[
     { l:'Selbstkonzept schreiben (2 Seiten)', d:'27.03. · l.znidaric@buteo.at' },
   ]},
   { g:'Bis 13. April', items:[
-    { l:'Präsentation April-Seminar vorbereiten',   d:'Abgabe: 13.04. 23:59 · TEAMS-Ordner' },
-    { l:'Grundlagendokumente aufarbeiten',          d:'Alle Docs prüfungsrelevant!' },
+    { l:'Präsentation April-Seminar vorbereiten', d:'Abgabe: 13.04. 23:59 · TEAMS-Ordner' },
+    { l:'Grundlagendokumente aufarbeiten', d:'Alle Docs prüfungsrelevant!' },
   ]},
 ];
 
-// ── RENDER ──────────────────────────────────────────────────
-
-function xcard(id,icon,label,desc,body){
+// ── RENDER ────────────────────────────────────────────────────
+function xcard(id,icon,label,body,extraHead=''){
   return `<div class="xcard" id="${id}">
     <div class="xhead" onclick="tog('${id}')">
       <div class="cicon">${icon}</div>
-      <div style="flex:1;min-width:0"><div class="clabel">${label}</div><div class="cdesc">${desc}</div></div>
+      <div style="flex:1;min-width:0">
+        <div class="clabel">${label}</div>
+        <div class="cdesc" id="${id}-d"></div>
+        ${extraHead}
+      </div>
       <div class="xchev">›</div>
     </div>
     <div class="xbody">${body}</div>
   </div>`;
 }
 
+// STUNDENPLAN
+const DAYS_DE = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+const MONTHS_DE = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+const TYP_COLORS = { pers:'rgba(95,217,138,.18)', entw:'rgba(100,180,230,.18)', did:'rgba(147,112,219,.18)', org:'rgba(240,201,110,.18)', peer:'rgba(240,201,110,.1)', pruef:'rgba(232,97,77,.18)', frei:'transparent' };
+
+let spFilter = 'all';
+function buildStundenplan(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  // Find next upcoming lesson
+  const nextLesson = SP.find(e=>{ const dt=new Date(e.d); dt.setHours(0,0,0,0); return dt>=today && e.typ!=='frei'; });
+  const desc = nextLesson ? `Nächster Tag: ${formatDate(nextLesson.d)}` : 'AL59 · 02.03.–31.08.2026';
+  const body = `
+    <input class="sp-search" id="sp-search" placeholder="Thema oder Referent suchen…" oninput="renderSP()"/>
+    <div class="sp-filter">
+      <button class="sp-fbtn active" onclick="setSpFilter('all',this)">Alle</button>
+      <button class="sp-fbtn" onclick="setSpFilter('pers',this)">Persönlichkeit</button>
+      <button class="sp-fbtn" onclick="setSpFilter('entw',this)">Entwicklung</button>
+      <button class="sp-fbtn" onclick="setSpFilter('did',this)">Didaktik</button>
+      <button class="sp-fbtn" onclick="setSpFilter('org',this)">Organisation</button>
+      <button class="sp-fbtn" onclick="setSpFilter('peer',this)">Peergroup</button>
+    </div>
+    <div id="sp-list"></div>`;
+  setTimeout(()=>{ document.getElementById('c-sp-d').textContent=desc; renderSP(); },0);
+  return xcard('c-sp','📆','Stundenplan',body);
+}
+
+function setSpFilter(f, btn){
+  spFilter=f;
+  document.querySelectorAll('.sp-fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSP();
+}
+
+function formatDate(d){ const dt=new Date(d); return DAYS_DE[dt.getDay()]+' '+dt.getDate()+'. '+MONTHS_DE[dt.getMonth()]; }
+function formatDateShort(d){ const dt=new Date(d); return dt.getDate()+'.'+String(dt.getMonth()+1).padStart(2,'0'); }
+
+function renderSP(){
+  const container=document.getElementById('sp-list'); if(!container) return;
+  const q=(document.getElementById('sp-search')?.value||'').toLowerCase().trim();
+  const today=new Date(); today.setHours(0,0,0,0);
+
+  let filtered=SP.filter(e=>{
+    if(spFilter!=='all' && e.typ!==spFilter) return false;
+    if(q && !e.l.toLowerCase().includes(q) && !e.r.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  if(!filtered.length){ container.innerHTML='<div class="sp-empty">Keine Einträge gefunden</div>'; return; }
+
+  // Group by week
+  const weeks={};
+  filtered.forEach(e=>{
+    const dt=new Date(e.d);
+    const mon=new Date(dt); mon.setDate(dt.getDate()-dt.getDay()+1);
+    const key=mon.toISOString().slice(0,10);
+    if(!weeks[key]) weeks[key]=[];
+    weeks[key].push(e);
+  });
+
+  let html='';
+  Object.keys(weeks).sort().forEach(wk=>{
+    const wkDt=new Date(wk);
+    const wkEnd=new Date(wk); wkEnd.setDate(wkEnd.getDate()+4);
+    html+=`<div class="sp-week"><div class="sp-week-label">${wkDt.getDate()}.${String(wkDt.getMonth()+1).padStart(2,'0')} – ${wkEnd.getDate()}.${String(wkEnd.getMonth()+1).padStart(2,'0')}.${wkEnd.getFullYear()}</div>`;
+    weeks[wk].forEach(e=>{
+      const dt=new Date(e.d); dt.setHours(0,0,0,0);
+      const isToday=dt.getTime()===today.getTime();
+      const lessons=e.l.split('\n').filter(Boolean);
+      const multiHtml=lessons.length>1
+        ? `<div class="sp-multi">${lessons.map(ll=>`<div class="sp-multi-item"><div class="sp-lesson" style="font-size:12px">${ll}</div></div>`).join('')}<div class="sp-ref">${e.r}</div></div>`
+        : `<div class="sp-lesson">${lessons[0]}</div>${e.r?`<div class="sp-ref">${e.r}</div>`:''}`;
+      const peerTag=e.typ==='peer'?`<span class="sp-peer-tag">Peergroup</span>`:'';
+      const pruefTag=e.typ==='pruef'?`<span class="sp-peer-tag" style="color:var(--red);background:rgba(232,97,77,.1);border-color:rgba(232,97,77,.2)">Prüfung</span>`:'';
+      html+=`<div class="sp-day${isToday?' today':''}${e.typ==='peer'?' peer':''}${e.typ==='frei'?' frei':''}${e.typ==='pruef'?' pruef':''}">
+        <div class="sp-date-col">
+          <div class="sp-day-name">${DAYS_DE[dt.getDay()]}</div>
+          <div class="sp-day-num">${dt.getDate()}</div>
+        </div>
+        <div class="sp-content">
+          ${e.z?`<div class="sp-time">${e.z}</div>`:''}
+          ${multiHtml}
+          ${peerTag}${pruefTag}
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  container.innerHTML=html;
+}
+
+// SEMINAR
 function buildSeminar(){
   const b=`
     <div class="idiv">Deine Seminararbeit</div>
-    <div class="irow">
-      <span class="ikey">Thema</span>
-      <div style="flex:1"><textarea class="editable" id="sa-thema" rows="2" placeholder="Thema eintragen…">Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr</textarea></div>
-    </div>
-    <div class="irow">
-      <span class="ikey">SA-Abgabe</span>
-      <div><input type="date" class="editable" id="sa-datum" value="2025-03-10"/></div>
-    </div>
-    <div class="irow">
-      <span class="ikey">Betreuung</span>
-      <span class="ival">Viktoria Miklautz · v.miklautz@elver.at · 0664/1680033</span>
-    </div>
-    <div class="irow" style="border-bottom:none">
-      <span class="ikey">Coaching</span>
-      <span class="ival">Larissa Znidaric · l.znidaric@buteo.at</span>
-    </div>
+    <div class="irow"><span class="ikey">Thema</span><div style="flex:1"><textarea class="editable" id="sa-thema" rows="2" placeholder="Thema eintragen…"></textarea></div></div>
+    <div class="irow"><span class="ikey">SA-Abgabe</span><div><input type="date" class="editable" id="sa-datum"/></div></div>
+    <div class="irow"><span class="ikey">Betreuung</span><span class="ival">Viktoria Miklautz · v.miklautz@elver.at · 0664/1680033</span></div>
+    <div class="irow" style="border-bottom:none"><span class="ikey">Coaching</span><span class="ival">Larissa Znidaric · l.znidaric@buteo.at</span></div>
     <div class="idiv" style="margin-top:16px">Arbeit einreichen</div>
     <div class="uzone" id="dropzone">
       <input type="file" id="fileinput" accept=".pptx,.docx,.pdf,.ppt,.doc" multiple/>
@@ -653,546 +797,460 @@ function buildSeminar(){
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Einreichen per E-Mail
     </button>
-    <div class="snote" id="snote">Öffnet deinen Mail-Client mit Datei-Hinweis · Empfänger: <strong style="color:var(--accent2)">${UPLOAD_EMAIL}</strong></div>
+    <div class="snote" id="snote">Öffnet deinen Mail-Client · Empfänger: <strong style="color:var(--accent2)">${UPLOAD_EMAIL}</strong></div>
     <div id="plink-area"></div>`;
-  return xcard('c-sa','🎓','Seminararbeit','Thema bearbeiten · Deadline · Einreichen',b);
+  setTimeout(()=>{ document.getElementById('c-sa-d').textContent='Thema · Deadline · Einreichen'; },0);
+  return xcard('c-sa','🎓','Seminararbeit',b);
 }
 
+// TERMINE
 function buildTermine(){
-  const next=TERMINE.find(t=>t.u)||TERMINE[0];
   const rows=TERMINE.map((t,i)=>`
     <div class="tlrow">
       <div class="tldot${t.u?' u':''}"></div>
-      <div class="tldate${t.u?' u':''}">${t.datum}</div>
-      <div style="flex:1">
-        <div class="tltitle">${t.titel}</div>
-        ${t.sub?`<div class="tlsub">${t.sub}</div>`:''}
+      <div class="tlinfo">
+        <div class="tldate${t.u?' u':''}">${t.d}</div>
+        <div class="tltitle">${t.t}</div>
+        ${t.s?`<div class="tlsub">${t.s}</div>`:''}
+        <div class="tlcountdown" id="cd-${i}"></div>
       </div>
-      <button class="cal-btn" onclick="saveIcal(${i})" title="In Kalender speichern">
-        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1" y="2" width="9" height="8.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 1v2M7.5 1v2M1 5h9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        +
+      <button class="cal-btn" onclick="saveIcal(${i})">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1" y="2" width="9" height="8.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 1v2M7.5 1v2M1 5h9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>+
       </button>
     </div>`).join('');
-  return xcard('c-tm','📅','Termine & Fristen',`${TERMINE.length} Einträge · nächste: ${next.datum}`,`<div class="tl">${rows}</div>`);
+  setTimeout(()=>{ document.getElementById('c-tm-d').textContent=TERMINE.length+' Termine · Kalender-Export'; },0);
+  return xcard('c-tm','📅','Termine & Fristen',`<div class="tl">${rows}</div>`);
 }
 
+// TASKS
 let tid=0;
 function buildTasks(){
   const secs=TASKS.map(g=>{
-    const items=g.items.map(t=>{
-      const id='t'+(tid++);
-      return `<div class="titem">
-        <div class="tcheck" id="${id}" onclick="togT('${id}')">✓</div>
-        <div><div class="tlabel" id="${id}l">${t.l}</div><div class="tdue">${t.d}</div></div>
-      </div>`;
-    }).join('');
+    const items=g.items.map(t=>{ const id='t'+(tid++); return `<div class="titem"><div class="tcheck" id="${id}" onclick="togT('${id}')">✓</div><div><div class="tlabel" id="${id}l">${t.l}</div><div class="tdue">${t.d}</div></div></div>`; }).join('');
     return `<div class="tsec"><div class="tglabel">${g.g}</div>${items}</div>`;
   }).join('');
-  return xcard('c-tk','✅','Tasks – Peer Group','Offene Aufgaben & Verantwortlichkeiten',secs);
+  const extra=`<div class="prog-bar-wrap"><div class="prog-bar"><div class="prog-bar-fill" id="task-prog-fill" style="width:0%"></div></div><span class="prog-label" id="task-prog-label">0/0</span></div>`;
+  return xcard('c-tk','✅','Tasks – Peer Group',secs,extra);
 }
 
+// PEER GROUPS
+function buildGroupsInner(){
+  const groups=loadGroups();
+  const myG=STATE.group||0;
+  return Object.keys(groups).map(gn=>{
+    const g=groups[gn]; const isMine=parseInt(gn)===myG;
+    const members=g.members.length
+      ? g.members.map(m=>`<span class="pmember${m===STATE.name?' me':''}">${m}</span>`).join('')
+      : `<span style="font-size:11px;color:var(--muted);font-style:italic;">Noch leer</span>`;
+    return `<div class="pgroup${isMine?' mine':''}" id="pgrp-${gn}">
+      <div class="pgroup-head">
+        <div class="pgroup-num gn${gn}">${gn}</div>
+        <div class="pgroup-title">Gruppe ${gn} · ${g.label||GROUP_NAMES_DEFAULT[gn]}</div>
+        ${isMine?`<span class="pgroup-you">Du</span>`:''}
+      </div>
+      <div class="pgroup-members">${members}</div>
+      ${isMine
+        ? `<textarea class="pgroup-thema-input" id="gthema-${gn}" rows="2" placeholder="Gruppenthema eingeben…">${g.thema||''}</textarea>
+           <button class="pgroup-save-btn" onclick="saveGroupThema(${gn})">✓ Thema speichern</button>`
+        : `<div class="pgroup-thema-static">${g.thema||'Kein Thema eingetragen'}</div>`
+      }
+    </div>`;
+  }).join('');
+}
+
+function buildGroups(){
+  setTimeout(()=>{ document.getElementById('c-pg-d').textContent='5 Gruppen · eigenes Thema bearbeiten'; },0);
+  return xcard('c-pg','👥','Peer-Groups',buildGroupsInner());
+}
+
+// RENDER ALL
 document.getElementById('root').innerHTML =
-  buildSeminar()+buildTermine()+buildTasks()+
+  buildStundenplan()+buildSeminar()+buildTermine()+buildTasks()+buildGroups()+
   `<a class="lcard" href="https://www.icloud.com/iclouddrive/081q_w11KR-VtsH0StnXPv04g#Allgemein" target="_blank" rel="noopener">
     <div class="cicon">☁️</div>
-    <div style="flex:1;min-width:0">
-      <div class="clabel">Unterlagen Vorlagen</div>
-      <div class="cdesc">Seminar-Dateien · Vorlagen · iCloud</div>
-    </div>
+    <div style="flex:1;min-width:0"><div class="clabel">Unterlagen Vorlagen</div><div class="cdesc">Seminar-Dateien · Vorlagen · iCloud</div></div>
     <div class="carrow">→</div>
   </a>`;
 
-// Apply saved state after render
+// Init upload
+const dz=document.getElementById('dropzone'), fi=document.getElementById('fileinput');
+fi.addEventListener('change',e=>addFiles(e.target.files));
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');addFiles(e.dataTransfer.files);});
+
 applyState();
 
-// ── INTERAKTION ──────────────────────────────────────────────
-
-function tog(id){document.getElementById(id).classList.toggle('open');}
+// ── INTERACTIONS ──────────────────────────────────────────────
+function tog(id){ document.getElementById(id).classList.toggle('open'); }
 
 function togT(id){
   const b=document.getElementById(id),l=document.getElementById(id+'l');
   b.classList.toggle('done');
   const d=b.classList.contains('done');
   if(l){ l.style.opacity=d?'.38':'1'; l.style.textDecoration=d?'line-through':''; }
-  STATE.tasks[id] = d;
-  if(!d) delete STATE.tasks[id];
+  STATE.tasks[id]=d; if(!d) delete STATE.tasks[id];
   saveState();
 }
 
+function saveGroupThema(gn){
+  const inp=document.getElementById('gthema-'+gn); if(!inp) return;
+  const groups=loadGroups();
+  if(groups[gn]) groups[gn].thema=inp.value;
+  saveGroups(groups);
+  flashMsg('✓ Gruppenthema gespeichert');
+}
+
+function updateGroupThemaInput(){
+  const myG=STATE.group||0; if(!myG) return;
+  const groups=loadGroups();
+  const g=groups[myG]; if(!g) return;
+  const inp=document.getElementById('gthema-'+myG);
+  if(inp) inp.value=g.thema||'';
+}
+
+// FILES
 let files=[];
-const dz=document.getElementById('dropzone');
-const fi=document.getElementById('fileinput');
-
-fi.addEventListener('change',e=>add(e.target.files));
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
-dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');add(e.dataTransfer.files);});
-
-function add(list){
-  Array.from(list).forEach(f=>{if(!files.find(x=>x.name===f.name))files.push(f);});
-  render();
+function addFiles(list){ Array.from(list).forEach(f=>{ if(!files.find(x=>x.name===f.name)) files.push(f); }); renderFiles(); }
+function delFile(n){ files=files.filter(f=>f.name!==n); renderFiles(); }
+function renderFiles(){
+  document.getElementById('flist').innerHTML=files.map(f=>`<div class="fitem"><span>📄</span><span class="fname">${f.name}</span><span class="fsize">${(f.size/1024/1024).toFixed(1)} MB</span><button class="fdel" onclick="delFile('${f.name}')">✕</button></div>`).join('');
+  const s=files.length>0;
+  document.getElementById('sbtn').style.display=s?'flex':'none';
+  document.getElementById('snote').style.display=s?'block':'none';
 }
-function del(n){files=files.filter(f=>f.name!==n);render();}
-function render(){
-  document.getElementById('flist').innerHTML=files.map(f=>`
-    <div class="fitem">
-      <span>📄</span>
-      <span class="fname">${f.name}</span>
-      <span class="fsize">${(f.size/1024/1024).toFixed(1)} MB</span>
-      <button class="fdel" onclick="del('${f.name}')">✕</button>
-    </div>`).join('');
-  const show=files.length>0;
-  document.getElementById('sbtn').style.display=show?'flex':'none';
-  document.getElementById('snote').style.display=show?'block':'none';
-}
-
 function submitFiles(){
-  const thema=document.getElementById('sa-thema').value||'Seminararbeit';
-  const datum=document.getElementById('sa-datum').value||'';
-  const names=files.map(f=>f.name).join(', ');
-  const body=`Hallo,\n\nanbei meine Seminararbeit-Unterlagen zur Abgabe:\n\nThema: ${thema}\nAbgabedatum: ${datum}\nDateien: ${names}\n\nLiebe Grüße`;
+  const th=document.getElementById('sa-thema').value||'Seminararbeit', da=document.getElementById('sa-datum').value||'';
+  const body=`Hallo,\n\nSeminararbeit-Unterlagen:\n\nThema: ${th}\nDatum: ${da}\nDateien: ${files.map(f=>f.name).join(', ')}\n\nLiebe Grüße`;
   window.location.href=`mailto:${UPLOAD_EMAIL}?subject=Seminararbeit Abgabe – ELVER 59&body=${encodeURIComponent(body)}`;
 }
 
-// ── KALENDER EXPORT ──────────────────────────────────────────
+// KALENDER
 function saveIcal(idx){
-  const t = TERMINE[idx];
-  const dt = t.ical;
-  const isDateTime = dt.includes('T');
+  const t=TERMINE[idx], dt=t.i, isDT=dt.includes('T');
   let dtEnd;
-  if(isDateTime){
-    const base=dt.slice(0,8), h=+dt.slice(9,11), m=dt.slice(11,13)||'00';
-    dtEnd=`${base}T${String((h+1)%24).padStart(2,'0')}${m}00`;
-  } else {
-    const y=+dt.slice(0,4),mo=+dt.slice(4,6)-1,d=+dt.slice(6,8);
-    const nx=new Date(y,mo,d+1);
-    dtEnd=`${nx.getFullYear()}${String(nx.getMonth()+1).padStart(2,'0')}${String(nx.getDate()).padStart(2,'0')}`;
-  }
-  const desc=(t.sub||'').replace(/,/g,'\\,');
-  const ics=[
-    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//ELVER59//DE',
-    'BEGIN:VEVENT',
-    `SUMMARY:${t.titel}`,
-    isDateTime?`DTSTART:${dt}`:`DTSTART;VALUE=DATE:${dt}`,
-    isDateTime?`DTEND:${dtEnd}`:`DTEND;VALUE=DATE:${dtEnd}`,
-    `DESCRIPTION:${desc}`,
-    'LOCATION:ELVER 59',
-    'END:VEVENT','END:VCALENDAR'
-  ].join('\r\n');
-  const fname=`ELVER59_${t.titel.replace(/[^a-zA-Z0-9]/g,'_').slice(0,30)}.ics`;
-  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-  const a=document.createElement('a');
-  document.body.appendChild(a);
-  if(isIOS){
-    a.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
-    a.target='_blank';
-  } else {
-    const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
-    a.href=URL.createObjectURL(blob);
-    a.download=fname;
-  }
-  a.click();
-  setTimeout(()=>{ document.body.removeChild(a); },1000);
+  if(isDT){ const base=dt.slice(0,8),h=+dt.slice(9,11),m=dt.slice(11,13)||'00'; dtEnd=`${base}T${String((h+1)%24).padStart(2,'0')}${m}00`; }
+  else { const y=+dt.slice(0,4),mo=+dt.slice(4,6)-1,d=+dt.slice(6,8),nx=new Date(y,mo,d+1); dtEnd=`${nx.getFullYear()}${String(nx.getMonth()+1).padStart(2,'0')}${String(nx.getDate()).padStart(2,'0')}`; }
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//ELVER59//DE','BEGIN:VEVENT',
+    `SUMMARY:${t.t}`,isDT?`DTSTART:${dt}`:`DTSTART;VALUE=DATE:${dt}`,isDT?`DTEND:${dtEnd}`:`DTEND;VALUE=DATE:${dtEnd}`,
+    `DESCRIPTION:${(t.s||'').replace(/,/g,'\\,')}`, 'LOCATION:ELVER 59','END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const a=document.createElement('a'); document.body.appendChild(a);
+  if(/iPad|iPhone|iPod/.test(navigator.userAgent)){ a.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics); a.target='_blank'; }
+  else { a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar;charset=utf-8'})); a.download=`ELVER59_${t.t.replace(/[^a-zA-Z0-9]/g,'_').slice(0,30)}.ics`; }
+  a.click(); setTimeout(()=>document.body.removeChild(a),1000);
 }
 
-// ── SHOOTING STARS ──────────────────────────────────────────
-const canvas = document.getElementById('starfield');
-const ctx = canvas.getContext('2d');
-let stars = [];
-
-function resize(){
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
-
-function newStar(){
-  const angle = Math.PI / 5 + Math.random() * Math.PI / 8;
-  const startX = Math.random() * canvas.width * 1.4 - canvas.width * 0.2;
-  return {
-    x: startX, y: -10,
-    len: 80 + Math.random() * 140,
-    speed: 3 + Math.random() * 5,
-    opacity: 0,
-    fade: 0,   // 0=in, 1=hold, 2=out
-    angle,
-    dx: Math.cos(angle) * (3 + Math.random() * 5),
-    dy: Math.sin(angle) * (3 + Math.random() * 5),
-    width: .5 + Math.random() * 1,
-    life: 0, maxLife: 60 + Math.random() * 40,
-  };
-}
-
-function spawnStar(){
-  stars.push(newStar());
-}
-
-setInterval(spawnStar, 3500 + Math.random() * 1500);
-// initial stagger
-setTimeout(spawnStar, 300);
-setTimeout(spawnStar, 1100);
-
-function drawStars(){
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  stars = stars.filter(s => {
-    s.life++;
-    s.x += s.dx;
-    s.y += s.dy;
-    if(s.life < 12) s.opacity = s.life / 12;
-    else if(s.life > s.maxLife - 15) s.opacity = Math.max(0, (s.maxLife - s.life) / 15);
-    else s.opacity = 1;
-
-    const tailX = s.x - Math.cos(s.angle) * s.len;
-    const tailY = s.y - Math.sin(s.angle) * s.len;
-    const grad = ctx.createLinearGradient(tailX, tailY, s.x, s.y);
-    grad.addColorStop(0, `rgba(95,217,138,0)`);
-    grad.addColorStop(.7, `rgba(95,217,138,${s.opacity * .35})`);
-    grad.addColorStop(1, `rgba(200,255,220,${s.opacity * .9})`);
-
-    ctx.beginPath();
-    ctx.moveTo(tailX, tailY);
-    ctx.lineTo(s.x, s.y);
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = s.width;
-    ctx.lineCap = 'round';
-    ctx.stroke();
-
-    // sparkle head
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.width * 1.2, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(220,255,235,${s.opacity * .9})`;
-    ctx.fill();
-
-    return s.life < s.maxLife && s.x < canvas.width + 100 && s.y < canvas.height + 100;
+// COUNTDOWNS
+function updateCountdowns(){
+  const now=Date.now();
+  TERMINE.forEach((t,i)=>{
+    const el=document.getElementById('cd-'+i); if(!el) return;
+    const diff=t.ts-now;
+    if(diff<0){ el.textContent='✓ vergangen'; el.className='tlcountdown past'; return; }
+    const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
+    el.textContent=d>0?`in ${d}T ${h}h`:h>0?`in ${h}h ${m}m`:`in ${m}m ${s}s`;
+    el.className='tlcountdown'+(d<2?' urgent':'');
   });
-  requestAnimationFrame(drawStars);
 }
-drawStars();
+updateCountdowns(); setInterval(updateCountdowns,1000);
 
-// ── DANCE / SCREENSAVER BOUNCE ───────────────────────────────
-let danceTimer = null;
-let danceRaf = null;
-let floatEl = null;
+// NOTIFICATIONS
+function requestNotifPermission(){
+  if(!('Notification' in window)) return;
+  if(Notification.permission==='default') Notification.requestPermission().then(p=>{ if(p==='granted') checkNotifs(); });
+  else if(Notification.permission==='granted') checkNotifs();
+}
+function checkNotifs(){
+  const now=Date.now();
+  TERMINE.filter(t=>t.ts>now&&t.ts-now<24*3600*1000).forEach(t=>{
+    const k='notif_'+t.i;
+    if(!sessionStorage.getItem(k)){
+      setTimeout(()=>{ new Notification('⏰ ELVER 59 – Heute fällig!',{body:t.t+(t.s?'\n'+t.s:'')});sessionStorage.setItem(k,'1'); },500);
+    }
+  });
+}
 
+// THEME
+function toggleTheme(){
+  const l=document.body.classList.toggle('light');
+  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
+  try{ localStorage.setItem('elver59_theme',l?'light':'dark'); }catch(e){}
+}
+(function(){ const t=localStorage.getItem('elver59_theme'); if(t==='light'){ document.body.classList.add('light'); document.getElementById('theme-btn').textContent='🌙'; } })();
+
+// STARS
+const canvas=document.getElementById('starfield'),ctx=canvas.getContext('2d');let stars=[];
+function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+resize(); window.addEventListener('resize',resize);
+function newStar(){ const a=Math.PI/5+Math.random()*Math.PI/8,sx=Math.random()*canvas.width*1.4-canvas.width*0.2; return {x:sx,y:-10,len:80+Math.random()*140,opacity:0,fade:0,angle:a,dx:Math.cos(a)*(3+Math.random()*5),dy:Math.sin(a)*(3+Math.random()*5),width:.5+Math.random()*1,life:0,maxLife:60+Math.random()*40}; }
+function spawnStar(){ stars.push(newStar()); }
+function animStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars=stars.filter(s=>{
+    s.life++; s.x+=s.dx; s.y+=s.dy;
+    if(s.fade===0){ s.opacity=Math.min(1,s.opacity+.08); if(s.opacity>=.9) s.fade=1; }
+    else if(s.fade===1){ if(s.life>s.maxLife) s.fade=2; }
+    else { s.opacity=Math.max(0,s.opacity-.06); if(s.opacity<=0) return false; }
+    const tx=s.x-Math.cos(s.angle)*s.len,ty=s.y-Math.sin(s.angle)*s.len;
+    const gr=ctx.createLinearGradient(tx,ty,s.x,s.y);
+    gr.addColorStop(0,'rgba(95,217,138,0)'); gr.addColorStop(1,`rgba(95,217,138,${s.opacity*.7})`);
+    ctx.beginPath(); ctx.moveTo(tx,ty); ctx.lineTo(s.x,s.y); ctx.strokeStyle=gr; ctx.lineWidth=s.width; ctx.stroke();
+    return true;
+  });
+  requestAnimationFrame(animStars);
+}
+animStars(); setInterval(spawnStar,3500+Math.random()*1500); spawnStar();
+
+// DANCE – Windows DVD Screensaver Bounce
+let dancing=false;
 function danceTitle(){
-  if(floatEl) return; // already dancing
+  if(dancing) return; dancing=true;
+  const logo=document.getElementById('logo-btn');
+  const title=document.getElementById('main-title');
+  const rect=logo.getBoundingClientRect();
+  const W=58, H=58;
+  const cols=['#5fd98a','#f0c96e','#e8614d','#9370db','#64b4e6'];
+  let x=rect.left, y=rect.top;
+  let vx=2.2*(Math.random()<0.5?1:-1);
+  let vy=1.8*(Math.random()<0.5?1:-1);
+  let ci=0, end=Date.now()+20000;
+  let currentColor=cols[0];
 
-  const title = document.querySelector('.title');
-  const origParent = title.parentElement;
-  const origNextSibling = title.nextSibling;
+  // Detach logo to fixed layer
+  logo.style.position='fixed';
+  logo.style.left='0'; logo.style.top='0'; logo.style.margin='0'; logo.style.zIndex='9999';
+  logo.style.transform=`translate(${x}px,${y}px)`;
 
-  // Clone into a fixed floating element
-  floatEl = document.createElement('div');
-  floatEl.innerHTML = title.outerHTML;
-  floatEl.style.cssText = `
-    position:fixed;z-index:9999;pointer-events:none;
-    font-family:'Syne',sans-serif;font-size:clamp(52px,12vw,72px);
-    font-weight:800;letter-spacing:-0.01em;line-height:1;
-    color:#eef2ee;white-space:nowrap;
-    text-shadow:0 0 40px rgba(95,217,138,.5);
-    transition:color .3s;
-  `;
-  floatEl.querySelector('em').style.color = '#5fd98a';
-  document.body.appendChild(floatEl);
-
-  // Hide original
-  title.style.opacity = '0';
-
-  const W = () => window.innerWidth;
-  const H = () => window.innerHeight;
-  const elW = () => floatEl.offsetWidth;
-  const elH = () => floatEl.offsetHeight;
-
-  // Start near original position
-  let x = W()/2 - elW()/2;
-  let y = 80;
-  let vx = 0.9 + Math.random() * 0.6;
-  let vy = 0.6 + Math.random() * 0.5;
-  // random direction
-  if(Math.random()>.5) vx *= -1;
-  if(Math.random()>.5) vy *= -1;
-
-  let wobble = 0;
-  const colors = ['#5fd98a','#a3e4bc','#f0c96e','#eef2ee','#7ee8a2'];
-  let colorIdx = 0;
-
-  function step(){
-    wobble += 0.04;
-    const rot = Math.sin(wobble) * 4;
-    x += vx;
-    y += vy;
-
-    const maxX = W() - elW();
-    const maxY = H() - elH();
-
-    if(x <= 0){ x=0; vx=Math.abs(vx); bounceColor(); }
-    if(x >= maxX){ x=maxX; vx=-Math.abs(vx); bounceColor(); }
-    if(y <= 0){ y=0; vy=Math.abs(vy); bounceColor(); }
-    if(y >= maxY){ y=maxY; vy=-Math.abs(vy); bounceColor(); }
-
-    floatEl.style.transform = `translate(${x}px,${y}px) rotate(${rot}deg)`;
-    danceRaf = requestAnimationFrame(step);
+  // Title: inject pulse keyframe once
+  if(!document.getElementById('pulse-style')){
+    const s=document.createElement('style'); s.id='pulse-style';
+    s.textContent=`@keyframes heartPulse{0%,100%{transform:scale(1)}20%{transform:scale(1.12)}40%{transform:scale(1.04)}55%{transform:scale(1.10)}80%{transform:scale(1)}}`;
+    document.head.appendChild(s);
   }
+  title.style.animation='heartPulse 2.6s ease-in-out infinite';
+  title.style.display='inline-block';
+  title.style.transformOrigin='center bottom';
+  title.style.transition='color .6s, text-shadow .6s';
 
-  function bounceColor(){
-    colorIdx = (colorIdx+1) % colors.length;
-    floatEl.style.color = colors[colorIdx];
-    floatEl.querySelector('em').style.color = colors[(colorIdx+2)%colors.length];
-    for(let i=0;i<3;i++) setTimeout(spawnStar, i*100);
+  function setColor(c){
+    currentColor=c;
+    logo.style.boxShadow=`0 0 28px ${c}, 0 0 56px ${c}55`;
+    logo.style.borderColor=c;
+    title.style.color=c;
+    title.style.textShadow=`0 0 40px ${c}99, 0 0 80px ${c}44`;
+    // also color the em inside
+    const em=title.querySelector('em');
+    if(em) em.style.color=c;
   }
+  setColor(currentColor);
 
-  floatEl.style.transform = `translate(${x}px,${y}px)`;
-  danceRaf = requestAnimationFrame(step);
-
-  // Stop after 12s
-  danceTimer = setTimeout(()=>{
-    cancelAnimationFrame(danceRaf);
-    floatEl.remove();
-    floatEl = null;
-    title.style.opacity = '1';
-  }, 12000);
+  function frame(){
+    if(Date.now()>end){
+      // restore everything
+      logo.style.position=''; logo.style.left=''; logo.style.top=''; logo.style.margin='';
+      logo.style.zIndex=''; logo.style.transform=''; logo.style.boxShadow=''; logo.style.borderColor='';
+      title.style.animation=''; title.style.display=''; title.style.color='';
+      title.style.textShadow=''; title.style.transition='';
+      const em=title.querySelector('em'); if(em) em.style.color='';
+      dancing=false; return;
+    }
+    x+=vx; y+=vy;
+    let hit=false;
+    if(x<=0){x=0;vx=Math.abs(vx);hit=true;}
+    else if(x>=window.innerWidth-W){x=window.innerWidth-W;vx=-Math.abs(vx);hit=true;}
+    if(y<=0){y=0;vy=Math.abs(vy);hit=true;}
+    else if(y>=window.innerHeight-H){y=window.innerHeight-H;vy=-Math.abs(vy);hit=true;}
+    if(hit) setColor(cols[ci++%cols.length]);
+    logo.style.transform=`translate(${x}px,${y}px)`;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
+let pinInput='', editingUser=null;
+async function verifyPin(p){ const e=new TextEncoder().encode('elver59x'+p); const b=await crypto.subtle.digest('SHA-256',e); const h=Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join(''); return h==='966eccb987093641113e4369d9acaeb8708751e150f61fb411b1b262e79d5886'; }
 
-let pinInput = '';
-let editingUser = null;
-
-// PIN verified via SHA-256 — plain value not stored anywhere
-async function verifyPin(input){
-  const enc = new TextEncoder().encode('elver59x' + input);
-  const buf = await crypto.subtle.digest('SHA-256', enc);
-  const hex = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-  return hex === '966eccb987093641113e4369d9acaeb8708751e150f61fb411b1b262e79d5886';
-}
-
-function openAdmin(){
-  pinInput = '';
-  updatePinDots();
-  document.getElementById('pin-err').textContent = '';
-  document.getElementById('admin-pin-screen').classList.remove('hidden');
-  document.getElementById('admin-main-screen').classList.add('hidden');
-  document.getElementById('admin-overlay').classList.remove('hidden');
-}
-function closeAdmin(){
-  document.getElementById('admin-overlay').classList.add('hidden');
-  pinInput = '';
-}
-
-function pinKey(k){
-  if(pinInput.length >= 4) return;
-  pinInput += k;
-  updatePinDots();
-  if(pinInput.length === 4) setTimeout(checkPin, 150);
-}
-function pinBackspace(){ pinInput = pinInput.slice(0,-1); updatePinDots(); }
-function pinClear(){ pinInput = ''; updatePinDots(); }
-function updatePinDots(){
-  for(let i=0;i<4;i++){
-    const d = document.getElementById('pd'+i);
-    if(d) d.classList.toggle('filled', i < pinInput.length);
-  }
-}
+function openAdmin(){ pinInput=''; updatePinDots(); document.getElementById('pin-err').textContent=''; document.getElementById('admin-pin-screen').classList.remove('hidden'); document.getElementById('admin-main-screen').classList.add('hidden'); document.getElementById('admin-overlay').classList.remove('hidden'); }
+function closeAdmin(){ document.getElementById('admin-overlay').classList.add('hidden'); pinInput=''; }
+function pinKey(k){ if(pinInput.length>=4) return; pinInput+=k; updatePinDots(); if(pinInput.length===4) setTimeout(checkPin,150); }
+function pinBackspace(){ pinInput=pinInput.slice(0,-1); updatePinDots(); }
+function pinClear(){ pinInput=''; updatePinDots(); }
+function updatePinDots(){ for(let i=0;i<4;i++) document.getElementById('pd'+i)?.classList.toggle('filled',i<pinInput.length); }
 async function checkPin(){
-  const ok = await verifyPin(pinInput);
-  if(ok){
-    document.getElementById('admin-pin-screen').classList.add('hidden');
-    document.getElementById('admin-main-screen').classList.remove('hidden');
-    renderAdminUsers();
-  } else {
-    document.getElementById('pin-err').textContent = 'Falscher PIN – versuch nochmal';
-    pinInput = ''; updatePinDots();
-    setTimeout(()=>{ document.getElementById('pin-err').textContent=''; },2000);
-  }
+  if(await verifyPin(pinInput)){ document.getElementById('admin-pin-screen').classList.add('hidden'); document.getElementById('admin-main-screen').classList.remove('hidden'); renderAdminUsers(); renderAdminGroups(); }
+  else { document.getElementById('pin-err').textContent='Falscher PIN'; pinInput=''; updatePinDots(); setTimeout(()=>{document.getElementById('pin-err').textContent='';},2000); }
+}
+function switchTab(n){
+  document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',['users','groups','add'][i]===n));
+  document.querySelectorAll('.admin-tabpanel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+n)?.classList.add('active');
 }
 
-
-
-// ── GET ALL USERS FROM LOCALSTORAGE ───────────────────────────
 function getAllUsers(){
-  const users = [];
+  const skip=['elver59_lastuser','elver59_groups','elver59_theme'];
+  const u=[];
   for(let i=0;i<localStorage.length;i++){
-    const k = localStorage.key(i);
-    if(k && k.startsWith('elver59_') && k !== 'elver59_lastuser' && k !== 'elver59_admin_pin'){
-      try{
-        const v = JSON.parse(localStorage.getItem(k));
-        if(v && v.name) users.push(v);
-      }catch(e){}
+    const k=localStorage.key(i);
+    if(k&&k.startsWith('elver59_')&&!skip.includes(k)){
+      try{ const v=JSON.parse(localStorage.getItem(k)); if(v&&v.name) u.push(v); }catch(e){}
     }
   }
-  return users.sort((a,b)=>a.name.localeCompare(b.name));
+  return u.sort((a,b)=>a.name.localeCompare(b.name));
 }
 
 function renderAdminUsers(){
-  const list = document.getElementById('admin-user-list');
-  const users = getAllUsers();
-  if(!users.length){
-    list.innerHTML='<div class="admin-empty">Noch keine Benutzer registriert.</div>';
-    return;
-  }
-  list.innerHTML = users.map(u=>`
+  const list=document.getElementById('admin-user-list');
+  const users=getAllUsers();
+  if(!users.length){ list.innerHTML='<div class="admin-empty">Noch keine Benutzer.</div>'; return; }
+  list.innerHTML=users.map(u=>`
     <div class="user-row">
       <div class="user-row-avatar">${u.name.charAt(0).toUpperCase()}</div>
       <div class="user-row-info">
-        <div class="user-row-name">${u.name}</div>
-        <div class="user-row-meta">SA: ${u.thema ? u.thema.slice(0,40)+'…' : '–'} · ${u.datum||'kein Datum'}</div>
+        <div class="user-row-name">${u.name} <span style="font-size:10px;color:var(--muted);font-weight:400">${u.group>0?'Gr.'+u.group:'–'}</span></div>
+        <div class="user-row-meta">${u.thema?u.thema.slice(0,38)+'…':'–'} · ${u.datum||'–'}</div>
       </div>
       <div class="user-row-actions">
-        <button class="abtn" onclick="startEdit('${u.name}')">✏ Edit</button>
+        <button class="abtn" onclick="startEdit('${u.name}')">✏</button>
         <button class="abtn del" onclick="deleteUser('${u.name}')">✕</button>
       </div>
     </div>`).join('');
 }
 
 function deleteUser(name){
-  if(!confirm(`Benutzer "${name}" wirklich löschen?`)) return;
-  localStorage.removeItem('elver59_' + name.toLowerCase());
-  if(localStorage.getItem('elver59_lastuser') === name)
-    localStorage.removeItem('elver59_lastuser');
-  renderAdminUsers();
-  flashMsg(`✓ ${name} gelöscht`);
+  if(!confirm(`"${name}" wirklich löschen?`)) return;
+  const groups=loadGroups();
+  Object.values(groups).forEach(g=>{ g.members=g.members.filter(m=>m!==name); });
+  saveGroups(groups);
+  localStorage.removeItem('elver59_'+name.toLowerCase());
+  if(localStorage.getItem('elver59_lastuser')===name) localStorage.removeItem('elver59_lastuser');
+  renderAdminUsers(); renderAdminGroups();
+  flashMsg('✓ '+name+' gelöscht');
 }
 
 function startEdit(name){
-  const data = JSON.parse(localStorage.getItem('elver59_' + name.toLowerCase())||'{}');
-  editingUser = name;
-  document.getElementById('admin-edit-title').textContent = `✏ Bearbeiten: ${name}`;
-  document.getElementById('edit-name').value = data.name||name;
-  document.getElementById('edit-thema').value = data.thema||'';
-  document.getElementById('edit-datum').value = data.datum||'';
-  document.getElementById('admin-edit-section').style.display = 'block';
+  const data=JSON.parse(localStorage.getItem('elver59_'+name.toLowerCase())||'{}');
+  editingUser=name;
+  document.getElementById('admin-edit-title').textContent='✏ '+name;
+  document.getElementById('edit-name').value=data.name||name;
+  document.getElementById('edit-thema').value=data.thema||'';
+  document.getElementById('edit-datum').value=data.datum||'';
+  document.getElementById('edit-group').value=data.group||0;
+  document.getElementById('admin-edit-section').style.display='block';
   document.getElementById('admin-edit-section').scrollIntoView({behavior:'smooth'});
 }
 
 function saveEditedUser(){
   if(!editingUser) return;
-  const oldKey = 'elver59_' + editingUser.toLowerCase();
-  const existing = JSON.parse(localStorage.getItem(oldKey)||'{}');
-  const newName = document.getElementById('edit-name').value.trim();
+  const oldKey='elver59_'+editingUser.toLowerCase();
+  const existing=JSON.parse(localStorage.getItem(oldKey)||'{}');
+  const newName=document.getElementById('edit-name').value.trim();
   if(!newName){ alert('Name darf nicht leer sein'); return; }
-  const updated = {
-    ...existing,
-    name: newName,
-    thema: document.getElementById('edit-thema').value,
-    datum: document.getElementById('edit-datum').value,
-  };
-  // remove old key if name changed
-  if(newName.toLowerCase() !== editingUser.toLowerCase())
-    localStorage.removeItem(oldKey);
-  localStorage.setItem('elver59_' + newName.toLowerCase(), JSON.stringify(updated));
-  editingUser = null;
+  const newGroup=parseInt(document.getElementById('edit-group').value)||0;
+  const updated={...existing,name:newName,thema:document.getElementById('edit-thema').value,datum:document.getElementById('edit-datum').value,group:newGroup};
+  if(newName.toLowerCase()!==editingUser.toLowerCase()) localStorage.removeItem(oldKey);
+  localStorage.setItem('elver59_'+newName.toLowerCase(),JSON.stringify(updated));
+  const groups=loadGroups();
+  Object.keys(groups).forEach(gn=>{ groups[gn].members=groups[gn].members.filter(m=>m!==editingUser&&m!==newName); });
+  if(newGroup>0&&groups[newGroup]&&!groups[newGroup].members.includes(newName)) groups[newGroup].members.push(newName);
+  saveGroups(groups);
+  editingUser=null;
   document.getElementById('admin-edit-section').style.display='none';
-  renderAdminUsers();
-  flashMsg('✓ Gespeichert');
+  renderAdminUsers(); renderAdminGroups(); flashMsg('✓ Gespeichert');
 }
 
 function adminAddUser(){
-  const name = document.getElementById('new-name').value.trim();
-  if(!name){ alert('Name eingeben'); return; }
-  const thema = document.getElementById('new-thema').value.trim();
-  const datum = document.getElementById('new-datum').value;
-  const data = { name, thema: thema||'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr', datum: datum||'2026-03-10', tasks:{} };
-  localStorage.setItem('elver59_' + name.toLowerCase(), JSON.stringify(data));
-  document.getElementById('new-name').value='';
-  document.getElementById('new-thema').value='';
-  renderAdminUsers();
-  flashMsg(`✓ ${name} angelegt`);
+  const name=document.getElementById('new-name').value.trim(); if(!name){ alert('Name eingeben'); return; }
+  const group=parseInt(document.getElementById('new-group').value)||0;
+  const data={name,thema:document.getElementById('new-thema').value.trim()||'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:document.getElementById('new-datum').value||'2026-03-10',tasks:{},group};
+  localStorage.setItem('elver59_'+name.toLowerCase(),JSON.stringify(data));
+  if(group>0){ const groups=loadGroups(); if(groups[group]&&!groups[group].members.includes(name)) groups[group].members.push(name); saveGroups(groups); }
+  document.getElementById('new-name').value=''; document.getElementById('new-thema').value='';
+  renderAdminUsers(); renderAdminGroups(); flashMsg('✓ '+name+' angelegt');
+}
+
+function renderAdminGroups(){
+  const groups=loadGroups(), allUsers=getAllUsers();
+  const assigned=Object.values(groups).flatMap(g=>g.members);
+  const unassigned=allUsers.filter(u=>!assigned.includes(u.name));
+
+  document.getElementById('admin-group-list').innerHTML=Object.keys(groups).map(gn=>{
+    const g=groups[gn];
+    const chips=g.members.map(m=>`<span class="agroup-chip" onclick="removeFromGroup(${gn},'${m}')">${m} ✕</span>`).join('');
+    return `<div class="agroup-row">
+      <div class="agroup-row-head">
+        <div class="pgroup-num gn${gn}" style="width:24px;height:24px;font-size:11px;">${gn}</div>
+        <strong style="font-size:12px;flex:1;">Gr. ${gn} – ${g.label||GROUP_NAMES_DEFAULT[gn]}</strong>
+        <span class="agroup-edit-toggle" onclick="toggleGroupEdit(${gn})" style="font-size:11px;color:var(--muted);cursor:pointer;padding:2px 6px;border:1px solid var(--border);border-radius:5px;transition:all .15s;" onmouseover="this.style.color='var(--accent)';this.style.borderColor='rgba(95,217,138,.4)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">✏ Edit</span>
+      </div>
+      <div class="agroup-chips" style="margin-bottom:6px;">${chips||'<span style="font-size:11px;color:var(--muted);font-style:italic;">Leer</span>'}</div>
+      <div id="agroup-edit-${gn}" style="display:none;margin-top:6px;border-top:1px solid var(--border);padding-top:8px;">
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;">Gruppenname</div>
+        <input id="aglabel-${gn}" value="${(g.label||GROUP_NAMES_DEFAULT[gn]).replace(/"/g,'&quot;')}" style="width:100%;background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.15);border-radius:7px;padding:5px 8px;font-size:12px;color:var(--text);font-family:'Inter',sans-serif;outline:none;margin-bottom:7px;"/>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;">Gruppenthema / Altersphase</div>
+        <textarea id="agthema-${gn}" rows="2" style="width:100%;background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.15);border-radius:7px;padding:5px 8px;font-size:12px;color:var(--text);font-family:'Inter',sans-serif;outline:none;resize:none;margin-bottom:7px;">${g.thema||''}</textarea>
+        <button onclick="saveGroupMeta(${gn})" style="font-size:11px;padding:5px 12px;background:rgba(95,217,138,.15);border:1px solid rgba(95,217,138,.3);border-radius:6px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;width:100%;">✓ Speichern</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const ua=document.getElementById('admin-unassigned');
+  if(unassigned.length){
+    ua.innerHTML=`<div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Antippen zum Zuweisen:</div>`+
+      unassigned.map(u=>`<div style="margin-bottom:6px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+        <span style="font-size:12px;font-weight:600;min-width:60px;">${u.name}</span>
+        ${[1,2,3,4,5].map(gn=>`<span class="agroup-add" onclick="addToGroup(${gn},'${u.name}')">Gr.${gn}+</span>`).join('')}
+      </div>`).join('');
+  } else { ua.innerHTML='<div class="admin-empty">Alle zugewiesen ✓</div>'; }
+}
+
+function toggleGroupEdit(gn){
+  const el=document.getElementById('agroup-edit-'+gn);
+  if(el) el.style.display=el.style.display==='none'?'block':'none';
+}
+
+function saveGroupMeta(gn){
+  const groups=loadGroups();
+  if(!groups[gn]) return;
+  const lbl=document.getElementById('aglabel-'+gn)?.value.trim();
+  const thm=document.getElementById('agthema-'+gn)?.value.trim();
+  if(lbl) groups[gn].label=lbl;
+  if(thm!==undefined) groups[gn].thema=thm;
+  saveGroups(groups);
+  document.getElementById('agroup-edit-'+gn).style.display='none';
+  renderAdminGroups();
+  // Also refresh the peer-group card if visible
+  const pgCard=document.getElementById('c-pg');
+  if(pgCard&&pgCard.classList.contains('open')){
+    const body=pgCard.querySelector('.xbody');
+    if(body) body.innerHTML=buildGroupsInner();
+    updateGroupThemaInput();
+  }
+  flashMsg('✓ Gruppe '+gn+' aktualisiert');
+}
+
+function addToGroup(gn,name){
+  const groups=loadGroups();
+  Object.values(groups).forEach(g=>{ g.members=g.members.filter(m=>m!==name); });
+  if(groups[gn]&&!groups[gn].members.includes(name)) groups[gn].members.push(name);
+  saveGroups(groups);
+  try{ const k='elver59_'+name.toLowerCase(); const u=JSON.parse(localStorage.getItem(k)||'{}'); u.group=gn; localStorage.setItem(k,JSON.stringify(u)); }catch(e){}
+  renderAdminGroups(); renderAdminUsers(); flashMsg('✓ '+name+' → Gruppe '+gn);
+}
+
+function removeFromGroup(gn,name){
+  const groups=loadGroups();
+  if(groups[gn]) groups[gn].members=groups[gn].members.filter(m=>m!==name);
+  saveGroups(groups);
+  try{ const k='elver59_'+name.toLowerCase(); const u=JSON.parse(localStorage.getItem(k)||'{}'); u.group=0; localStorage.setItem(k,JSON.stringify(u)); }catch(e){}
+  renderAdminGroups(); renderAdminUsers(); flashMsg('✓ Entfernt');
 }
 
 function flashMsg(msg){
-  const el = document.createElement('div');
-  el.textContent = msg;
+  const el=document.createElement('div'); el.textContent=msg;
   el.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(95,217,138,.2);border:1px solid rgba(95,217,138,.4);color:var(--accent);padding:8px 18px;border-radius:100px;font-size:13px;z-index:3000;pointer-events:none;';
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(), 2500);
+  document.body.appendChild(el); setTimeout(()=>el.remove(),2500);
 }
-
 </script>
-
-<!-- ADMIN TRIGGER (hidden gear) -->
-<button class="admin-trigger" onclick="openAdmin()" title="Admin">⚙</button>
-
-<!-- ADMIN OVERLAY -->
-<div class="admin-overlay hidden" id="admin-overlay">
-
-  <!-- PIN SCREEN -->
-  <div id="admin-pin-screen">
-    <div class="admin-pin">
-      <div style="font-size:32px;margin-bottom:12px;">🔐</div>
-      <div class="admin-pin-title">Admin Zugang</div>
-      <div class="admin-pin-sub">Gib den 4-stelligen PIN ein</div>
-      <div class="pin-dots">
-        <div class="pin-dot" id="pd0"></div>
-        <div class="pin-dot" id="pd1"></div>
-        <div class="pin-dot" id="pd2"></div>
-        <div class="pin-dot" id="pd3"></div>
-      </div>
-      <div class="pin-grid">
-        <div class="pin-key" onclick="pinKey('1')">1</div>
-        <div class="pin-key" onclick="pinKey('2')">2</div>
-        <div class="pin-key" onclick="pinKey('3')">3</div>
-        <div class="pin-key" onclick="pinKey('4')">4</div>
-        <div class="pin-key" onclick="pinKey('5')">5</div>
-        <div class="pin-key" onclick="pinKey('6')">6</div>
-        <div class="pin-key" onclick="pinKey('7')">7</div>
-        <div class="pin-key" onclick="pinKey('8')">8</div>
-        <div class="pin-key" onclick="pinKey('9')">9</div>
-        <div class="pin-key" onclick="pinClear()" style="font-size:13px;color:var(--muted)">✕</div>
-        <div class="pin-key" onclick="pinKey('0')">0</div>
-        <div class="pin-key" onclick="pinBackspace()" style="font-size:13px">⌫</div>
-      </div>
-      <div class="pin-err" id="pin-err"></div>
-    </div>
-  </div>
-
-  <!-- MAIN ADMIN PANEL -->
-  <div id="admin-main-screen" class="hidden">
-    <div class="admin-panel">
-      <div class="admin-header">
-        <div class="admin-title">⚙ Admin · ELVER 59</div>
-        <button class="admin-close" onclick="closeAdmin()">✕ Schließen</button>
-      </div>
-
-      <!-- USER LIST -->
-      <div class="admin-section">
-        <div class="admin-section-title">Benutzer</div>
-        <div id="admin-user-list"></div>
-      </div>
-
-      <!-- EDIT USER -->
-      <div class="admin-section" id="admin-edit-section" style="display:none">
-        <div class="admin-section-title" id="admin-edit-title">Benutzer bearbeiten</div>
-        <div class="admin-form">
-          <label>Name</label>
-          <input id="edit-name" type="text" placeholder="Vorname"/>
-          <label>SA-Thema</label>
-          <textarea id="edit-thema" rows="2"></textarea>
-          <label>SA-Abgabedatum</label>
-          <input id="edit-datum" type="date"/>
-          <button class="admin-save-btn" onclick="saveEditedUser()">Änderungen speichern</button>
-        </div>
-      </div>
-
-      <!-- ADD NEW USER -->
-      <div class="admin-section">
-        <div class="admin-section-title">Neuen Benutzer anlegen</div>
-        <div class="admin-form">
-          <label>Vorname</label>
-          <input id="new-name" type="text" placeholder="z.B. Anna"/>
-          <label>SA-Thema (optional)</label>
-          <textarea id="new-thema" rows="2" placeholder="Entwicklung des Kindes…"></textarea>
-          <label>SA-Abgabedatum (optional)</label>
-          <input id="new-datum" type="date" value="2026-03-10"/>
-          <button class="admin-save-btn" onclick="adminAddUser()">✚ Benutzer anlegen</button>
-        </div>
-      </div>
-
-
-
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
