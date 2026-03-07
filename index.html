@@ -285,10 +285,10 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
   <div class="modal-box">
     <div class="modal-icon">👋</div>
     <div class="modal-title">Wie heißt du?</div>
-    <div class="modal-sub">Dein Name wird lokal gespeichert.<br>Seminararbeit, Tasks & Einstellungen gehören dann dir.</div>
+    <div class="modal-sub">Einmal eingeben – alles wird für dich gespeichert.<br>Dein persönlicher Link funktioniert auf jedem Gerät.</div>
     <input class="modal-input" id="modal-name" placeholder="Dein Vorname…" maxlength="30" autocomplete="off"/>
     <button class="modal-btn" onclick="saveUser()">Los geht's →</button>
-    <div class="modal-note">Kein Account nötig · nur auf diesem Gerät gespeichert</div>
+    <div class="modal-note">Kein Account · kein Passwort · kein Server</div>
   </div>
 </div>
 
@@ -339,27 +339,89 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 </div>
 
 <script>
-// ── USER & STORAGE ───────────────────────────────────────────
+// ── USER & STATE ─────────────────────────────────────────────
 const UPLOAD_EMAIL = 'gmbh@elver.at';
 
-// Get user from URL ?u=name or localStorage
-function getUser(){
-  const params = new URLSearchParams(window.location.search);
-  const urlUser = params.get('u');
-  if(urlUser){ localStorage.setItem('elver59_user', urlUser); return urlUser; }
-  return localStorage.getItem('elver59_user');
+// State object — everything that belongs to the user
+let STATE = {
+  name: '',
+  thema: 'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',
+  datum: '2026-03-10',
+  tasks: {}   // { 't0': true, 't3': true, ... }
+};
+
+// ── ENCODE / DECODE URL HASH ─────────────────────────────────
+function encodeState(){
+  try{ return btoa(unescape(encodeURIComponent(JSON.stringify(STATE)))); }
+  catch(e){ return ''; }
+}
+function decodeState(hash){
+  try{ return JSON.parse(decodeURIComponent(escape(atob(hash)))); }
+  catch(e){ return null; }
 }
 
-function saveUser(){
-  const name = document.getElementById('modal-name').value.trim();
-  if(!name) return;
-  localStorage.setItem('elver59_user', name);
-  hideModal();
-  initUser(name);
-  // reload saves to reload with this user's data
-  loadUserData(name);
+function buildLink(){
+  const base = window.location.origin + window.location.pathname;
+  return `${base}#${encodeState()}`;
 }
 
+// ── APPLY STATE TO DOM ───────────────────────────────────────
+function applyState(){
+  const el1 = document.getElementById('sa-thema');
+  const el2 = document.getElementById('sa-datum');
+  if(el1) el1.value = STATE.thema;
+  if(el2) el2.value = STATE.datum;
+
+  for(let i=0;i<100;i++){
+    const box = document.getElementById('t'+i);
+    if(!box) break;
+    const done = !!STATE.tasks['t'+i];
+    if(done){
+      box.classList.add('done');
+      const l=document.getElementById('t'+i+'l');
+      if(l){ l.style.opacity='.38'; l.style.textDecoration='line-through'; }
+    } else {
+      box.classList.remove('done');
+      const l=document.getElementById('t'+i+'l');
+      if(l){ l.style.opacity='1'; l.style.textDecoration=''; }
+    }
+  }
+  refreshLink();
+}
+
+// ── PERSONAL LINK AREA ───────────────────────────────────────
+function refreshLink(){
+  const box = document.getElementById('plink-area');
+  if(!box || !STATE.name) return;
+  const link = buildLink();
+  box.innerHTML=`
+    <div class="plink-box">
+      <div style="flex:1">
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">🔗 Dein persönlicher Link</div>
+        <div style="font-size:10.5px;color:var(--accent2);word-break:break-all;line-height:1.5">${link.slice(0,60)}…</div>
+        <div style="font-size:10px;color:var(--muted2);margin-top:3px;">Enthält deinen aktuellen Stand · auf jedem Gerät öffenbar</div>
+      </div>
+      <button class="plink-copy" id="copy-btn" onclick="copyLink()">Kopieren</button>
+    </div>`;
+}
+
+function copyLink(){
+  const link = buildLink();
+  navigator.clipboard.writeText(link).then(()=>{
+    const btn = document.getElementById('copy-btn');
+    if(btn){ btn.textContent='✓ Kopiert!'; btn.style.color='var(--accent)'; }
+    setTimeout(()=>{ if(btn){ btn.textContent='Kopieren'; btn.style.color=''; } },2500);
+  });
+}
+
+// ── SAVE: per-user localStorage key + refresh link ──────────
+function saveState(){
+  if(!STATE.name) return;
+  try{ localStorage.setItem('elver59_' + STATE.name.toLowerCase(), JSON.stringify(STATE)); localStorage.setItem('elver59_lastuser', STATE.name); }catch(e){}
+  refreshLink();
+}
+
+// ── MODAL ────────────────────────────────────────────────────
 function showModal(){
   document.getElementById('modal').classList.remove('hidden');
   setTimeout(()=>document.getElementById('modal-name').focus(),100);
@@ -369,77 +431,63 @@ function hideModal(){
 }
 document.getElementById('modal-name').addEventListener('keydown', e=>{ if(e.key==='Enter') saveUser(); });
 
+function saveUser(){
+  const name = document.getElementById('modal-name').value.trim();
+  if(!name) return;
+  // Try to load existing data for this name
+  try{
+    const existing = localStorage.getItem('elver59_' + name.toLowerCase());
+    if(existing){ const parsed = JSON.parse(existing); if(parsed && parsed.name) STATE = parsed; }
+  }catch(e){}
+  STATE.name = name;
+  saveState();
+  hideModal();
+  initUser(name);
+  applyState(); // ← populate fields with this user's saved data
+}
+
 function initUser(name){
   document.getElementById('user-chip-wrap').style.display='block';
   document.getElementById('user-name-display').textContent = name;
   document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
 }
 
-// Storage key per user
-function skey(key){ return `elver59_${getUser()||'_'}_${key}`; }
-
-function saveData(key,val){ try{ localStorage.setItem(skey(key), JSON.stringify(val)); }catch(e){} }
-function loadData(key,def){ try{ const v=localStorage.getItem(skey(key)); return v!==null?JSON.parse(v):def; }catch(e){ return def; } }
-
-function loadUserData(name){
-  // Restore SA fields
-  const thema = loadData('sa_thema', 'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr');
-  const datum = loadData('sa_datum', '2026-03-10');
-  const el1 = document.getElementById('sa-thema');
-  const el2 = document.getElementById('sa-datum');
-  if(el1) el1.value = thema;
-  if(el2) el2.value = datum;
-
-  // Restore tasks
-  for(let i=0;i<100;i++){
-    const done = loadData('task_'+i, false);
-    const box = document.getElementById('t'+i);
-    if(!box) break;
-    if(done){
-      box.classList.add('done');
-      const l=document.getElementById('t'+i+'l');
-      if(l){ l.style.opacity='.38'; l.style.textDecoration='line-through'; }
-    }
-  }
-
-  // Show personal link
-  buildPersonalLink(name);
-}
-
-function buildPersonalLink(name){
-  const base = window.location.href.split('?')[0];
-  const link = `${base}?u=${encodeURIComponent(name)}`;
-  const box = document.getElementById('plink-area');
-  if(box){
-    box.innerHTML=`<div class="plink-box">
-      <span class="plink-text">🔗 Dein persönlicher Link:<br><strong style="color:var(--accent2)">${link}</strong></span>
-      <button class="plink-copy" onclick="copyLink('${link}')">Kopieren</button>
-    </div>`;
-  }
-}
-
-function copyLink(url){
-  navigator.clipboard.writeText(url).then(()=>{
-    const btn = event.target;
-    btn.textContent='✓ Kopiert!';
-    btn.style.color='var(--accent)';
-    setTimeout(()=>{ btn.textContent='Kopieren'; btn.style.color=''; },2000);
-  });
-}
-
-// Auto-save SA fields on input
+// ── AUTO-SAVE FIELDS on every keystroke ──────────────────────
 document.addEventListener('input', e=>{
-  if(e.target.id==='sa-thema') saveData('sa_thema', e.target.value);
-  if(e.target.id==='sa-datum') saveData('sa_datum', e.target.value);
+  if(e.target.id==='sa-thema'){ STATE.thema=e.target.value; saveState(); }
+  if(e.target.id==='sa-datum'){ STATE.datum=e.target.value; saveState(); }
 });
 
-// Init on load
-const currentUser = getUser();
-if(!currentUser){
-  showModal();
-} else {
-  initUser(currentUser);
-}
+// ── INIT: URL hash → per-user localStorage → modal ───────────
+(function(){
+  const hash = window.location.hash.slice(1);
+  let loaded = false;
+
+  // 1. Try URL hash (portable link — has full state encoded)
+  if(hash){
+    const decoded = decodeState(hash);
+    if(decoded && decoded.name){ STATE = decoded; loaded = true; }
+  }
+
+  // 2. Try per-user localStorage (same device, no hash)
+  if(!loaded){
+    try{
+      // check if we know a name from a previous visit on this device
+      const lastName = localStorage.getItem('elver59_lastuser');
+      if(lastName){
+        const s = localStorage.getItem('elver59_' + lastName.toLowerCase());
+        if(s){ const p = JSON.parse(s); if(p && p.name){ STATE = p; loaded = true; } }
+      }
+    }catch(e){}
+  }
+
+  if(loaded && STATE.name){
+    localStorage.setItem('elver59_lastuser', STATE.name);
+    initUser(STATE.name);
+  } else {
+    showModal();
+  }
+})();
 
 
 const TERMINE = [
@@ -566,8 +614,8 @@ document.getElementById('root').innerHTML =
     <div class="carrow">→</div>
   </a>`;
 
-// Load saved data after render
-if(currentUser) loadUserData(currentUser);
+// Apply saved state after render
+applyState();
 
 // ── INTERAKTION ──────────────────────────────────────────────
 
@@ -577,9 +625,10 @@ function togT(id){
   const b=document.getElementById(id),l=document.getElementById(id+'l');
   b.classList.toggle('done');
   const d=b.classList.contains('done');
-  l.style.opacity=d?'.38':'1';
-  l.style.textDecoration=d?'line-through':'';
-  saveData('task_'+id.replace('t',''), d);
+  if(l){ l.style.opacity=d?'.38':'1'; l.style.textDecoration=d?'line-through':''; }
+  STATE.tasks[id] = d;
+  if(!d) delete STATE.tasks[id];
+  saveState();
 }
 
 let files=[];
