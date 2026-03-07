@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ELVER 59</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e1210;--surface:#151a16;--surface2:#1c2320;
+  --border:#263029;--accent:#5fd98a;--accent2:#a3e4bc;
+  --warm:#f0c96e;--red:#e8614d;--text:#eef2ee;--muted:#5a7060;--muted2:#3d5244;
+}
+body{
+  background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;
+  min-height:100dvh;display:flex;flex-direction:column;align-items:center;
+  padding:40px 18px 64px;position:relative;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;top:-120px;left:50%;transform:translateX(-50%);
+  width:500px;height:400px;
+  background:radial-gradient(ellipse,rgba(95,217,138,.06) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+.container{width:100%;max-width:430px;position:relative;z-index:1;}
+
+/* HEADER */
+.header{text-align:center;margin-bottom:36px;animation:fadeDown .7s ease both;}
+.logo-mark{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:58px;height:58px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(95,217,138,.15),rgba(95,217,138,.04));
+  border:1px solid rgba(95,217,138,.2);margin:0 auto 16px;
+}
+.title{
+  font-family:'Syne',sans-serif;font-size:clamp(52px,15vw,80px);
+  font-weight:800;letter-spacing:-0.01em;line-height:1;
+}
+.title em{color:var(--accent);font-style:normal;}
+.subtitle{margin-top:10px;font-size:12px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;}
+
+/* DIVIDER */
+.sdiv{display:flex;align-items:center;gap:10px;margin-bottom:14px;animation:fadeUp .6s .15s ease both;}
+.sdiv::before,.sdiv::after{content:'';flex:1;height:1px;background:var(--border);}
+.sdiv span{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted2);}
+
+/* CARDS */
+.cards{display:flex;flex-direction:column;gap:10px;}
+.cards>*{animation:fadeUp .5s ease both;}
+.cards>*:nth-child(1){animation-delay:.18s}.cards>*:nth-child(2){animation-delay:.26s}
+.cards>*:nth-child(3){animation-delay:.34s}.cards>*:nth-child(4){animation-delay:.42s}
+
+/* LINK CARD */
+.lcard{
+  display:flex;align-items:center;gap:14px;padding:15px 18px;
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  text-decoration:none;color:var(--text);
+  transition:border-color .2s,transform .15s,background .2s;
+  position:relative;overflow:hidden;
+}
+.lcard:hover{border-color:rgba(95,217,138,.3);transform:translateY(-2px);background:var(--surface2);}
+.lcard:active{transform:scale(.98);}
+.carrow{color:var(--muted2);font-size:13px;transition:color .2s,transform .2s;margin-left:auto;flex-shrink:0;}
+.lcard:hover .carrow{color:var(--accent);transform:translateX(3px);}
+
+/* EXPAND CARD */
+.xcard{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color .25s,box-shadow .25s;}
+.xcard.open{border-color:rgba(95,217,138,.22);box-shadow:0 4px 24px rgba(95,217,138,.05);}
+.xhead{display:flex;align-items:center;gap:14px;padding:15px 18px;cursor:pointer;user-select:none;transition:background .15s;}
+.xhead:hover{background:rgba(255,255,255,.02);}
+.xchev{color:var(--muted2);font-size:14px;flex-shrink:0;margin-left:auto;transition:transform .28s,color .2s;}
+.xcard.open .xchev{transform:rotate(90deg);color:var(--accent);}
+.xbody{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1);padding:0 18px;}
+.xcard.open .xbody{max-height:2400px;padding:0 18px 18px;}
+
+/* ICON */
+.cicon{width:40px;height:40px;border-radius:11px;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.13);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;}
+.clabel{font-size:14.5px;font-weight:600;font-family:'Syne',sans-serif;}
+.cdesc{font-size:11.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* INNER SECTION */
+.idiv{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
+.idiv::after{content:'';flex:1;height:1px;background:rgba(95,217,138,.1);}
+
+/* INFO ROWS */
+.irow{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.irow:last-child{border-bottom:none;}
+.ikey{font-size:10.5px;color:var(--muted);min-width:76px;padding-top:3px;flex-shrink:0;letter-spacing:.02em;}
+.ival{flex:1;font-size:13px;line-height:1.5;color:var(--text);}
+
+/* EDITABLE */
+.editable{
+  background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);
+  border-radius:8px;padding:6px 10px;font-size:13px;color:var(--text);
+  font-family:'Inter',sans-serif;width:100%;line-height:1.5;outline:none;
+  transition:border-color .2s,background .2s;resize:none;
+}
+.editable:focus{border-color:rgba(95,217,138,.4);background:rgba(95,217,138,.09);}
+input[type="date"].editable{cursor:pointer;color-scheme:dark;max-width:180px;}
+input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4) sepia(1) saturate(4) hue-rotate(90deg);cursor:pointer;}
+
+/* UPLOAD */
+.uzone{
+  border:1.5px dashed rgba(95,217,138,.2);border-radius:12px;
+  padding:20px 16px;text-align:center;cursor:pointer;
+  transition:border-color .2s,background .2s;margin-top:10px;
+  position:relative;
+}
+.uzone:hover,.uzone.drag{border-color:rgba(95,217,138,.5);background:rgba(95,217,138,.04);}
+.uzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.uzone-icon{font-size:26px;margin-bottom:6px;}
+.uzone-title{font-size:13px;font-weight:500;color:var(--accent2);}
+.uzone-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+.flist{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+.fitem{display:flex;align-items:center;gap:10px;background:rgba(95,217,138,.06);border:1px solid rgba(95,217,138,.12);border-radius:8px;padding:8px 12px;}
+.fname{flex:1;font-size:12px;color:var(--accent2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fsize{font-size:10.5px;color:var(--muted);}
+.fdel{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0;line-height:1;transition:color .15s;}
+.fdel:hover{color:var(--red);}
+.sbtn{
+  display:none;align-items:center;justify-content:center;gap:8px;
+  width:100%;margin-top:11px;padding:11px;
+  background:linear-gradient(135deg,rgba(95,217,138,.18),rgba(95,217,138,.08));
+  border:1px solid rgba(95,217,138,.28);border-radius:10px;
+  color:var(--accent);font-family:'Syne',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;
+  transition:all .2s;letter-spacing:.04em;
+}
+.sbtn:hover{background:rgba(95,217,138,.24);transform:translateY(-1px);}
+.snote{display:none;font-size:10.5px;color:var(--muted);text-align:center;margin-top:6px;line-height:1.5;}
+
+/* TIMELINE */
+.tl{display:flex;flex-direction:column;}
+.tlrow{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);}
+.tlrow:last-child{border-bottom:none;}
+.tldot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;background:var(--accent);}
+.tldot.u{background:var(--red);}
+.tldate{font-size:11px;font-weight:500;white-space:nowrap;padding-top:1px;min-width:82px;color:var(--accent);}
+.tldate.u{color:var(--red);}
+.tltitle{font-size:13px;font-weight:500;line-height:1.3;}
+.tlsub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
+
+/* TASKS */
+.tsec{margin-top:12px;}.tsec:first-child{margin-top:0;}
+.tglabel{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:7px;}
+.titem{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);}
+.titem:last-child{border-bottom:none;}
+.tcheck{
+  width:17px;height:17px;border-radius:5px;border:1.5px solid var(--muted2);
+  flex-shrink:0;margin-top:1px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:transparent;
+  transition:background .15s,border-color .15s;
+}
+.tcheck.done{background:var(--accent);border-color:var(--accent);color:#0e1210;}
+.tlabel{font-size:13px;line-height:1.35;}
+.tdue{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* FOOTER */
+.footer{margin-top:44px;text-align:center;animation:fadeUp .5s .65s ease both;}
+.ftop{font-size:10.5px;color:var(--muted2);letter-spacing:.08em;margin-bottom:10px;}
+.fcredit{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:100px;padding:6px 14px;
+}
+.fctext{font-size:11px;color:var(--muted);}
+.heart{display:inline-block;animation:beat 1.6s ease-in-out infinite;}
+.bo-wrap{display:inline-flex;align-items:center;gap:4px;}
+.bo-box{
+  width:22px;height:22px;border-radius:7px;
+  background:linear-gradient(135deg,rgba(95,217,138,.28),rgba(95,217,138,.08));
+  border:1px solid rgba(95,217,138,.3);
+  display:flex;align-items:center;justify-content:center;
+}
+.bo-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.04em;}
+
+@keyframes beat{0%,100%{transform:scale(1)}40%{transform:scale(1.3)}60%{transform:scale(1.1)}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="logo-mark">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <circle cx="15" cy="15" r="3.5" fill="#5fd98a" opacity=".8"/>
+        <path d="M15 7C10.58 7 7 10.58 7 15s3.58 8 8 8" stroke="#5fd98a" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M15 4v2M15 24v2M4 15h2M24 15h2" stroke="#5fd98a" stroke-width="1.4" stroke-linecap="round" opacity=".35"/>
+        <path d="M22 8l-1.4 1.4M9.4 20.6L8 22M22 22l-1.4-1.4M9.4 9.4L8 8" stroke="#5fd98a" stroke-width="1.2" stroke-linecap="round" opacity=".2"/>
+      </svg>
+    </div>
+    <div class="title">ELVER<em> 59</em></div>
+    <p class="subtitle">Peergroup · Ausbildung · Ressourcen</p>
+  </div>
+
+  <div class="sdiv"><span>Übersicht</span></div>
+  <div class="cards" id="root"></div>
+
+  <div class="footer">
+    <div class="ftop">ELVER 59 · Alle Rechte vorbehalten</div>
+    <div class="fcredit">
+      <span class="heart">
+        <svg width="12" height="11" viewBox="0 0 12 11" fill="none">
+          <path d="M6 10C6 10 1 6.5 1 3.5A2.5 2.5 0 016 2a2.5 2.5 0 015 1.5C11 6.5 6 10 6 10Z" fill="#5fd98a"/>
+        </svg>
+      </span>
+      <span class="fctext">created with love by</span>
+      <span class="bo-wrap">
+        <span class="bo-box">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <text x="1.5" y="11" font-family="Syne,sans-serif" font-size="11" font-weight="800" fill="#5fd98a">b</text>
+          </svg>
+        </span>
+        <span class="bo-name">bo</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<script>
+const UPLOAD_EMAIL = 'gmbh@elver.at';
+
+const TERMINE = [
+  { datum:'Fr. diese Woche', titel:'SA: Titel, Untertitel & Forschungsfrage', sub:'v.miklautz@elver.at', u:true },
+  { datum:'Fr. 07:00 Uhr',   titel:'Präsentation (10.3.) abgeben',           sub:'gmbh@elver.at · .pptx + Handout Word', u:true },
+  { datum:'Di. 10.03.',      titel:'Seminar: Entwicklungspsychologie',        sub:'Alle Gruppen · je 50 Min.' },
+
+  { datum:'So. 16.03.',      titel:'Biografie-Präsentation vorbereiten',      sub:'Eigene Kindheit · 15 Min.' },
+  { datum:'Mo. 17.03.',      titel:'SA-Workshop mit Larissa',                 sub:'5 Fragen zum SA-Leitfaden mitbringen' },
+  { datum:'Do. 27.03.',      titel:'Selbstkonzept abgeben',                   sub:'2 A4-Seiten · l.znidaric@buteo.at' },
+  { datum:'So. 13.04. 23:59',titel:'April-Präsentationen abgeben',            sub:'TEAMS-Ordner: ReferentInnen Seminarunterlagen' },
+  { datum:'Mo. 14.04.',      titel:'Seminar: Grundlagendokumente Teil 1',     sub:'Gruppen 1–3 · je 90 Min.' },
+  { datum:'Mi. 16.04.',      titel:'Seminar: Grundlagendokumente Teil 2',     sub:'Gruppen 4–5 · je 90 Min.' },
+];
+
+const TASKS = [
+  { g:'Diese Woche', items:[
+    { l:'Titel, Untertitel & Forschungsfrage formulieren', d:'Freitag · v.miklautz@elver.at' },
+    { l:'Präsentation (.pptx) für 10.3. fertigstellen',   d:'Fr. bis 07:00 · gmbh@elver.at' },
+    { l:'Handout (min. 10 Seiten, Word) erstellen',       d:'Fr. bis 07:00 · gmbh@elver.at' },
+  ]},
+  { g:'Bis 17. März', items:[
+    { l:'SA-Leitfaden lesen & 5 Fragen ausarbeiten',    d:'17.03. · Workshop mit Larissa' },
+    { l:'Biografie-Präsentation vorbereiten (15 Min.)', d:'Seminar 16.03. – Eigene Kindheit & Bezugspersonen' },
+  ]},
+  { g:'Bis 27. März', items:[
+    { l:'Selbstkonzept schreiben (2 Seiten)', d:'27.03. · l.znidaric@buteo.at' },
+  ]},
+  { g:'Bis 13. April', items:[
+    { l:'Präsentation April-Seminar vorbereiten',   d:'Abgabe: 13.04. 23:59 · TEAMS-Ordner' },
+    { l:'Grundlagendokumente aufarbeiten',          d:'Alle Docs prüfungsrelevant!' },
+  ]},
+];
+
+// ── RENDER ──────────────────────────────────────────────────
+
+function xcard(id,icon,label,desc,body){
+  return `<div class="xcard" id="${id}">
+    <div class="xhead" onclick="tog('${id}')">
+      <div class="cicon">${icon}</div>
+      <div style="flex:1;min-width:0"><div class="clabel">${label}</div><div class="cdesc">${desc}</div></div>
+      <div class="xchev">›</div>
+    </div>
+    <div class="xbody">${body}</div>
+  </div>`;
+}
+
+function buildSeminar(){
+  const b=`
+    <div class="idiv">Deine Seminararbeit</div>
+    <div class="irow">
+      <span class="ikey">Thema</span>
+      <div style="flex:1"><textarea class="editable" id="sa-thema" rows="2" placeholder="Thema eintragen…">Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr</textarea></div>
+    </div>
+    <div class="irow">
+      <span class="ikey">SA-Abgabe</span>
+      <div><input type="date" class="editable" id="sa-datum" value="2025-03-10"/></div>
+    </div>
+    <div class="irow">
+      <span class="ikey">Betreuung</span>
+      <span class="ival">Viktoria Miklautz · v.miklautz@elver.at · 0664/1680033</span>
+    </div>
+    <div class="irow" style="border-bottom:none">
+      <span class="ikey">Coaching</span>
+      <span class="ival">Larissa Znidaric · l.znidaric@buteo.at</span>
+    </div>
+    <div class="idiv" style="margin-top:16px">Arbeit einreichen</div>
+    <div class="uzone" id="dropzone">
+      <input type="file" id="fileinput" accept=".pptx,.docx,.pdf,.ppt,.doc" multiple/>
+      <div class="uzone-icon">📎</div>
+      <div class="uzone-title">Dateien hier ablegen</div>
+      <div class="uzone-sub">oder tippen zum Auswählen · .pptx · .docx · .pdf</div>
+    </div>
+    <div class="flist" id="flist"></div>
+    <button class="sbtn" id="sbtn" onclick="submitFiles()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Einreichen per E-Mail
+    </button>
+    <div class="snote" id="snote">Öffnet deinen Mail-Client mit Datei-Hinweis · Empfänger: <strong style="color:var(--accent2)">${UPLOAD_EMAIL}</strong></div>`;
+  return xcard('c-sa','🎓','Seminararbeit','Thema bearbeiten · Deadline · Einreichen',b);
+}
+
+function buildTermine(){
+  const next=TERMINE.find(t=>t.u)||TERMINE[0];
+  const rows=TERMINE.map(t=>`
+    <div class="tlrow">
+      <div class="tldot${t.u?' u':''}"></div>
+      <div class="tldate${t.u?' u':''}">${t.datum}</div>
+      <div><div class="tltitle">${t.titel}</div>${t.sub?`<div class="tlsub">${t.sub}</div>`:''}</div>
+    </div>`).join('');
+  return xcard('c-tm','📅','Termine & Fristen',`${TERMINE.length} Einträge · nächste: ${next.datum}`,`<div class="tl">${rows}</div>`);
+}
+
+let tid=0;
+function buildTasks(){
+  const secs=TASKS.map(g=>{
+    const items=g.items.map(t=>{
+      const id='t'+(tid++);
+      return `<div class="titem">
+        <div class="tcheck" id="${id}" onclick="togT('${id}')">✓</div>
+        <div><div class="tlabel" id="${id}l">${t.l}</div><div class="tdue">${t.d}</div></div>
+      </div>`;
+    }).join('');
+    return `<div class="tsec"><div class="tglabel">${g.g}</div>${items}</div>`;
+  }).join('');
+  return xcard('c-tk','✅','Tasks – Peer Group','Offene Aufgaben & Verantwortlichkeiten',secs);
+}
+
+document.getElementById('root').innerHTML =
+  buildSeminar()+buildTermine()+buildTasks()+
+  `<a class="lcard" href="https://www.icloud.com/iclouddrive/081q_w11KR-VtsH0StnXPv04g#Allgemein" target="_blank" rel="noopener">
+    <div class="cicon">☁️</div>
+    <div style="flex:1;min-width:0">
+      <div class="clabel">Unterlagen Vorlagen</div>
+      <div class="cdesc">Seminar-Dateien · Vorlagen · iCloud</div>
+    </div>
+    <div class="carrow">→</div>
+  </a>`;
+
+// ── INTERAKTION ──────────────────────────────────────────────
+
+function tog(id){document.getElementById(id).classList.toggle('open');}
+
+function togT(id){
+  const b=document.getElementById(id),l=document.getElementById(id+'l');
+  b.classList.toggle('done');
+  const d=b.classList.contains('done');
+  l.style.opacity=d?'.38':'1';
+  l.style.textDecoration=d?'line-through':'';
+}
+
+let files=[];
+const dz=document.getElementById('dropzone');
+const fi=document.getElementById('fileinput');
+
+fi.addEventListener('change',e=>add(e.target.files));
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');add(e.dataTransfer.files);});
+
+function add(list){
+  Array.from(list).forEach(f=>{if(!files.find(x=>x.name===f.name))files.push(f);});
+  render();
+}
+function del(n){files=files.filter(f=>f.name!==n);render();}
+function render(){
+  document.getElementById('flist').innerHTML=files.map(f=>`
+    <div class="fitem">
+      <span>📄</span>
+      <span class="fname">${f.name}</span>
+      <span class="fsize">${(f.size/1024/1024).toFixed(1)} MB</span>
+      <button class="fdel" onclick="del('${f.name}')">✕</button>
+    </div>`).join('');
+  const show=files.length>0;
+  document.getElementById('sbtn').style.display=show?'flex':'none';
+  document.getElementById('snote').style.display=show?'block':'none';
+}
+
+function submitFiles(){
+  const thema=document.getElementById('sa-thema').value||'Seminararbeit';
+  const datum=document.getElementById('sa-datum').value||'';
+  const names=files.map(f=>f.name).join(', ');
+  const body=`Hallo,\n\nanbei meine Seminararbeit-Unterlagen zur Abgabe:\n\nThema: ${thema}\nAbgabedatum: ${datum}\nDateien: ${names}\n\nLiebe Grüße`;
+  window.location.href=`mailto:${UPLOAD_EMAIL}?subject=Seminararbeit Abgabe – ELVER 59&body=${encodeURIComponent(body)}`;
+}
+</script>
+</body>
+</html>
