@@ -138,16 +138,26 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 .tlcountdown.past{color:var(--muted2);font-weight:400;}
 
 /* STUNDENPLAN */
-.sp-filter{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-.sp-fbtn{background:none;border:1px solid var(--border);border-radius:100px;color:var(--muted);font-size:11px;padding:4px 10px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap;}
+.sp-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;}
+.sp-nav-btn{width:34px;height:34px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--muted);transition:all .18s;flex-shrink:0;user-select:none;}
+.sp-nav-btn:hover{border-color:rgba(95,217,138,.4);color:var(--accent);}
+.sp-nav-btn:disabled,.sp-nav-btn.disabled{opacity:.25;pointer-events:none;}
+.sp-nav-center{flex:1;text-align:center;}
+.sp-nav-week{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);line-height:1.2;}
+.sp-nav-range{font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:.04em;}
+.sp-nav-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--border);margin:6px 2px 0;cursor:pointer;transition:background .15s;}
+.sp-nav-dot.cur{background:var(--accent);}
+.sp-tabs{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
+.sp-tabs::-webkit-scrollbar{display:none;}
+.sp-fbtn{background:none;border:1px solid var(--border);border-radius:100px;color:var(--muted);font-size:11px;padding:4px 10px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap;flex-shrink:0;}
 .sp-fbtn.active{border-color:var(--accent);color:var(--accent);background:rgba(95,217,138,.08);}
-.sp-week{margin-bottom:14px;}
+.sp-week{margin-bottom:6px;}
 .sp-week-label{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
 .sp-week-label::after{content:'';flex:1;height:1px;background:rgba(95,217,138,.08);}
-.sp-day{display:flex;gap:10px;padding:8px 10px;border-radius:10px;margin-bottom:4px;background:var(--surface2);border:1px solid var(--border);transition:border-color .15s;}
+.sp-day{display:flex;gap:10px;padding:8px 10px;border-radius:10px;margin-bottom:4px;background:var(--surface2);border:1px solid var(--border);transition:border-color .15s,transform .15s;}
 .sp-day.today{border-color:rgba(95,217,138,.35);background:rgba(95,217,138,.06);}
 .sp-day.peer{border-color:rgba(240,201,110,.25);background:rgba(240,201,110,.04);}
-.sp-day.frei{opacity:.45;}
+.sp-day.frei{opacity:.38;}
 .sp-day.pruef{border-color:rgba(232,97,77,.3);background:rgba(232,97,77,.04);}
 .sp-date-col{min-width:42px;flex-shrink:0;}
 .sp-day-name{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
@@ -160,10 +170,14 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 .sp-multi{display:flex;flex-direction:column;gap:4px;}
 .sp-multi-item{padding:4px 8px;background:rgba(95,217,138,.04);border-left:2px solid rgba(95,217,138,.2);border-radius:0 5px 5px 0;}
 .sp-peer-tag{display:inline-block;font-size:10px;color:var(--warm);background:rgba(240,201,110,.1);border:1px solid rgba(240,201,110,.2);border-radius:100px;padding:1px 7px;margin-top:2px;}
-.sp-search{width:100%;background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none;margin-bottom:10px;transition:border-color .2s;}
+.sp-search{width:100%;background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none;margin-bottom:12px;transition:border-color .2s;}
 .sp-search:focus{border-color:rgba(95,217,138,.4);}
 .sp-search::placeholder{color:var(--muted2);}
 .sp-empty{font-size:13px;color:var(--muted);text-align:center;padding:20px;font-style:italic;}
+.sp-slide{animation:spSlideIn .22s ease both;}
+@keyframes spSlideIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
+.sp-slide-back{animation:spSlideBack .22s ease both;}
+@keyframes spSlideBack{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
 
 /* TASKS */
 .tsec{margin-top:12px;}.tsec:first-child{margin-top:0;}
@@ -435,7 +449,13 @@ function groupName(gn){ const g=loadGroups(); return (g[gn]&&g[gn].label)||GROUP
 let STATE = { name:'', thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr', datum:'2026-03-10', tasks:{}, group:0 };
 
 function loadGroups(){
-  try{ return JSON.parse(localStorage.getItem('elver59_groups'))||createGroups(); }catch(e){ return createGroups(); }
+  try{
+    const raw=localStorage.getItem('elver59_groups');
+    if(raw) return JSON.parse(raw);
+    const g=createGroups();
+    localStorage.setItem('elver59_groups',JSON.stringify(g));
+    return g;
+  }catch(e){ return createGroups(); }
 }
 function createGroups(){
   const g={};
@@ -692,15 +712,57 @@ const DAYS_DE = ['So','Mo','Di','Mi','Do','Fr','Sa'];
 const MONTHS_DE = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 const TYP_COLORS = { pers:'rgba(95,217,138,.18)', entw:'rgba(100,180,230,.18)', did:'rgba(147,112,219,.18)', org:'rgba(240,201,110,.18)', peer:'rgba(240,201,110,.1)', pruef:'rgba(232,97,77,.18)', frei:'transparent' };
 
-let spFilter = 'all';
+// ── STUNDENPLAN ───────────────────────────────────────────────
+let spFilter='all', spWeekOffset=0, spSearchMode=false;
+
+// Safe local date string YYYY-MM-DD — never use toISOString (UTC drift!)
+function localDateStr(dt){ return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); }
+
+// Get Monday of the week containing a given date
+function getMondayOf(dt){
+  const d=new Date(dt); d.setHours(0,0,0,0);
+  const day=d.getDay(); // 0=Sun
+  const diff=day===0?-6:1-day; // go back to Monday
+  d.setDate(d.getDate()+diff);
+  return d;
+}
+
+// Build sorted list of unique Monday-keys (local, no UTC)
+function spGetAllWeeks(){
+  const seen=new Set();
+  SP.forEach(e=>{
+    const mon=getMondayOf(new Date(e.d));
+    seen.add(localDateStr(mon));
+  });
+  return [...seen].sort();
+}
+
+// Find the index of the current week.
+// On weekdays: the week containing today.
+// On Sat/Sun: the NEXT week (so upcoming content is shown).
+function spCurrentWeekIdx(weeks){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const day=today.getDay();
+  // On weekend, pretend it's next Monday
+  const ref=new Date(today);
+  if(day===6) ref.setDate(ref.getDate()+2);
+  else if(day===0) ref.setDate(ref.getDate()+1);
+  const refMon=getMondayOf(ref);
+  const refKey=localDateStr(refMon);
+  // Find exact match first
+  const exact=weeks.indexOf(refKey);
+  if(exact>=0) return exact;
+  // Otherwise find nearest upcoming week
+  for(let i=0;i<weeks.length;i++){ if(weeks[i]>=refKey) return i; }
+  return weeks.length-1;
+}
+
 function buildStundenplan(){
-  const today = new Date(); today.setHours(0,0,0,0);
-  // Find next upcoming lesson
-  const nextLesson = SP.find(e=>{ const dt=new Date(e.d); dt.setHours(0,0,0,0); return dt>=today && e.typ!=='frei'; });
-  const desc = nextLesson ? `Nächster Tag: ${formatDate(nextLesson.d)}` : 'AL59 · 02.03.–31.08.2026';
-  const body = `
-    <input class="sp-search" id="sp-search" placeholder="Thema oder Referent suchen…" oninput="renderSP()"/>
-    <div class="sp-filter">
+  const body=`
+    <div id="sp-search-wrap">
+      <input class="sp-search" id="sp-search" placeholder="🔍  Thema oder Referent suchen…" oninput="spOnSearch()"/>
+    </div>
+    <div class="sp-tabs" id="sp-tabs">
       <button class="sp-fbtn active" onclick="setSpFilter('all',this)">Alle</button>
       <button class="sp-fbtn" onclick="setSpFilter('pers',this)">Persönlichkeit</button>
       <button class="sp-fbtn" onclick="setSpFilter('entw',this)">Entwicklung</button>
@@ -708,73 +770,176 @@ function buildStundenplan(){
       <button class="sp-fbtn" onclick="setSpFilter('org',this)">Organisation</button>
       <button class="sp-fbtn" onclick="setSpFilter('peer',this)">Peergroup</button>
     </div>
+    <div id="sp-nav-wrap">
+      <div class="sp-nav">
+        <button class="sp-nav-btn" id="sp-prev" onclick="spNav(-1)">‹</button>
+        <div class="sp-nav-center">
+          <div class="sp-nav-week" id="sp-nav-label">–</div>
+          <div class="sp-nav-range" id="sp-nav-range">–</div>
+          <div id="sp-dots"></div>
+        </div>
+        <button class="sp-nav-btn" id="sp-next" onclick="spNav(1)">›</button>
+      </div>
+    </div>
     <div id="sp-list"></div>`;
-  setTimeout(()=>{ document.getElementById('c-sp-d').textContent=desc; renderSP(); },0);
+  setTimeout(spInitRender, 0);
   return xcard('c-sp','📆','Stundenplan',body);
 }
 
-function setSpFilter(f, btn){
+function spInitRender(){
+  const weeks=spGetAllWeeks();
+  spWeekOffset=spCurrentWeekIdx(weeks);
+  spRenderWeek(false);
+}
+
+function spOnSearch(){
+  const q=(document.getElementById('sp-search')?.value||'').trim();
+  spSearchMode=q.length>0;
+  document.getElementById('sp-nav-wrap').style.display=spSearchMode?'none':'block';
+  spSearchMode ? spRenderSearch(q) : spRenderWeek(false);
+}
+
+function setSpFilter(f,btn){
   spFilter=f;
   document.querySelectorAll('.sp-fbtn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  renderSP();
+  spSearchMode ? spOnSearch() : spRenderWeek(false);
+}
+
+function spNav(dir){
+  const weeks=spGetAllWeeks();
+  const newOffset=spWeekOffset+dir;
+  if(newOffset<0||newOffset>=weeks.length) return;
+  spWeekOffset=newOffset;
+  spRenderWeek(dir);
 }
 
 function formatDate(d){ const dt=new Date(d); return DAYS_DE[dt.getDay()]+' '+dt.getDate()+'. '+MONTHS_DE[dt.getMonth()]; }
 function formatDateShort(d){ const dt=new Date(d); return dt.getDate()+'.'+String(dt.getMonth()+1).padStart(2,'0'); }
 
-function renderSP(){
+function spRenderWeek(dir){
   const container=document.getElementById('sp-list'); if(!container) return;
-  const q=(document.getElementById('sp-search')?.value||'').toLowerCase().trim();
+  const weeks=spGetAllWeeks();
+  const wk=weeks[spWeekOffset];
+  if(!wk) return;
+
+  const wkDt=new Date(wk+'T00:00:00'); // local midnight, no UTC drift
+  const wkEnd=new Date(wkDt); wkEnd.setDate(wkEnd.getDate()+6); // full Sun included
   const today=new Date(); today.setHours(0,0,0,0);
+  const todayStr=localDateStr(today);
+  const curIdx=spCurrentWeekIdx(weeks);
+  const isCurrentWeek=spWeekOffset===curIdx;
+  const isNextWeek=spWeekOffset===curIdx+1;
 
-  let filtered=SP.filter(e=>{
-    if(spFilter!=='all' && e.typ!==spFilter) return false;
-    if(q && !e.l.toLowerCase().includes(q) && !e.r.toLowerCase().includes(q)) return false;
-    return true;
+  // Nav labels
+  let weekLabel=isCurrentWeek?'📍 Diese Woche':isNextWeek?'➡ Nächste Woche':`KW ${getKW(wkDt)}`;
+  const wkEndFri=new Date(wkDt); wkEndFri.setDate(wkEndFri.getDate()+4);
+  const monthLabel=wkDt.getMonth()===wkEndFri.getMonth()
+    ?`${wkDt.getDate()}. – ${wkEndFri.getDate()}. ${MONTHS_DE[wkDt.getMonth()]} ${wkDt.getFullYear()}`
+    :`${wkDt.getDate()}. ${MONTHS_DE[wkDt.getMonth()]} – ${wkEndFri.getDate()}. ${MONTHS_DE[wkEndFri.getMonth()]} ${wkEndFri.getFullYear()}`;
+
+  const navLabel=document.getElementById('sp-nav-label');
+  const navRange=document.getElementById('sp-nav-range');
+  const prevBtn=document.getElementById('sp-prev');
+  const nextBtn=document.getElementById('sp-next');
+  if(navLabel) navLabel.textContent=weekLabel;
+  if(navRange) navRange.textContent=monthLabel;
+  if(prevBtn) prevBtn.classList.toggle('disabled',spWeekOffset===0);
+  if(nextBtn) nextBtn.classList.toggle('disabled',spWeekOffset>=weeks.length-1);
+
+  // Dots
+  const dotsEl=document.getElementById('sp-dots');
+  if(dotsEl){
+    const start=Math.max(0,curIdx-2); const end=Math.min(weeks.length-1,curIdx+4);
+    let dots='';
+    for(let i=start;i<=end;i++) dots+=`<span class="sp-nav-dot${i===spWeekOffset?' cur':''}" onclick="spJump(${i})"></span>`;
+    dotsEl.innerHTML=dots;
+  }
+
+  // Card subtitle
+  const desc=document.getElementById('c-sp-d');
+  if(desc) desc.textContent=isCurrentWeek?'Diese Woche':monthLabel;
+
+  // Filter days: compare date strings directly — no timezone issues
+  const monStr=wk; // 'YYYY-MM-DD' of Monday
+  const friDt=new Date(wkDt); friDt.setDate(friDt.getDate()+4);
+  const friStr=localDateStr(friDt);
+
+  const days=SP.filter(e=>{
+    if(spFilter!=='all'&&e.typ!==spFilter) return false;
+    return e.d>=monStr && e.d<=friStr; // string compare works for ISO dates
   });
 
-  if(!filtered.length){ container.innerHTML='<div class="sp-empty">Keine Einträge gefunden</div>'; return; }
+  if(!days.length){
+    container.className='';
+    container.innerHTML='<div class="sp-empty">Keine Einträge diese Woche</div>';
+    return;
+  }
 
-  // Group by week
-  const weeks={};
-  filtered.forEach(e=>{
-    const dt=new Date(e.d);
-    const mon=new Date(dt); mon.setDate(dt.getDate()-dt.getDay()+1);
-    const key=mon.toISOString().slice(0,10);
-    if(!weeks[key]) weeks[key]=[];
-    weeks[key].push(e);
-  });
+  container.className=dir>0?'sp-slide':dir<0?'sp-slide-back':'';
+  container.innerHTML=days.map(e=>{
+    const dt=new Date(e.d+'T00:00:00');
+    const isToday=e.d===todayStr;
+    const lessons=e.l.split('\n').filter(Boolean);
+    const multiHtml=lessons.length>1
+      ?`<div class="sp-multi">${lessons.map(ll=>`<div class="sp-multi-item"><div class="sp-lesson" style="font-size:12px">${ll}</div></div>`).join('')}${e.r?`<div class="sp-ref" style="margin-top:4px">${e.r}</div>`:''}</div>`
+      :`<div class="sp-lesson">${lessons[0]||''}</div>${e.r?`<div class="sp-ref">${e.r}</div>`:''}`;
+    const peerTag=e.typ==='peer'?`<span class="sp-peer-tag">Peergroup</span>`:'';
+    const pruefTag=e.typ==='pruef'?`<span class="sp-peer-tag" style="color:var(--red);background:rgba(232,97,77,.1);border-color:rgba(232,97,77,.2)">Prüfung</span>`:'';
+    const todayBadge=isToday?`<span style="font-size:9px;background:rgba(95,217,138,.15);color:var(--accent);border-radius:100px;padding:1px 6px;font-weight:700;margin-left:4px;">Heute</span>`:'';
+    return `<div class="sp-day${isToday?' today':''}${e.typ==='peer'?' peer':''}${e.typ==='frei'?' frei':''}${e.typ==='pruef'?' pruef':''}">
+      <div class="sp-date-col">
+        <div class="sp-day-name">${DAYS_DE[dt.getDay()]}</div>
+        <div class="sp-day-num">${dt.getDate()}</div>
+      </div>
+      <div class="sp-content">
+        ${e.z?`<div class="sp-time">${e.z}${todayBadge}</div>`:(isToday?`<div style="margin-bottom:2px">${todayBadge}</div>`:'')}
+        ${multiHtml}${peerTag}${pruefTag}
+      </div>
+    </div>`;
+  }).join('');
+}
 
-  let html='';
-  Object.keys(weeks).sort().forEach(wk=>{
-    const wkDt=new Date(wk);
-    const wkEnd=new Date(wk); wkEnd.setDate(wkEnd.getDate()+4);
-    html+=`<div class="sp-week"><div class="sp-week-label">${wkDt.getDate()}.${String(wkDt.getMonth()+1).padStart(2,'0')} – ${wkEnd.getDate()}.${String(wkEnd.getMonth()+1).padStart(2,'0')}.${wkEnd.getFullYear()}</div>`;
-    weeks[wk].forEach(e=>{
-      const dt=new Date(e.d); dt.setHours(0,0,0,0);
-      const isToday=dt.getTime()===today.getTime();
-      const lessons=e.l.split('\n').filter(Boolean);
-      const multiHtml=lessons.length>1
-        ? `<div class="sp-multi">${lessons.map(ll=>`<div class="sp-multi-item"><div class="sp-lesson" style="font-size:12px">${ll}</div></div>`).join('')}<div class="sp-ref">${e.r}</div></div>`
-        : `<div class="sp-lesson">${lessons[0]}</div>${e.r?`<div class="sp-ref">${e.r}</div>`:''}`;
-      const peerTag=e.typ==='peer'?`<span class="sp-peer-tag">Peergroup</span>`:'';
-      const pruefTag=e.typ==='pruef'?`<span class="sp-peer-tag" style="color:var(--red);background:rgba(232,97,77,.1);border-color:rgba(232,97,77,.2)">Prüfung</span>`:'';
-      html+=`<div class="sp-day${isToday?' today':''}${e.typ==='peer'?' peer':''}${e.typ==='frei'?' frei':''}${e.typ==='pruef'?' pruef':''}">
-        <div class="sp-date-col">
-          <div class="sp-day-name">${DAYS_DE[dt.getDay()]}</div>
-          <div class="sp-day-num">${dt.getDate()}</div>
-        </div>
-        <div class="sp-content">
-          ${e.z?`<div class="sp-time">${e.z}</div>`:''}
-          ${multiHtml}
-          ${peerTag}${pruefTag}
-        </div>
-      </div>`;
-    });
-    html+='</div>';
+function spJump(idx){
+  const dir=idx>spWeekOffset?1:-1;
+  spWeekOffset=idx;
+  spRenderWeek(dir);
+}
+
+function spRenderSearch(q){
+  const container=document.getElementById('sp-list'); if(!container) return;
+  const ql=q.toLowerCase();
+  const today=new Date(); today.setHours(0,0,0,0);
+  const results=SP.filter(e=>{
+    if(spFilter!=='all'&&e.typ!==spFilter) return false;
+    return e.l.toLowerCase().includes(ql)||e.r.toLowerCase().includes(ql);
   });
-  container.innerHTML=html;
+  if(!results.length){ container.innerHTML='<div class="sp-empty">Nichts gefunden</div>'; return; }
+  container.className='';
+  container.innerHTML=results.map(e=>{
+    const dt=new Date(e.d); dt.setHours(0,0,0,0);
+    const isToday=dt.getTime()===today.getTime();
+    const lessons=e.l.split('\n').filter(Boolean);
+    return `<div class="sp-day${isToday?' today':''}${e.typ==='peer'?' peer':''}${e.typ==='frei'?' frei':''}${e.typ==='pruef'?' pruef':''}">
+      <div class="sp-date-col">
+        <div class="sp-day-name">${DAYS_DE[dt.getDay()]}</div>
+        <div class="sp-day-num">${dt.getDate()}.${String(dt.getMonth()+1).padStart(2,'0')}</div>
+      </div>
+      <div class="sp-content">
+        ${e.z?`<div class="sp-time">${e.z}</div>`:''}
+        ${lessons.map(l=>`<div class="sp-lesson">${l}</div>`).join('')}
+        ${e.r?`<div class="sp-ref">${e.r}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function getKW(d){
+  const dt=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const day=dt.getUTCDay()||7;
+  dt.setUTCDate(dt.getUTCDate()+4-day);
+  const y=new Date(Date.UTC(dt.getUTCFullYear(),0,1));
+  return Math.ceil((((dt-y)/86400000)+1)/7);
 }
 
 // SEMINAR
@@ -838,15 +1003,21 @@ function buildGroupsInner(){
   const groups=loadGroups();
   const myG=STATE.group||0;
   return Object.keys(groups).map(gn=>{
-    const g=groups[gn]; const isMine=parseInt(gn)===myG;
+    const g=groups[gn];
+    const isMine=myG>0&&parseInt(gn)===myG;
+    // "me" chip: highlight if member name contains user's name OR matches exactly
+    const myName=(STATE.name||'').toLowerCase();
     const members=g.members.length
-      ? g.members.map(m=>`<span class="pmember${m===STATE.name?' me':''}">${m}</span>`).join('')
+      ? g.members.map(m=>{
+          const isMe=myName&&(m.toLowerCase()===myName||m.toLowerCase().startsWith(myName+' ')||m.toLowerCase().includes(' '+myName));
+          return `<span class="pmember${isMe?' me':''}">${m}${isMe?' (Du)':''}</span>`;
+        }).join('')
       : `<span style="font-size:11px;color:var(--muted);font-style:italic;">Noch leer</span>`;
     return `<div class="pgroup${isMine?' mine':''}" id="pgrp-${gn}">
       <div class="pgroup-head">
         <div class="pgroup-num gn${gn}">${gn}</div>
         <div class="pgroup-title">Gruppe ${gn} · ${g.label||GROUP_NAMES_DEFAULT[gn]}</div>
-        ${isMine?`<span class="pgroup-you">Du</span>`:''}
+        ${isMine?`<span class="pgroup-you">Deine Gruppe</span>`:''}
       </div>
       <div class="pgroup-members">${members}</div>
       ${isMine
@@ -898,7 +1069,15 @@ function saveGroupThema(gn){
   const groups=loadGroups();
   if(groups[gn]) groups[gn].thema=inp.value;
   saveGroups(groups);
+  refreshGroupCard();
   flashMsg('✓ Gruppenthema gespeichert');
+}
+
+// Refresh the rendered peer-group card body live (no page reload needed)
+function refreshGroupCard(){
+  const card=document.getElementById('c-pg'); if(!card) return;
+  const body=card.querySelector('.xbody'); if(!body) return;
+  body.innerHTML=buildGroupsInner();
 }
 
 function updateGroupThemaInput(){
@@ -1071,16 +1250,56 @@ function danceTitle(){
 let pinInput='', editingUser=null;
 async function verifyPin(p){ const e=new TextEncoder().encode('elver59x'+p); const b=await crypto.subtle.digest('SHA-256',e); const h=Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join(''); return h==='966eccb987093641113e4369d9acaeb8708751e150f61fb411b1b262e79d5886'; }
 
-function openAdmin(){ pinInput=''; updatePinDots(); document.getElementById('pin-err').textContent=''; document.getElementById('admin-pin-screen').classList.remove('hidden'); document.getElementById('admin-main-screen').classList.add('hidden'); document.getElementById('admin-overlay').classList.remove('hidden'); }
-function closeAdmin(){ document.getElementById('admin-overlay').classList.add('hidden'); pinInput=''; }
+function _wipeAdmin(){
+  // Completely reset admin state — called on every open AND close
+  pinInput=''; editingUser=null;
+  updatePinDots();
+  document.getElementById('pin-err').textContent='';
+  // Always hide main, always show pin screen
+  document.getElementById('admin-main-screen').classList.add('hidden');
+  document.getElementById('admin-pin-screen').classList.remove('hidden');
+  // Wipe any rendered user/group data from the DOM so it's never visible before PIN
+  const ul=document.getElementById('admin-user-list'); if(ul) ul.innerHTML='';
+  const gl=document.getElementById('admin-group-list'); if(gl) gl.innerHTML='';
+  const ua=document.getElementById('admin-unassigned'); if(ua) ua.innerHTML='';
+  document.getElementById('admin-edit-section').style.display='none';
+  // Switch tab back to users silently
+  document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  document.querySelectorAll('.admin-tabpanel').forEach((p,i)=>p.classList.toggle('active',i===0));
+}
+
+function openAdmin(){
+  _wipeAdmin();
+  document.getElementById('admin-overlay').classList.remove('hidden');
+  // Focus first pin key after short delay
+  setTimeout(()=>{ document.querySelector('.pin-key')?.focus(); },120);
+}
+
+function closeAdmin(){
+  document.getElementById('admin-overlay').classList.add('hidden');
+  _wipeAdmin(); // wipe immediately on close — data never lingers
+}
 function pinKey(k){ if(pinInput.length>=4) return; pinInput+=k; updatePinDots(); if(pinInput.length===4) setTimeout(checkPin,150); }
 function pinBackspace(){ pinInput=pinInput.slice(0,-1); updatePinDots(); }
 function pinClear(){ pinInput=''; updatePinDots(); }
 function updatePinDots(){ for(let i=0;i<4;i++) document.getElementById('pd'+i)?.classList.toggle('filled',i<pinInput.length); }
 async function checkPin(){
-  if(await verifyPin(pinInput)){ document.getElementById('admin-pin-screen').classList.add('hidden'); document.getElementById('admin-main-screen').classList.remove('hidden'); renderAdminUsers(); renderAdminGroups(); }
-  else { document.getElementById('pin-err').textContent='Falscher PIN'; pinInput=''; updatePinDots(); setTimeout(()=>{document.getElementById('pin-err').textContent='';},2000); }
+  if(await verifyPin(pinInput)){
+    document.getElementById('admin-pin-screen').classList.add('hidden');
+    document.getElementById('admin-main-screen').classList.remove('hidden');
+    renderAdminUsers(); renderAdminGroups();
+    pinInput=''; updatePinDots(); // clear PIN from memory immediately after unlock
+  } else {
+    document.getElementById('pin-err').textContent='Falscher PIN';
+    pinInput=''; updatePinDots();
+    setTimeout(()=>{ const e=document.getElementById('pin-err'); if(e) e.textContent=''; },2000);
+  }
 }
+
+// Click outside the admin panel → close + wipe
+document.getElementById('admin-overlay').addEventListener('click',function(e){
+  if(e.target===this) closeAdmin();
+});
 function switchTab(n){
   document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',['users','groups','add'][i]===n));
   document.querySelectorAll('.admin-tabpanel').forEach(p=>p.classList.remove('active'));
@@ -1156,6 +1375,7 @@ function saveEditedUser(){
   saveGroups(groups);
   editingUser=null;
   document.getElementById('admin-edit-section').style.display='none';
+  refreshGroupCard(); updateGroupBadge();
   renderAdminUsers(); renderAdminGroups(); flashMsg('✓ Gespeichert');
 }
 
@@ -1219,13 +1439,8 @@ function saveGroupMeta(gn){
   saveGroups(groups);
   document.getElementById('agroup-edit-'+gn).style.display='none';
   renderAdminGroups();
-  // Also refresh the peer-group card if visible
-  const pgCard=document.getElementById('c-pg');
-  if(pgCard&&pgCard.classList.contains('open')){
-    const body=pgCard.querySelector('.xbody');
-    if(body) body.innerHTML=buildGroupsInner();
-    updateGroupThemaInput();
-  }
+  refreshGroupCard();
+  updateGroupBadge();
   flashMsg('✓ Gruppe '+gn+' aktualisiert');
 }
 
@@ -1234,7 +1449,10 @@ function addToGroup(gn,name){
   Object.values(groups).forEach(g=>{ g.members=g.members.filter(m=>m!==name); });
   if(groups[gn]&&!groups[gn].members.includes(name)) groups[gn].members.push(name);
   saveGroups(groups);
-  try{ const k='elver59_'+name.toLowerCase(); const u=JSON.parse(localStorage.getItem(k)||'{}'); u.group=gn; localStorage.setItem(k,JSON.stringify(u)); }catch(e){}
+  try{ const k='elver59_'+name.toLowerCase(); const u=JSON.parse(localStorage.getItem(k)||'{}'); u.group=parseInt(gn); localStorage.setItem(k,JSON.stringify(u)); }catch(e){}
+  // If this is the current logged-in user, update their live STATE too
+  if(STATE.name&&name.toLowerCase()===STATE.name.toLowerCase()){ STATE.group=parseInt(gn); saveState(); updateGroupBadge(); }
+  refreshGroupCard();
   renderAdminGroups(); renderAdminUsers(); flashMsg('✓ '+name+' → Gruppe '+gn);
 }
 
@@ -1243,7 +1461,9 @@ function removeFromGroup(gn,name){
   if(groups[gn]) groups[gn].members=groups[gn].members.filter(m=>m!==name);
   saveGroups(groups);
   try{ const k='elver59_'+name.toLowerCase(); const u=JSON.parse(localStorage.getItem(k)||'{}'); u.group=0; localStorage.setItem(k,JSON.stringify(u)); }catch(e){}
-  renderAdminGroups(); renderAdminUsers(); flashMsg('✓ Entfernt');
+  if(STATE.name&&name.toLowerCase()===STATE.name.toLowerCase()){ STATE.group=0; saveState(); updateGroupBadge(); }
+  refreshGroupCard();
+  renderAdminGroups(); renderAdminUsers(); flashMsg('✓ '+name+' aus Gruppe '+gn+' entfernt');
 }
 
 function flashMsg(msg){
