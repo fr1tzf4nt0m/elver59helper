@@ -2193,16 +2193,34 @@ function resetSettings(){
 
 // ── RICK ROLL ─────────────────────────────────────────────
 function openRickRoll(){
-  // Sync within click handler = browser allows autoplay+sound
-  const frame = document.getElementById('rickroll-frame');
-  // youtube.com embed has better autoplay+sound support than nocookie
-  frame.src = 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3&disablekb=1';
+  (function playRickIntro(){
+    try{
+      const ctx=new(window.AudioContext||window.webkitAudioContext)();
+      const riff=[
+        [440,.15,0],[493.88,.15,.18],[587.33,.15,.36],[493.88,.15,.54],
+        [739.99,.20,.72],[739.99,.15,.96],[659.26,.30,1.14],
+        [659.26,.15,1.48],[587.33,.30,1.66],
+        [440,.15,2.10],[493.88,.15,2.28],[587.33,.15,2.46],[493.88,.15,2.64],
+        [587.33,.20,2.82],[659.26,.40,3.05],
+      ];
+      riff.forEach(([freq,dur,delay])=>{
+        const osc=ctx.createOscillator(),gain=ctx.createGain();
+        osc.connect(gain);gain.connect(ctx.destination);
+        osc.type='square';osc.frequency.value=freq;
+        gain.gain.setValueAtTime(0,ctx.currentTime+delay);
+        gain.gain.linearRampToValueAtTime(.18,ctx.currentTime+delay+.02);
+        gain.gain.linearRampToValueAtTime(0,ctx.currentTime+delay+dur);
+        osc.start(ctx.currentTime+delay);osc.stop(ctx.currentTime+delay+dur+.05);
+      });
+    }catch(e){}
+  })();
+  const frame=document.getElementById('rickroll-frame');
+  frame.src='https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3&disablekb=1';
   document.getElementById('rickroll-overlay').classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-  document.addEventListener('keydown', _rr_esc);
-  // Remove black cover after 1.8s — video is playing by then, thumbnail never visible
-  const cover = document.getElementById('rickroll-cover');
-  if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'), 1800); }
+  document.body.style.overflow='hidden';
+  document.addEventListener('keydown',_rr_esc);
+  const cover=document.getElementById('rickroll-cover');
+  if(cover){cover.classList.remove('gone');setTimeout(()=>cover.classList.add('gone'),3600);}
 }
 function closeRickRoll(){
   document.getElementById('rickroll-frame').src = '';
