@@ -2196,18 +2196,7 @@ function openRickRoll(){
   // Sync within click handler = browser allows autoplay+sound
   const frame = document.getElementById('rickroll-frame');
   // youtube.com embed has better autoplay+sound support than nocookie
-  // Invidious = YouTube-Mirror, werbefrei
-  // Mehrere Instanzen als Fallback
-  const _inv = [
-    'https://invidious.nerdvpn.de',
-    'https://inv.nadeko.net',
-    'https://yewtu.be',
-    'https://invidious.privacyredirect.com'
-  ];
-  const _params = '/embed/dQw4w9WgXcQ?autoplay=1&mute=0&rel=0&playsinline=1';
-  frame.src = _inv[0] + _params;
-  // If iframe errors, try next instance
-  frame.onerror = function(){ const next = _inv.shift(); if(_inv.length) frame.src = _inv[0]+_params; };
+  frame.src = 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3&disablekb=1';
   document.getElementById('rickroll-overlay').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
   document.addEventListener('keydown', _rr_esc);
