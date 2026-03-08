@@ -474,8 +474,28 @@ function buildLink(){ return window.location.origin+window.location.pathname+'#'
 
 function saveState(){
   if(!STATE.name) return;
-  try{ localStorage.setItem('elver59_'+STATE.name.toLowerCase(),JSON.stringify(STATE)); localStorage.setItem('elver59_lastuser',STATE.name); }catch(e){}
+  const key='elver59_'+STATE.name.toLowerCase();
+  const val=JSON.stringify(STATE);
+  // Triple-save: localStorage + sessionStorage + cookie (iOS PWA fallback)
+  try{ localStorage.setItem(key,val); localStorage.setItem('elver59_lastuser',STATE.name); }catch(e){}
+  try{ sessionStorage.setItem(key,val); sessionStorage.setItem('elver59_lastuser',STATE.name); }catch(e){}
+  try{ document.cookie='elver59_lastuser='+encodeURIComponent(STATE.name)+';path=/;max-age=31536000'; }catch(e){}
   refreshLink(); updateTaskProgress();
+}
+
+function loadStateFromStorage(){
+  // Try localStorage first, then sessionStorage, then cookie
+  let ln=null;
+  try{ ln=localStorage.getItem('elver59_lastuser'); }catch(e){}
+  if(!ln){ try{ ln=sessionStorage.getItem('elver59_lastuser'); }catch(e){} }
+  if(!ln){ try{ const m=document.cookie.match(/elver59_lastuser=([^;]+)/); if(m) ln=decodeURIComponent(m[1]); }catch(e){} }
+  if(!ln) return null;
+  let s=null;
+  try{ s=localStorage.getItem('elver59_'+ln.toLowerCase()); }catch(e){}
+  if(!s){ try{ s=sessionStorage.getItem('elver59_'+ln.toLowerCase()); }catch(e){} }
+  if(!s) return null;
+  try{ const p=JSON.parse(s); if(p&&p.name) return p; }catch(e){}
+  return null;
 }
 
 // ── MODAL ─────────────────────────────────────────────────────
@@ -485,9 +505,9 @@ document.getElementById('modal-name').addEventListener('keydown',e=>{ if(e.key==
 
 function saveUser(){
   const name=document.getElementById('modal-name').value.trim(); if(!name) return;
-  // Always reset STATE to clean defaults — never inherit another user's group/data
   STATE={name:'',thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{}};
   try{ const ex=localStorage.getItem('elver59_'+name.toLowerCase()); if(ex){ const p=JSON.parse(ex); if(p&&p.name) STATE=p; } }catch(e){}
+  if(!STATE.name){ try{ const ex=sessionStorage.getItem('elver59_'+name.toLowerCase()); if(ex){ const p=JSON.parse(ex); if(p&&p.name) STATE=p; } }catch(e){} }
   STATE.name=name; saveState(); hideModal(); initUser(name); applyState();
 }
 
@@ -563,13 +583,12 @@ document.addEventListener('input',e=>{
   const hash=window.location.hash.slice(1); let loaded=false;
   if(hash){ const d=decodeState(hash); if(d&&d.name){ STATE=d; loaded=true; } }
   if(!loaded){
-    try{ const ln=localStorage.getItem('elver59_lastuser'); if(ln){ const s=localStorage.getItem('elver59_'+ln.toLowerCase()); if(s){ const p=JSON.parse(s); if(p&&p.name){ STATE=p; loaded=true; } } } }catch(e){}
+    const saved=loadStateFromStorage();
+    if(saved){ STATE=saved; loaded=true; }
   }
   if(loaded&&STATE.name){
-    localStorage.setItem('elver59_lastuser',STATE.name);
+    saveState(); // re-write to all storage layers so iOS PWA hat es sicher
     initUser(STATE.name);
-    // Fetch latest data.json from GitHub — updates groups silently
-
   } else showModal();
 })();
 
@@ -1328,17 +1347,20 @@ function buildTasks(){
 }
 
 // RENDER ALL
-document.getElementById('root').innerHTML =
-  buildStundenplan()+buildSeminar()+buildTermine()+buildTasks()+buildUnterlagen();
-
-// Init upload
-const dz=document.getElementById('dropzone'), fi=document.getElementById('fileinput');
-fi.addEventListener('change',e=>addFiles(e.target.files));
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
-dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');addFiles(e.dataTransfer.files);});
-
-applyState();
+function renderAll(){
+  const root=document.getElementById('root');
+  if(root){ root.innerHTML=buildStundenplan()+buildSeminar()+buildTermine()+buildTasks()+buildUnterlagen(); }
+  // Init upload
+  const dz=document.getElementById('dropzone'), fi=document.getElementById('fileinput');
+  if(fi){ fi.addEventListener('change',e=>addFiles(e.target.files)); }
+  if(dz){
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+    dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+    dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');addFiles(e.dataTransfer.files);});
+  }
+  applyState();
+}
+if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',renderAll); } else { renderAll(); }
 
 // ── INTERACTIONS ──────────────────────────────────────────────
 function tog(id){ document.getElementById(id).classList.toggle('open'); }
