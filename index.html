@@ -840,8 +840,7 @@ function syncStateFromDOM(){
   if(loaded&&STATE.name){
     localStorage.setItem('elver59_lastuser',STATE.name);
     initUser(STATE.name);
-    // Fetch latest data.json from GitHub — updates groups silently
-
+    applyState();
   } else showModal();
 })();
 
