@@ -1736,6 +1736,10 @@ window.addEventListener('pageshow', function(e){
   try{ document.getElementById('admin-pin-screen').classList.remove('hidden'); } catch(e){}
 });
 document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState === 'hidden'){
+    // iOS PWA: kein beforeunload → hier speichern wenn App in Hintergrund geht
+    try{ saveState(); }catch(e){}
+  }
   if(document.visibilityState === 'visible'){
     const overlay = document.getElementById('admin-overlay');
     if(overlay && !overlay.classList.contains('hidden')){
@@ -1743,6 +1747,10 @@ document.addEventListener('visibilitychange', function(){
       closeAdmin();
     }
   }
+});
+window.addEventListener('pagehide', function(){
+  // Zusätzliche Absicherung für iOS
+  try{ saveState(); }catch(e){}
 });
 
 // STARS
