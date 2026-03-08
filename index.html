@@ -516,7 +516,7 @@ body.light #starfield{opacity:0;}
     </div>
     <div class="rickroll-video-wrap">
       <iframe id="rickroll-frame" src=""
-        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+        allow="autoplay; fullscreen; picture-in-picture; encrypted-media; clipboard-write"
         allowfullscreen
         frameborder="0"></iframe>
       <div class="rickroll-cover" id="rickroll-cover">
@@ -2023,7 +2023,7 @@ function renderAdminDesign(){
         <option value="'Playfair Display'">Playfair Display – Literarisch</option>
       </select>
       <button class="settings-save-btn" style="margin-top:18px" onclick="saveAdminDesign()">✓ Design speichern</button>
-      <button class="settings-reset" onclick="resetSettings()">Zurücksetzen</button>
+      <button class="settings-reset" onclick="resetAdminDesign()">Zurücksetzen</button>
     </div>`;
   // Build theme grid in admin panel
   const saved = loadSettings();
@@ -2071,6 +2071,14 @@ function saveAdminDesign(){
   localStorage.setItem(SETTINGS_KEY, JSON.stringify({theme:id, font}));
   applyTheme(id, font);
   flashMsg('✓ Design gespeichert');
+}
+function resetAdminDesign(){
+  localStorage.removeItem(SETTINGS_KEY);
+  document.body.classList.remove(...ALL_THEME_CLASSES, 'light');
+  document.body.style.fontFamily = '';
+  window._adminDesignTheme = 'dark';
+  renderAdminDesign();
+  flashMsg('Design zurückgesetzt');
 }
 
 function renderAdminAdd(){
@@ -2305,8 +2313,9 @@ function applyTheme(id, font){
 
 function openSettings(){
   document.getElementById('settings-overlay').classList.remove('hidden');
-  buildThemeGrid();
   const saved = loadSettings();
+  _previewThemeId = saved.theme || 'dark';
+  buildThemeGrid();
   const fs = document.getElementById('settings-font');
   if(fs && saved.font){
     for(let o of fs.options){ if(o.value===saved.font){ o.selected=true; break; } }
@@ -2360,7 +2369,12 @@ function saveSettings(){
   const fs = document.getElementById('settings-font');
   const font = fs ? fs.value : '';
   const id = _previewThemeId || loadSettings().theme || 'dark';
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify({theme:id, font}));
+  try{
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({theme:id, font}));
+  }catch(e){
+    flashMsg('⚠️ Speichern fehlgeschlagen');
+    return;
+  }
   applyTheme(id, font);
   closeSettings();
   flashMsg('✓ Design gespeichert');
@@ -2404,12 +2418,14 @@ function openRickRoll(){
   })();
 
   const frame=document.getElementById('rickroll-frame');
-  frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1';
+  // Stumm starten → iOS erlaubt autoplay; User tippt Overlay → unmute = User-Gesture → Ton
+  frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=1&title=0&byline=0&portrait=0&playsinline=1&controls=1';
 
   const tap=document.getElementById('rickroll-tap');
   const cover=document.getElementById('rickroll-cover');
-  if(tap) tap.classList.add('gone');
-  if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'),2000); }
+  // Tap-Overlay sichtbar lassen damit User einmal antippt um Ton freizuschalten
+  if(tap) tap.classList.remove('gone');
+  if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'),1800); }
 
   document.getElementById('rickroll-overlay').classList.remove('hidden');
   document.body.style.overflow='hidden';
@@ -2418,7 +2434,13 @@ function openRickRoll(){
   window._rrTimer=setTimeout(()=>closeRickRoll(),20000);
 }
 
-function rickrollUnmute(){ /* nicht mehr nötig, bleibt für Kompatibilität */ }
+function rickrollUnmute(){
+  const tap=document.getElementById('rickroll-tap');
+  const frame=document.getElementById('rickroll-frame');
+  if(tap) tap.classList.add('gone');
+  // Neuladen mit muted=0 — jetzt ist es ein User-Gesture → iOS erlaubt Ton
+  if(frame) frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1';
+}
 
 
 
