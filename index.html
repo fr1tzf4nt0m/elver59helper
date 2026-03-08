@@ -550,11 +550,18 @@ async function fetchRemoteData(){
   try{
     const res = await fetch(DATA_JSON_URL+'?t='+Date.now());
     if(!res.ok) return null;
-    const json = await res.json();
-    if(json && json.groups){
-      // Merge remote groups into localStorage so the rest of the app works sync
-      localStorage.setItem('elver59_groups', JSON.stringify(json.groups));
-      return json.groups;
+    const remote = await res.json();
+    if(remote && remote.groups){
+      // Only sync label + thema from remote — never overwrite members (personal data stays local)
+      const local = loadGroups();
+      Object.keys(remote.groups).forEach(gn=>{
+        if(local[gn]){
+          if(remote.groups[gn].label !== undefined) local[gn].label = remote.groups[gn].label;
+          if(remote.groups[gn].thema !== undefined) local[gn].thema = remote.groups[gn].thema;
+        }
+      });
+      localStorage.setItem('elver59_groups', JSON.stringify(local));
+      return local;
     }
     return null;
   }catch(e){ return null; }
@@ -587,7 +594,12 @@ function saveGroups(g){ try{ localStorage.setItem('elver59_groups',JSON.stringif
 // Generate data.json content for admin to copy to GitHub
 function generateDataJSON(){
   const groups = loadGroups();
-  return JSON.stringify({ groups }, null, 2);
+  // Strip members — no personal data in public file
+  const safe = {};
+  Object.keys(groups).forEach(gn=>{
+    safe[gn] = { label: groups[gn].label, thema: groups[gn].thema };
+  });
+  return JSON.stringify({ groups: safe }, null, 2);
 }
 
 // ── SEED ALL KNOWN MEMBERS ─────────────────────────────────
