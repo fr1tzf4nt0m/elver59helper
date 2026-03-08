@@ -2545,21 +2545,22 @@ function openRickRoll(){
   const frame=document.getElementById('rickroll-frame');
   const tap=document.getElementById('rickroll-tap');
   const cover=document.getElementById('rickroll-cover');
-  const isIOSStandalone = (window.navigator.standalone === true);
 
   frame.src='rick.mp4';
   frame.load();
+  frame.muted=false;
 
-  if(isIOSStandalone){
-    frame.muted=true;
-    if(tap) tap.classList.remove('gone');
-    if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'),1800); }
-  } else {
-    frame.muted=false;
-    frame.play().catch(()=>{ frame.muted=true; frame.play(); });
+  if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'),1200); }
+
+  // Button-Klick = User Gesture → Browser erlaubt Ton
+  // Klappt es nicht (Stummschaltung/Policy) → Overlay zum Antippen
+  frame.play().then(()=>{
     if(tap) tap.classList.add('gone');
-    if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'),1200); }
-  }
+  }).catch(()=>{
+    frame.muted=true;
+    frame.play().catch(()=>{});
+    if(tap) tap.classList.remove('gone');
+  });
 
   document.getElementById('rickroll-overlay').classList.remove('hidden');
   document.body.style.overflow='hidden';
