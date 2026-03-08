@@ -620,7 +620,7 @@ function updateGroupBadge(){
   const w=document.getElementById('group-badge-wrap'); if(!w) return;
   const g=STATE.group||0;
   w.innerHTML=g>0
-    ? `<div class="group-badge ${GC[g]}">Gruppe ${g} · ${groupName(g)}</div>`
+    ? `<div class="group-badge ${GC[g]}">${groupName(g)}</div>`
     : `<div class="group-badge gb0">Noch keiner Gruppe zugewiesen</div>`;
 }
 
@@ -1404,7 +1404,7 @@ function buildGroupsInner(){
     return `<div class="pgroup${isMine?' mine':''}" id="pgrp-${gn}">
       <div class="pgroup-head">
         <div class="pgroup-num gn${gn}">${gn}</div>
-        <div class="pgroup-title">Gruppe ${gn} · ${g.label||GROUP_NAMES_DEFAULT[gn]}</div>
+        <div class="pgroup-title">${g.label||GROUP_NAMES_DEFAULT[gn]}</div>
         ${isMine?`<span class="pgroup-you">Deine Gruppe</span>`:''}
       </div>
       <div class="pgroup-members">${members}</div>
@@ -1809,7 +1809,7 @@ function renderAdminGroups(){
     return `<div class="agroup-row">
       <div class="agroup-row-head">
         <div class="pgroup-num gn${gn}" style="width:24px;height:24px;font-size:11px;">${gn}</div>
-        <strong style="font-size:12px;flex:1;">Gr. ${gn} – ${g.label||GROUP_NAMES_DEFAULT[gn]}</strong>
+        <strong style="font-size:12px;flex:1;">${g.label||GROUP_NAMES_DEFAULT[gn]}</strong>
         <span class="agroup-edit-toggle" onclick="toggleGroupEdit(${gn})" style="font-size:11px;color:var(--muted);cursor:pointer;padding:2px 6px;border:1px solid var(--border);border-radius:5px;transition:all .15s;" onmouseover="this.style.color='var(--accent)';this.style.borderColor='rgba(95,217,138,.4)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">✏ Edit</span>
       </div>
       <div class="agroup-chips" style="margin-bottom:6px;">${chips||'<span style="font-size:11px;color:var(--muted);font-style:italic;">Leer</span>'}</div>
