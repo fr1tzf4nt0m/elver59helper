@@ -749,6 +749,14 @@ function applyState(){
     if(l){ l.style.opacity=d?'.38':'1'; l.style.textDecoration=d?'line-through':''; }
   }
   refreshLink(); updateTaskProgress();
+  // Design aus STATE wiederherstellen (überlebt iOS localStorage-Wipe via Hash-Link)
+  if(STATE._design && STATE._design.theme){
+    const cur=loadSettings();
+    if(!cur.theme || cur.theme!==STATE._design.theme){
+      _persistDesign(STATE._design);
+      applyTheme(STATE._design.theme, STATE._design.font||'');
+    }
+  }
   // Re-render Unterlagen card on user switch — access is per-user
   try{
     const cloudCard=document.getElementById('c-cloud');
@@ -1834,7 +1842,7 @@ function toggleTheme(){
   const isLight = saved.theme === 'light';
   const newId = isLight ? 'dark' : 'light';
   const font = saved.font || '';
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify({theme:newId, font}));
+  _persistDesign({theme:newId, font});
   applyTheme(newId, font);
   document.getElementById('theme-btn').textContent = newId==='light'?'🌙':'☀️';
 }
@@ -2193,12 +2201,14 @@ function saveAdminDesign(){
   const id = window._adminDesignTheme || loadSettings().theme || 'dark';
   const fs = document.getElementById('admin-font-select');
   const font = fs ? fs.value : '';
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify({theme:id, font}));
+  _persistDesign({theme:id, font});
   applyTheme(id, font);
   flashMsg('✓ Design gespeichert');
 }
 function resetAdminDesign(){
-  localStorage.removeItem(SETTINGS_KEY);
+  try{ localStorage.removeItem(SETTINGS_KEY); }catch(e){}
+  _delCookie(SETTINGS_KEY);
+  if(STATE){ delete STATE._design; if(STATE.name) saveState(); }
   document.body.classList.remove(...ALL_THEME_CLASSES, 'light');
   document.body.style.fontFamily = '';
   window._adminDesignTheme = 'dark';
@@ -2361,6 +2371,30 @@ function flashMsg(msg){
 // ── SETTINGS / THEMES ────────────────────────────────────────
 const SETTINGS_KEY = 'elver59_design';
 
+// ── Cookie-Fallback für iOS PWA (localStorage wird oft gelöscht) ──
+function _setCookie(k,v,days){
+  try{
+    const d=new Date(); d.setTime(d.getTime()+(days||400)*864e5);
+    document.cookie=k+'='+encodeURIComponent(v)+';expires='+d.toUTCString()+';path=/;SameSite=Lax';
+  }catch(e){}
+}
+function _getCookie(k){
+  try{
+    const m=document.cookie.match('(^|;)\\s*'+k+'=([^;]*)');
+    return m?decodeURIComponent(m[2]):null;
+  }catch(e){ return null; }
+}
+function _delCookie(k){ document.cookie=k+'=;expires=Thu,01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax'; }
+
+// Speichert Design-Settings in ALLE drei Quellen
+function _persistDesign(obj){
+  const json=JSON.stringify(obj);
+  try{ localStorage.setItem(SETTINGS_KEY, json); }catch(e){}
+  _setCookie(SETTINGS_KEY, json, 400);
+  // Auch ins STATE-Objekt (wandert in den persönlichen Hash-Link)
+  if(STATE && STATE.name){ STATE._design=obj; saveState(); }
+}
+
 const THEMES = [
   {
     id: 'dark',
@@ -2421,8 +2455,11 @@ const THEMES = [
 const ALL_THEME_CLASSES = THEMES.map(t=>t.cls).filter(Boolean);
 
 function loadSettings(){
-  try{ const r=localStorage.getItem(SETTINGS_KEY); return r?JSON.parse(r):{}; }
-  catch(e){ return {}; }
+  // Fallback-Kette: localStorage → Cookie → STATE._design
+  try{ const r=localStorage.getItem(SETTINGS_KEY); if(r){ const p=JSON.parse(r); if(p&&p.theme) return p; } }catch(e){}
+  try{ const c=_getCookie(SETTINGS_KEY); if(c){ const p=JSON.parse(c); if(p&&p.theme){ try{ localStorage.setItem(SETTINGS_KEY,c); }catch(e){} return p; } } }catch(e){}
+  if(STATE&&STATE._design&&STATE._design.theme) return STATE._design;
+  return {};
 }
 
 function applyTheme(id, font){
@@ -2494,19 +2531,16 @@ function saveSettings(){
   const fs = document.getElementById('settings-font');
   const font = fs ? fs.value : '';
   const id = _previewThemeId || loadSettings().theme || 'dark';
-  try{
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({theme:id, font}));
-  }catch(e){
-    flashMsg('⚠️ Speichern fehlgeschlagen');
-    return;
-  }
+  _persistDesign({theme:id, font});
   applyTheme(id, font);
   closeSettings();
   flashMsg('✓ Design gespeichert');
 }
 
 function resetSettings(){
-  localStorage.removeItem(SETTINGS_KEY);
+  try{ localStorage.removeItem(SETTINGS_KEY); }catch(e){}
+  _delCookie(SETTINGS_KEY);
+  if(STATE){ delete STATE._design; if(STATE.name) saveState(); }
   document.body.classList.remove(...ALL_THEME_CLASSES, 'light');
   document.body.style.fontFamily = '';
   _previewThemeId = null;
