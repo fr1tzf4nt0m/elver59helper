@@ -321,6 +321,12 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 .pgroup-save-btn:hover{background:rgba(95,217,138,.25);}
 
 /* FOOTER */
+.rickroll-overlay{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.rickroll-overlay.hidden{display:none!important;}
+.rickroll-overlay iframe{width:min(480px,100vw);height:min(270px,56vw);border:none;border-radius:12px;}
+.rickroll-close{margin-top:18px;padding:10px 28px;background:#e8614d;border:none;border-radius:100px;color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.05em;}
+.hilfe-btn{display:flex;align-items:center;gap:10px;width:100%;padding:13px 16px;margin-top:10px;background:linear-gradient(135deg,rgba(232,97,77,.12),rgba(232,97,77,.06));border:1px solid rgba(232,97,77,.3);border-radius:12px;color:var(--red);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;text-align:left;}
+.hilfe-btn:hover{background:linear-gradient(135deg,rgba(232,97,77,.2),rgba(232,97,77,.1));transform:translateY(-1px);}
 .footer{margin-top:44px;text-align:center;animation:fadeUp .5s .65s ease both;}
 .ftop{font-size:10.5px;color:var(--muted2);letter-spacing:.08em;margin-bottom:10px;}
 .fcredit{display:inline-flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:6px 14px;}
@@ -432,6 +438,11 @@ body.light #starfield{opacity:0;}
 <body>
 <canvas id="starfield"></canvas>
 <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️</button>
+
+<div class="rickroll-overlay hidden" id="rickroll-overlay">
+  <iframe id="rickroll-frame" src="" allow="autoplay" allowfullscreen></iframe>
+  <button class="rickroll-close" onclick="closeRickRoll()">❌ Schließen</button>
+</div>
 
 <div class="modal-overlay hidden" id="modal">
   <div class="modal-box">
@@ -1254,8 +1265,8 @@ function buildUnterlagen(){
         </div>
         <span style="color:var(--accent);font-size:14px">→</span>
       </a>
-      <div style="font-size:10px;color:var(--muted);text-align:center;padding:4px 0">Zuletzt geöffnet: <span id="last-access-time">${getLastAccessTime()}</span></div>
-    </div>`);
+      <div style="font-size:10px;color:var(--muted);text-align:center;padding:4px 0">Zuletzt geöffnet: <span id="last-    </div>
+    <button class="hilfe-btn" onclick="openRickRoll()">🆘&nbsp;&nbsp;HILFE BUCHEN – Sofort-Support anfordern</button>\`);   </div>`);
   }
 
   // Locked state
@@ -1516,10 +1527,25 @@ function saveIcal(idx){
   const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//ELVER59//DE','BEGIN:VEVENT',
     `SUMMARY:${t.t}`,isDT?`DTSTART:${dt}`:`DTSTART;VALUE=DATE:${dt}`,isDT?`DTEND:${dtEnd}`:`DTEND;VALUE=DATE:${dtEnd}`,
     `DESCRIPTION:${(t.s||'').replace(/,/g,'\\,')}`, 'LOCATION:ELVER 59','END:VEVENT','END:VCALENDAR'].join('\r\n');
-  const a=document.createElement('a'); document.body.appendChild(a);
-  if(/iPad|iPhone|iPod/.test(navigator.userAgent)){ a.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics); a.target='_blank'; }
-  else { a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar;charset=utf-8'})); a.download=`ELVER59_${t.t.replace(/[^a-zA-Z0-9]/g,'_').slice(0,30)}.ics`; }
-  a.click(); setTimeout(()=>document.body.removeChild(a),1000);
+  const filename = 'ELVER59_'+t.t.replace(/[^a-zA-Z0-9]/g,'_').slice(0,30)+'.ics';
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  const isAndroid = /android/i.test(navigator.userAgent);
+  const blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
+  if(isIOS || isSafari){
+    // iOS Safari: open in new tab as data URI — user taps "Zu Kalender hinzufügen"
+    const reader = new FileReader();
+    reader.onload = function(){ window.open(reader.result,'_blank'); };
+    reader.readAsDataURL(blob);
+  } else {
+    // Android + Desktop: direct download
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 1500);
+  }
+  setTimeout(()=>document.body.removeChild(a),1000);
 }
 
 // COUNTDOWNS
@@ -2080,6 +2106,24 @@ function resetSettings(){
   const s = loadSettings();
   if(s.theme) applyTheme(s.theme, s.font||'');
 })();
+
+// ── RICK ROLL ─────────────────────────────────────────────
+function openRickRoll(){
+  const overlay = document.getElementById('rickroll-overlay');
+  const frame = document.getElementById('rickroll-frame');
+  // autoplay=1&mute=0 — preloaded, starts immediately
+  frame.src = 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0&modestbranding=1';
+  overlay.classList.remove('hidden');
+  document.addEventListener('keydown', _rr_esc);
+}
+function closeRickRoll(){
+  const overlay = document.getElementById('rickroll-overlay');
+  const frame = document.getElementById('rickroll-frame');
+  frame.src = '';
+  overlay.classList.add('hidden');
+  document.removeEventListener('keydown', _rr_esc);
+}
+function _rr_esc(e){ if(e.key==='Escape') closeRickRoll(); }
 
 </script>
 </body>
