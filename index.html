@@ -374,34 +374,7 @@ body.light #starfield{opacity:0;}
 .modal-btn:hover{background:rgba(95,217,138,.3);transform:translateY(-1px);}
 .modal-note{font-size:10.5px;color:var(--muted2);margin-top:10px;}
 
-/* ADMIN */
-.admin-trigger{position:fixed;bottom:18px;right:18px;z-index:500;width:36px;height:36px;border-radius:50%;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;opacity:.55;transition:all .2s;}
-/* ── SETTINGS PANEL ─────────────────────────────────── */
-.settings-trigger{position:fixed;bottom:18px;left:18px;z-index:500;width:36px;height:36px;border-radius:50%;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;opacity:.4;transition:all .2s;}
-.settings-trigger:hover{opacity:1;background:rgba(95,217,138,.18);}
-.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:800;display:flex;align-items:flex-end;justify-content:flex-start;padding:18px 18px 70px;}
-.settings-overlay.hidden{display:none!important;}
-.settings-panel{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;width:min(360px,92vw);box-shadow:0 24px 64px rgba(0,0,0,.5);max-height:82dvh;overflow-y:auto;}
-.settings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-.settings-header h3{margin:0;font-family:'Syne',sans-serif;font-size:15px;color:var(--accent);letter-spacing:.04em;}
-.settings-close-btn{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 8px;border-radius:8px;transition:all .15s;}
-.settings-close-btn:hover{color:var(--text);background:var(--surface2);}
-.settings-section{margin-bottom:18px;}
-.settings-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:600;}
-.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.theme-card{border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .2s;position:relative;}
-.theme-card:hover{transform:scale(1.04);}
-.theme-card.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(95,217,138,.25);}
-.theme-preview{height:52px;width:100%;display:block;}
-.theme-name{font-size:9.5px;text-align:center;padding:5px 4px;background:var(--surface2);color:var(--text);font-weight:600;letter-spacing:.02em;}
-.font-select{width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;cursor:pointer;outline:none;}
-.font-select:focus{border-color:var(--accent);}
-.settings-save-btn{width:100%;padding:11px;background:var(--accent);border:none;border-radius:11px;color:#0e1210;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;cursor:pointer;transition:all .15s;letter-spacing:.04em;}
-.settings-save-btn:hover{opacity:.88;}
-.settings-reset{width:100%;padding:8px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:11px;cursor:pointer;margin-top:7px;transition:all .15s;}
-.settings-reset:hover{border-color:var(--muted);color:var(--text);}
-.admin-trigger:hover{opacity:1;background:rgba(95,217,138,.18);border-color:rgba(95,217,138,.4);}
-.admin-overlay{position:fixed;inset:0;z-index:2000;background:rgba(14,18,16,.97);backdrop-filter:blur(10px);overflow-y:auto;padding:20px 16px 80px;}
+/* ADMIN */.admin-overlay{position:fixed;inset:0;z-index:2000;background:rgba(14,18,16,.97);backdrop-filter:blur(10px);overflow-y:auto;padding:20px 16px 80px;}
 .admin-overlay.hidden{display:none;}
 .admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .admin-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent);}
@@ -451,6 +424,37 @@ body.light #starfield{opacity:0;}
 .agroup-chip:hover{border-color:var(--red);color:var(--red);}
 .agroup-add{display:flex;align-items:center;gap:3px;background:var(--surface2);border:1px dashed var(--border);border-radius:100px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--muted);transition:all .15s;}
 .agroup-add:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── SETTINGS PANEL ──────────────────────────────────────── */
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(10px);z-index:800;display:flex;align-items:center;justify-content:center;padding:20px;}
+.settings-overlay.hidden{display:none!important;}
+.settings-panel{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:24px;width:min(400px,95vw);max-height:88dvh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,.6);}
+.settings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.settings-header h3{margin:0;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--accent);letter-spacing:.04em;}
+.settings-close-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.settings-close-btn:hover{color:var(--text);border-color:var(--accent);}
+.settings-section{margin-bottom:20px;}
+.settings-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700;}
+/* Theme Grid */
+.theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.theme-card{border-radius:14px;overflow:hidden;cursor:pointer;border:2px solid var(--border);transition:all .2s;background:var(--surface2);}
+.theme-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.theme-card.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(95,217,138,.2);}
+.theme-preview{display:block;width:100%;height:60px;}
+.theme-name{font-size:11px;font-weight:700;padding:8px 10px 4px;color:var(--text);font-family:'Syne',sans-serif;line-height:1.2;}
+.theme-sub{font-size:9.5px;color:var(--muted);padding:0 10px 8px;display:block;}
+/* Font Select */
+.font-select{width:100%;padding:11px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:13px;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a7060' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;transition:border-color .15s;}
+.font-select:focus{border-color:var(--accent);}
+/* Buttons */
+.settings-save-btn{width:100%;padding:13px;background:var(--accent);border:none;border-radius:14px;color:#0a1410;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;cursor:pointer;transition:all .15s;letter-spacing:.04em;margin-top:4px;}
+.settings-save-btn:hover{opacity:.88;transform:translateY(-1px);}
+.settings-reset{width:100%;padding:9px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-size:11px;cursor:pointer;margin-top:8px;transition:all .15s;letter-spacing:.04em;}
+.settings-reset:hover{border-color:var(--muted);color:var(--text);}
+
+/* ── SETTINGS TRIGGER ───────────────────────────────────── */
+.settings-trigger{position:fixed;bottom:18px;left:18px;z-index:500;width:40px;height:40px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;opacity:.7;transition:all .2s;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+.settings-trigger:hover{opacity:1;transform:scale(1.08);box-shadow:0 4px 20px rgba(95,217,138,.2);}
 </style>
 </head>
 <body>
@@ -518,6 +522,7 @@ body.light #starfield{opacity:0;}
   <div class="sdiv"><span>Übersicht</span></div>
   <div class="cards" id="root"></div>
 
+  <button class="settings-trigger" onclick="openSettings()" title="Design">🎨</button>
   <button class="sos-btn" onclick="openRickRoll()">🆘 Hilfe buchen</button>
 
   <div class="footer">
@@ -530,7 +535,6 @@ body.light #starfield{opacity:0;}
   </div>
 </div>
 
-<button class="settings-trigger" onclick="openSettings()" title="Design wählen">🎨</button>
 
 <div class="settings-overlay hidden" id="settings-overlay" onclick="if(event.target===this)closeSettings()">
   <div class="settings-panel" id="settings-panel">
@@ -563,8 +567,6 @@ body.light #starfield{opacity:0;}
   </div>
 </div>
 
-
-<button class="admin-trigger" onclick="openAdmin()">⚙</button>
 
 <div class="admin-overlay hidden" id="admin-overlay">
   <div id="admin-pin-screen">
@@ -1854,6 +1856,7 @@ function buildAdminUI(){
       <div class="admin-tabpanel" id="tab-add"></div>
       <div class="admin-tabpanel" id="tab-cloud"></div>
       <div class="admin-tabpanel" id="tab-requests"></div>
+      <div class="admin-tabpanel" id="tab-design"></div>
     </div>`;
   renderAdminUsers(); refreshReqBadge();
 }
@@ -1906,13 +1909,13 @@ document.getElementById('admin-overlay').addEventListener('click',function(e){
   if(e.target===this) closeAdmin();
 });
 function switchTabSilent(n){
-  const tabs=['users','add','cloud','requests'];
+  const tabs=['users','add','cloud','requests','design'];
   document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===n));
   document.querySelectorAll('.admin-tabpanel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+n)?.classList.add('active');
 }
 function switchTab(n){
-  const tabs=['users','add','cloud','requests'];
+  const tabs=['users','add','cloud','requests','design'];
   document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===n));
   document.querySelectorAll('.admin-tabpanel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+n)?.classList.add('active');
@@ -1920,6 +1923,76 @@ function switchTab(n){
   if(n==='add') renderAdminAdd();
   if(n==='cloud') initCloudTab();
   if(n==='requests') renderAdminRequests();
+  if(n==='design') renderAdminDesign();
+}
+
+function renderAdminDesign(){
+  const panel = document.getElementById('tab-design');
+  if(!panel) return;
+  panel.innerHTML = `
+    <div style="padding:4px 0 16px">
+      <div class="settings-label" style="margin-bottom:14px">Theme</div>
+      <div class="theme-grid" id="admin-theme-grid"></div>
+      <div class="settings-label" style="margin:18px 0 10px">Schriftart</div>
+      <select class="font-select" id="admin-font-select">
+        <option value="Inter">Inter – Modern &amp; klar</option>
+        <option value="Syne">Syne – Geometrisch &amp; frisch</option>
+        <option value="'DM Sans'">DM Sans – Freundlich &amp; rund</option>
+        <option value="Nunito">Nunito – Weich &amp; warm</option>
+        <option value="Quicksand">Quicksand – Verspielt &amp; leicht</option>
+        <option value="Lato">Lato – Professionell &amp; sauber</option>
+        <option value="Georgia">Georgia – Klassisch &amp; elegant</option>
+        <option value="'Playfair Display'">Playfair Display – Literarisch</option>
+      </select>
+      <button class="settings-save-btn" style="margin-top:18px" onclick="saveAdminDesign()">✓ Design speichern</button>
+      <button class="settings-reset" onclick="resetSettings()">Zurücksetzen</button>
+    </div>`;
+  // Build theme grid in admin panel
+  const saved = loadSettings();
+  const activeId = saved.theme || 'dark';
+  const grid = document.getElementById('admin-theme-grid');
+  if(grid){
+    grid.innerHTML = THEMES.map(t=>{
+      const [bg,surf,acc,warm]=t.preview;
+      const parts=t.name.split(' · ');
+      const active=t.id===activeId?' active':'';
+      return `<div class="theme-card${active}" onclick="previewAdminTheme('${t.id}',this)">
+        <svg class="theme-preview" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+          <rect width="120" height="60" fill="${bg}"/>
+          <rect x="8" y="8" width="104" height="16" rx="5" fill="${surf}"/>
+          <rect x="14" y="13" width="36" height="6" rx="3" fill="${acc}" opacity=".9"/>
+          <rect x="8" y="30" width="50" height="12" rx="5" fill="${surf}"/>
+          <rect x="14" y="34" width="22" height="4" rx="2" fill="${acc}" opacity=".7"/>
+          <rect x="64" y="30" width="48" height="12" rx="5" fill="${surf}"/>
+          <rect x="70" y="34" width="16" height="4" rx="2" fill="${warm}" opacity=".7"/>
+          <rect x="8" y="48" width="104" height="6" rx="3" fill="${surf}" opacity=".6"/>
+        </svg>
+        <div class="theme-name">${parts[0]}</div>
+        <span class="theme-sub">${parts[1]||'&nbsp;'}</span>
+      </div>`;
+    }).join('');
+  }
+  // Set current font
+  const fs = document.getElementById('admin-font-select');
+  if(fs && saved.font){
+    for(let o of fs.options){ if(o.value===saved.font){ o.selected=true; break; } }
+  }
+  window._adminDesignTheme = activeId;
+}
+function previewAdminTheme(id, el){
+  window._adminDesignTheme = id;
+  document.querySelectorAll('#admin-theme-grid .theme-card').forEach(c=>c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const fs = document.getElementById('admin-font-select');
+  applyTheme(id, fs?fs.value:'');
+}
+function saveAdminDesign(){
+  const id = window._adminDesignTheme || loadSettings().theme || 'dark';
+  const fs = document.getElementById('admin-font-select');
+  const font = fs ? fs.value : '';
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify({theme:id, font}));
+  applyTheme(id, font);
+  flashMsg('✓ Design gespeichert');
 }
 
 function renderAdminAdd(){
@@ -2151,20 +2224,20 @@ function buildThemeGrid(){
     const [bg, surf, acc, warm] = t.preview;
     const active = t.id===activeId ? ' active' : '';
     // mini preview with 4 color bars
+    const parts = t.name.split(' · ');
     return `<div class="theme-card${active}" onclick="previewTheme('${t.id}',this)">
-      <svg class="theme-preview" viewBox="0 0 60 52" xmlns="http://www.w3.org/2000/svg">
-        <rect width="60" height="52" fill="${bg}"/>
-        <rect x="4" y="6" width="52" height="12" rx="3" fill="${surf}" opacity=".9"/>
-        <rect x="8" y="9" width="18" height="6" rx="2" fill="${acc}" opacity=".9"/>
-        <rect x="4" y="22" width="24" height="8" rx="3" fill="${surf}" opacity=".9"/>
-        <rect x="32" y="22" width="24" height="8" rx="3" fill="${surf}" opacity=".9"/>
-        <rect x="7" y="24.5" width="10" height="3" rx="1.5" fill="${acc}" opacity=".8"/>
-        <rect x="35" y="24.5" width="10" height="3" rx="1.5" fill="${warm}" opacity=".8"/>
-        <rect x="4" y="34" width="52" height="7" rx="3" fill="${surf}" opacity=".9"/>
-        <rect x="8" y="36.5" width="28" height="2" rx="1" fill="${acc}" opacity=".5"/>
-        <rect x="4" y="44" width="52" height="4" rx="2" fill="${surf}" opacity=".5"/>
+      <svg class="theme-preview" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+        <rect width="120" height="60" fill="${bg}"/>
+        <rect x="8" y="8" width="104" height="16" rx="5" fill="${surf}"/>
+        <rect x="14" y="13" width="36" height="6" rx="3" fill="${acc}" opacity=".9"/>
+        <rect x="8" y="30" width="50" height="12" rx="5" fill="${surf}"/>
+        <rect x="14" y="34" width="22" height="4" rx="2" fill="${acc}" opacity=".7"/>
+        <rect x="64" y="30" width="48" height="12" rx="5" fill="${surf}"/>
+        <rect x="70" y="34" width="16" height="4" rx="2" fill="${warm}" opacity=".7"/>
+        <rect x="8" y="48" width="104" height="6" rx="3" fill="${surf}" opacity=".6"/>
       </svg>
-      <div class="theme-name">${t.name.split(' · ')[0]}<br><span style="opacity:.6;font-size:8.5px">${t.name.includes('·')?t.name.split(' · ')[1]:''}</span></div>
+      <div class="theme-name">${parts[0]}</div>
+      <span class="theme-sub">${parts[1]||'&nbsp;'}</span>
     </div>`;
   }).join('');
 }
@@ -2227,45 +2300,30 @@ function openRickRoll(){
     }catch(e){}
   })();
 
-  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
-  const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  const needsTap = isIOS || isSafari;
-
+  // Zeige immer die Tap-Maske — iframe wird erst beim Tap geladen
+  // Das gilt für ALLE Browser: Chrome, Safari, Android, iOS
   document.getElementById('rickroll-overlay').classList.remove('hidden');
   document.body.style.overflow='hidden';
   document.addEventListener('keydown',_rr_esc);
-
   const cover=document.getElementById('rickroll-cover');
   const tap=document.getElementById('rickroll-tap');
-
-  if(needsTap){
-    // Safari: zeige "Hilfe anfordern" Bild — iframe noch NICHT laden
-    // Der Tap auf VERBINDEN wird der echte User-Gesture sein
-    if(cover) cover.classList.add('gone');
-    if(tap) tap.classList.remove('gone');
-  } else {
-    // Chrome/Android: direkt mit Ton laden
-    if(tap) tap.classList.add('gone');
-    const frame=document.getElementById('rickroll-frame');
-    frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1';
-    if(cover){cover.classList.remove('gone');setTimeout(()=>cover.classList.add('gone'),2200);}
-    if(window._rrTimer) clearTimeout(window._rrTimer);
-    window._rrTimer=setTimeout(()=>closeRickRoll(),20000);
-  }
+  if(cover) cover.classList.add('gone');
+  if(tap) tap.classList.remove('gone');
 }
 
 function rickrollUnmute(){
-  // DIESER TAP ist der User-Gesture — Safari erlaubt jetzt Autoplay+Sound
+  // Direkt im Click-Handler = Sound auf Safari + Chrome + Android garantiert
   const frame=document.getElementById('rickroll-frame');
+  frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1';
   const tap=document.getElementById('rickroll-tap');
   const cover=document.getElementById('rickroll-cover');
-  // Jetzt erst iframe laden — direkt im Click-Handler = Sound garantiert
-  frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1';
   if(tap) tap.classList.add('gone');
-  if(cover){cover.classList.remove('gone');setTimeout(()=>cover.classList.add('gone'),2000);}
+  if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'),1800); }
   if(window._rrTimer) clearTimeout(window._rrTimer);
   window._rrTimer=setTimeout(()=>closeRickRoll(),20000);
 }
+
+
 function closeRickRoll(){
   if(window._rrTimer){ clearTimeout(window._rrTimer); window._rrTimer=null; }
   document.getElementById('rickroll-frame').src = '';
