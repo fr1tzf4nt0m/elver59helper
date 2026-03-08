@@ -329,6 +329,10 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 .rickroll-close:hover{background:rgba(232,97,77,.6);}
 .rickroll-video-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;}
 .rickroll-video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}
+.rickroll-cover{position:absolute;inset:0;background:#000;z-index:2;display:flex;align-items:center;justify-content:center;transition:opacity .4s ease;}
+.rickroll-cover.gone{opacity:0;pointer-events:none;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.rickroll-spinner{width:36px;height:36px;border:3px solid rgba(255,255,255,.1);border-top-color:rgba(255,255,255,.6);border-radius:50%;animation:spin .8s linear infinite;}
 .rickroll-footer{text-align:center;padding:10px;font-size:12px;color:#555;letter-spacing:.06em;}
 .hilfe-btn{display:flex;align-items:center;gap:10px;width:100%;padding:13px 16px;margin-top:10px;background:linear-gradient(135deg,rgba(232,97,77,.12),rgba(232,97,77,.06));border:1px solid rgba(232,97,77,.3);border-radius:12px;color:var(--red);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;text-align:left;}
 .hilfe-btn:hover{background:linear-gradient(135deg,rgba(232,97,77,.2),rgba(232,97,77,.1));transform:translateY(-1px);}
@@ -458,6 +462,9 @@ body.light #starfield{opacity:0;}
         allowfullscreen
         frameborder="0"
         referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <div class="rickroll-cover" id="rickroll-cover">
+        <div class="rickroll-spinner"></div>
+      </div>
     </div>
     <div class="rickroll-footer">Never gonna give you up 🎵</div>
   </div>
@@ -2189,16 +2196,32 @@ function openRickRoll(){
   // Sync within click handler = browser allows autoplay+sound
   const frame = document.getElementById('rickroll-frame');
   // youtube.com embed has better autoplay+sound support than nocookie
-  frame.src = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3';
+  // Invidious = YouTube-Mirror, werbefrei
+  // Mehrere Instanzen als Fallback
+  const _inv = [
+    'https://invidious.nerdvpn.de',
+    'https://inv.nadeko.net',
+    'https://yewtu.be',
+    'https://invidious.privacyredirect.com'
+  ];
+  const _params = '/embed/dQw4w9WgXcQ?autoplay=1&mute=0&rel=0&playsinline=1';
+  frame.src = _inv[0] + _params;
+  // If iframe errors, try next instance
+  frame.onerror = function(){ const next = _inv.shift(); if(_inv.length) frame.src = _inv[0]+_params; };
   document.getElementById('rickroll-overlay').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
   document.addEventListener('keydown', _rr_esc);
+  // Remove black cover after 1.8s — video is playing by then, thumbnail never visible
+  const cover = document.getElementById('rickroll-cover');
+  if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'), 1800); }
 }
 function closeRickRoll(){
   document.getElementById('rickroll-frame').src = '';
   document.getElementById('rickroll-overlay').classList.add('hidden');
   document.body.style.overflow = '';
   document.removeEventListener('keydown', _rr_esc);
+  const cover = document.getElementById('rickroll-cover');
+  if(cover) cover.classList.remove('gone');
 }
 function _rr_esc(e){ if(e.key==='Escape') closeRickRoll(); }
 
