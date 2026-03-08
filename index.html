@@ -20,11 +20,77 @@
   --border:#263029;--accent:#5fd98a;--accent2:#a3e4bc;
   --warm:#f0c96e;--red:#e8614d;--text:#eef2ee;--muted:#5a7060;--muted2:#3d5244;
 }
-body.light{
-  --bg:#f2f7f3;--surface:#ffffff;--surface2:#eaf3ed;
-  --border:#d0e4d6;--accent:#2d8a56;--accent2:#1a6640;
-  --warm:#b07800;--red:#c0392b;--text:#1a2e1f;--muted:#5a7060;--muted2:#8aab92;
+
+/* ── THEME: Klassisch Hell ─────────────────────────── */
+body.theme-light{
+  --bg:#f4f7f2;--surface:#ffffff;--surface2:#e8f0e9;
+  --border:#c0d8c6;--accent:#1a7840;--accent2:#0f5c2e;
+  --warm:#8a5c00;--red:#b02820;--text:#0d1f13;--muted:#3e5848;--muted2:#7a9e86;
+  --heading-font:'Inter',sans-serif;
 }
+body.theme-light #starfield{opacity:0;}
+body.theme-light::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 15% 20%,rgba(134,200,130,.14) 0%,transparent 50%),
+    radial-gradient(ellipse at 85% 70%,rgba(100,180,140,.10) 0%,transparent 50%);
+}
+
+/* ── THEME: Hundertwasser I – Erdfarben ────────────── */
+body.theme-hundert1{
+  --bg:#1a1005;--surface:#241808;--surface2:#2e200c;
+  --border:#5a3e18;--accent:#e8a020;--accent2:#d48010;
+  --warm:#e06030;--red:#c03020;--text:#f5e8c0;--muted:#a07848;--muted2:#7a5830;
+  --heading-font:'Georgia',serif;
+}
+body.theme-hundert1::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 10% 10%,rgba(232,160,32,.12) 0%,transparent 40%),
+    radial-gradient(ellipse at 90% 90%,rgba(224,96,48,.10) 0%,transparent 40%),
+    radial-gradient(ellipse at 50% 50%,rgba(80,40,10,.6) 0%,transparent 80%);
+}
+
+/* ── THEME: Hundertwasser II – Spirale & Natur ──────── */
+body.theme-hundert2{
+  --bg:#0a1e0f;--surface:#0f2a16;--surface2:#14381e;
+  --border:#2a6038;--accent:#7dcc50;--accent2:#a0e870;
+  --warm:#e8c030;--red:#e05028;--text:#e0f8d0;--muted:#5a9060;--muted2:#3a6040;
+  --heading-font:'Georgia',serif;
+}
+body.theme-hundert2::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 20% 80%,rgba(125,204,80,.12) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 20%,rgba(232,192,48,.08) 0%,transparent 40%),
+    radial-gradient(circle at 50% 50%,rgba(10,50,20,.4) 0%,transparent 70%);
+}
+
+/* ── THEME: Picasso I – Kubismus ───────────────────── */
+body.theme-picasso1{
+  --bg:#0c0e1c;--surface:#141628;--surface2:#1c2030;
+  --border:#2a3058;--accent:#e8c020;--accent2:#d0a010;
+  --warm:#e05030;--red:#c02828;--text:#f0eee8;--muted:#6870a8;--muted2:#404880;
+  --heading-font:'Syne',sans-serif;
+}
+body.theme-picasso1::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 5% 5%,rgba(232,192,32,.10) 0%,transparent 35%),
+    radial-gradient(ellipse at 95% 5%,rgba(224,80,48,.08) 0%,transparent 35%),
+    radial-gradient(ellipse at 50% 95%,rgba(40,50,160,.15) 0%,transparent 50%);
+}
+
+/* ── THEME: Picasso II – Blaue Periode ─────────────── */
+body.theme-picasso2{
+  --bg:#060d1e;--surface:#0c1428;--surface2:#121c34;
+  --border:#1e3060;--accent:#6090e8;--accent2:#4070c8;
+  --warm:#d0a030;--red:#c04040;--text:#c8d8f8;--muted:#4868a8;--muted2:#2a4878;
+  --heading-font:'Syne',sans-serif;
+}
+body.theme-picasso2::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(96,144,232,.14) 0%,transparent 60%),
+    radial-gradient(ellipse at 0% 100%,rgba(30,48,96,.8) 0%,transparent 50%),
+    radial-gradient(ellipse at 100% 50%,rgba(208,160,48,.06) 0%,transparent 40%);
+}
+
 body{
   background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;
   min-height:100dvh;display:flex;flex-direction:column;align-items:center;
@@ -38,10 +104,11 @@ body::before{content:'';position:fixed;top:-120px;left:50%;transform:translateX(
 /* HEADER */
 .header{text-align:center;margin-bottom:32px;animation:fadeDown .7s ease both;}
 .logo-mark{display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,rgba(95,217,138,.15),rgba(95,217,138,.04));border:1px solid rgba(95,217,138,.2);margin:0 auto 16px;cursor:pointer;transition:transform .15s,box-shadow .2s;}
+body.light .logo-mark{background:linear-gradient(135deg,rgba(26,120,64,.14),rgba(26,120,64,.04));border-color:rgba(26,120,64,.3);}
 .logo-mark:hover{transform:scale(1.08);box-shadow:0 0 18px rgba(95,217,138,.25);}
 .logo-mark:active{transform:scale(.95);}
-.title{font-family:'Syne',sans-serif;font-size:clamp(52px,15vw,80px);font-weight:800;letter-spacing:-0.01em;line-height:1;}
-.title em{color:var(--accent);font-style:normal;}
+.title{font-family:'Syne',sans-serif;font-size:clamp(52px,15vw,80px);font-weight:800;letter-spacing:-0.01em;line-height:1;color:var(--text);}
+.title em{color:var(--text);font-style:normal;}
 .subtitle{margin-top:10px;font-size:12px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;}
 
 /* USER CHIP */
@@ -77,6 +144,7 @@ body::before{content:'';position:fixed;top:-120px;left:50%;transform:translateX(
 
 /* EXPAND CARD */
 .xcard{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color .25s,box-shadow .25s;}
+body.light .xcard{box-shadow:0 2px 16px rgba(30,100,60,.08);}
 .xcard.open{border-color:rgba(95,217,138,.22);box-shadow:0 4px 24px rgba(95,217,138,.05);}
 .xhead{display:flex;align-items:center;gap:14px;padding:15px 18px;cursor:pointer;user-select:none;transition:background .15s;}
 .xhead:hover{background:rgba(255,255,255,.02);}
@@ -266,6 +334,7 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 @keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 #starfield{position:fixed;inset:0;pointer-events:none;z-index:0;}
+body.light #starfield{opacity:0;}
 
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(14,18,16,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeDown .3s ease both;}
@@ -283,30 +352,30 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 
 /* ADMIN */
 .admin-trigger{position:fixed;bottom:18px;right:18px;z-index:500;width:36px;height:36px;border-radius:50%;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;opacity:.4;transition:all .2s;}
+/* ── SETTINGS PANEL ─────────────────────────────────── */
 .settings-trigger{position:fixed;bottom:18px;left:18px;z-index:500;width:36px;height:36px;border-radius:50%;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;opacity:.4;transition:all .2s;}
 .settings-trigger:hover{opacity:1;background:rgba(95,217,138,.18);}
-.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:800;display:flex;align-items:flex-end;justify-content:flex-start;padding:18px 18px 70px;}
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:800;display:flex;align-items:flex-end;justify-content:flex-start;padding:18px 18px 70px;}
 .settings-overlay.hidden{display:none!important;}
-.settings-panel{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px;width:min(300px,88vw);box-shadow:0 20px 60px rgba(0,0,0,.4);max-height:80dvh;overflow-y:auto;}
-.settings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.settings-header h3{margin:0;font-family:'Syne',sans-serif;font-size:15px;color:var(--accent);}
-.settings-close-btn{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:6px;}
+.settings-panel{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;width:min(360px,92vw);box-shadow:0 24px 64px rgba(0,0,0,.5);max-height:82dvh;overflow-y:auto;}
+.settings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.settings-header h3{margin:0;font-family:'Syne',sans-serif;font-size:15px;color:var(--accent);letter-spacing:.04em;}
+.settings-close-btn{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 8px;border-radius:8px;transition:all .15s;}
 .settings-close-btn:hover{color:var(--text);background:var(--surface2);}
-.settings-section{margin-bottom:16px;}
-.settings-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-.pastel-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
-.pastel-swatch{width:30px;height:30px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0;}
-.pastel-swatch:hover{transform:scale(1.15);}
-.pastel-swatch.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(95,217,138,.4);}
-.pastel-swatch.custom-bg{display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--surface2);border:1px dashed var(--border);}
-.font-select{width:100%;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;}
-.font-select option{background:var(--surface);}
-.color-row{display:flex;align-items:center;gap:10px;}
-.color-preview{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);cursor:pointer;overflow:hidden;position:relative;}
-.color-preview input[type=color]{position:absolute;inset:-4px;width:calc(100%+8px);height:calc(100%+8px);opacity:0;cursor:pointer;border:none;padding:0;}
-.color-dot{width:100%;height:100%;border-radius:5px;}
-.settings-save-btn{width:100%;padding:10px;background:var(--accent);border:none;border-radius:10px;color:#0e1210;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;cursor:pointer;margin-top:4px;}
-.settings-reset{width:100%;padding:7px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:11px;cursor:pointer;margin-top:6px;}
+.settings-section{margin-bottom:18px;}
+.settings-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:600;}
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.theme-card{border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .2s;position:relative;}
+.theme-card:hover{transform:scale(1.04);}
+.theme-card.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(95,217,138,.25);}
+.theme-preview{height:52px;width:100%;display:block;}
+.theme-name{font-size:9.5px;text-align:center;padding:5px 4px;background:var(--surface2);color:var(--text);font-weight:600;letter-spacing:.02em;}
+.font-select{width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;cursor:pointer;outline:none;}
+.font-select:focus{border-color:var(--accent);}
+.settings-save-btn{width:100%;padding:11px;background:var(--accent);border:none;border-radius:11px;color:#0e1210;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;cursor:pointer;transition:all .15s;letter-spacing:.04em;}
+.settings-save-btn:hover{opacity:.88;}
+.settings-reset{width:100%;padding:8px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:11px;cursor:pointer;margin-top:7px;transition:all .15s;}
+.settings-reset:hover{border-color:var(--muted);color:var(--text);}
 .admin-trigger:hover{opacity:1;background:rgba(95,217,138,.18);border-color:rgba(95,217,138,.4);}
 .admin-overlay{position:fixed;inset:0;z-index:2000;background:rgba(14,18,16,.97);backdrop-filter:blur(10px);overflow-y:auto;padding:20px 16px 80px;}
 .admin-overlay.hidden{display:none;}
@@ -409,18 +478,18 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
   </div>
 </div>
 
-<button class="settings-trigger" onclick="openSettings()" title="Design anpassen">🎨</button>
+<button class="settings-trigger" onclick="openSettings()" title="Design wählen">🎨</button>
 
 <div class="settings-overlay hidden" id="settings-overlay" onclick="if(event.target===this)closeSettings()">
   <div class="settings-panel" id="settings-panel">
     <div class="settings-header">
-      <h3>🎨 Design anpassen</h3>
+      <h3>🎨 Design wählen</h3>
       <button class="settings-close-btn" onclick="closeSettings()">✕</button>
     </div>
 
     <div class="settings-section">
-      <div class="settings-label">Hintergrundfarbe</div>
-      <div class="pastel-grid" id="pastel-grid"></div>
+      <div class="settings-label">Theme</div>
+      <div class="theme-grid" id="theme-grid"></div>
     </div>
 
     <div class="settings-section">
@@ -429,29 +498,19 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
         <option value="Inter">Inter – Modern &amp; klar</option>
         <option value="Syne">Syne – Geometrisch &amp; frisch</option>
         <option value="'DM Sans'">DM Sans – Freundlich &amp; rund</option>
-        <option value="'Nunito'">Nunito – Weich &amp; warm</option>
-        <option value="'Quicksand'">Quicksand – Verspielt &amp; leicht</option>
-        <option value="'Lato'">Lato – Professionell &amp; sauber</option>
+        <option value="Nunito">Nunito – Weich &amp; warm</option>
+        <option value="Quicksand">Quicksand – Verspielt &amp; leicht</option>
+        <option value="Lato">Lato – Professionell &amp; sauber</option>
         <option value="Georgia">Georgia – Klassisch &amp; elegant</option>
         <option value="'Playfair Display'">Playfair Display – Literarisch</option>
       </select>
-    </div>
-
-    <div class="settings-section">
-      <div class="settings-label">Schriftfarbe</div>
-      <div class="color-row">
-        <div class="color-preview" id="font-color-preview">
-          <div class="color-dot" id="font-color-dot"></div>
-          <input type="color" id="font-color-input" oninput="previewFontColor(this.value)">
-        </div>
-        <span style="font-size:12px;color:var(--muted)" id="font-color-hex">#eef2ee</span>
-      </div>
     </div>
 
     <button class="settings-save-btn" onclick="saveSettings()">✓ Speichern</button>
     <button class="settings-reset" onclick="resetSettings()">Zurücksetzen</button>
   </div>
 </div>
+
 
 <button class="admin-trigger" onclick="openAdmin()">⚙</button>
 
@@ -1495,11 +1554,18 @@ function checkNotifs(){
 
 // THEME
 function toggleTheme(){
-  const l=document.body.classList.toggle('light');
-  document.getElementById('theme-btn').textContent=l?'🌙':'☀️';
-  try{ localStorage.setItem('elver59_theme',l?'light':'dark'); }catch(e){}
+  const saved = loadSettings();
+  const isLight = saved.theme === 'light';
+  const newId = isLight ? 'dark' : 'light';
+  const font = saved.font || '';
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify({theme:newId, font}));
+  applyTheme(newId, font);
+  document.getElementById('theme-btn').textContent = newId==='light'?'🌙':'☀️';
 }
-(function(){ const t=localStorage.getItem('elver59_theme'); if(t==='light'){ document.body.classList.add('light'); document.getElementById('theme-btn').textContent='🌙'; } })();
+(function(){
+  const s = loadSettings();
+  if(s.theme==='light') document.getElementById('theme-btn').textContent='🌙';
+})();
 
 // ── ADMIN SECURITY: force-wipe on every page show/restore ────────────
 // Handles bfcache (back button), tab restore, visibility change
@@ -1877,145 +1943,134 @@ function flashMsg(msg){
   el.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(95,217,138,.2);border:1px solid rgba(95,217,138,.4);color:var(--accent);padding:8px 18px;border-radius:100px;font-size:13px;z-index:3000;pointer-events:none;';
   document.body.appendChild(el); setTimeout(()=>el.remove(),2500);
 }
-// ── SETTINGS ─────────────────────────────────────────────
+// ── SETTINGS / THEMES ────────────────────────────────────────
 const SETTINGS_KEY = 'elver59_design';
-const PASTELS_DARK = [
-  {hex:'#0e1210',label:'Nacht (Standard)'},
-  {hex:'#0d1117',label:'Graphit'},
-  {hex:'#121220',label:'Mitternacht'},
-  {hex:'#1a1a2e',label:'Tintenblau'},
-  {hex:'#1e1b2e',label:'Tiefviolett'},
-  {hex:'#2e1a2e',label:'Pflaume'},
-  {hex:'#1a2e1a',label:'Waldgrün'},
-  {hex:'#0f2318',label:'Moosgrün'},
-  {hex:'#1a2a2e',label:'Tiefsee'},
-  {hex:'#2e1a1a',label:'Weinrot'},
-  {hex:'#2e2a1a',label:'Mokka'},
-  {hex:'#1c1c14',label:'Olivdunkel'},
-];
-const PASTELS_LIGHT = [
-  {hex:'#f2f7f3',label:'Mintcreme (Standard)'},
-  {hex:'#fdf6f0',label:'Pfirsich'},
-  {hex:'#f0f4ff',label:'Himmelblau'},
-  {hex:'#f5fff0',label:'Mintgrün'},
-  {hex:'#fff0f5',label:'Rosé'},
-  {hex:'#fffbe8',label:'Zitrone'},
-  {hex:'#f0fffe',label:'Aqua'},
-  {hex:'#f5f0ff',label:'Lavendel'},
-  {hex:'#fff8f0',label:'Apricot'},
-  {hex:'#f0fff8',label:'Eisgrün'},
-  {hex:'#fff0ee',label:'Lachs'},
-  {hex:'#f8f0ff',label:'Flieder'},
+
+const THEMES = [
+  {
+    id: 'dark',
+    name: 'Klassisch Dunkel',
+    cls: '',  // default :root
+    preview: ['#0e1210','#151a16','#5fd98a','#f0c96e'],
+  },
+  {
+    id: 'light',
+    name: 'Klassisch Hell',
+    cls: 'theme-light',
+    preview: ['#f4f7f2','#ffffff','#1a7840','#8a5c00'],
+  },
+  {
+    id: 'hundert1',
+    name: 'Hundertwasser · Erde',
+    cls: 'theme-hundert1',
+    preview: ['#1a1005','#2e200c','#e8a020','#e06030'],
+  },
+  {
+    id: 'hundert2',
+    name: 'Hundertwasser · Natur',
+    cls: 'theme-hundert2',
+    preview: ['#0a1e0f','#14381e','#7dcc50','#e8c030'],
+  },
+  {
+    id: 'picasso1',
+    name: 'Picasso · Kubismus',
+    cls: 'theme-picasso1',
+    preview: ['#0c0e1c','#1c2030','#e8c020','#e05030'],
+  },
+  {
+    id: 'picasso2',
+    name: 'Picasso · Blau',
+    cls: 'theme-picasso2',
+    preview: ['#060d1e','#121c34','#6090e8','#d0a030'],
+  },
 ];
 
-let settingsDraft = {};
+const ALL_THEME_CLASSES = THEMES.map(t=>t.cls).filter(Boolean);
 
 function loadSettings(){
-  try{
-    const raw = localStorage.getItem(SETTINGS_KEY);
-    return raw ? JSON.parse(raw) : {};
-  }catch(e){ return {}; }
+  try{ const r=localStorage.getItem(SETTINGS_KEY); return r?JSON.parse(r):{}; }
+  catch(e){ return {}; }
 }
 
-function applyDesignSettings(s){
-  if(!s) return;
-  if(s.bg){
-    document.documentElement.style.setProperty('--bg', s.bg);
-    document.documentElement.style.setProperty('--surface', adjustHex(s.bg, 8));
-    document.documentElement.style.setProperty('--surface2', adjustHex(s.bg, 14));
-  }
-  if(s.font) document.body.style.fontFamily = s.font + ', sans-serif';
-  if(s.color) document.documentElement.style.setProperty('--text', s.color);
-}
-
-// Slightly lighten a hex color for surface variants
-function adjustHex(hex, amount){
-  const n = parseInt(hex.replace('#',''),16);
-  const r = Math.min(255, ((n>>16)&0xff)+amount);
-  const g = Math.min(255, ((n>>8)&0xff)+amount);
-  const b = Math.min(255, (n&0xff)+amount);
-  return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+function applyTheme(id, font){
+  const theme = THEMES.find(t=>t.id===id) || THEMES[0];
+  // remove all theme classes
+  document.body.classList.remove(...ALL_THEME_CLASSES);
+  if(theme.cls) document.body.classList.add(theme.cls);
+  if(font) document.body.style.fontFamily = font + ', sans-serif';
+  else document.body.style.fontFamily = '';
+  // keep legacy .light for compatibility
+  document.body.classList.toggle('light', id==='light');
 }
 
 function openSettings(){
-  const overlay = document.getElementById('settings-overlay');
-  overlay.classList.remove('hidden');
-  // close on Escape
-  const _esc = (e)=>{ if(e.key==='Escape'){ closeSettings(); document.removeEventListener('keydown',_esc); } };
-  document.addEventListener('keydown', _esc);
+  document.getElementById('settings-overlay').classList.remove('hidden');
+  buildThemeGrid();
   const saved = loadSettings();
-  settingsDraft = {...saved};
-  buildPastelGrid(saved.bg||null);
-  // font
   const fs = document.getElementById('settings-font');
   if(fs && saved.font){
     for(let o of fs.options){ if(o.value===saved.font){ o.selected=true; break; } }
   }
-  // font color
-  const currentColor = saved.color || getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#eef2ee';
-  const inp = document.getElementById('font-color-input');
-  const dot = document.getElementById('font-color-dot');
-  const hex = document.getElementById('font-color-hex');
-  if(inp) inp.value = currentColor;
-  if(dot) dot.style.background = currentColor;
-  if(hex) hex.textContent = currentColor;
-  settingsDraft.color = currentColor;
+  const _esc=(e)=>{ if(e.key==='Escape'){ closeSettings(); document.removeEventListener('keydown',_esc); } };
+  document.addEventListener('keydown',_esc);
 }
 
 function closeSettings(){
   document.getElementById('settings-overlay').classList.add('hidden');
 }
 
-function buildPastelGrid(activeBg){
-  const grid = document.getElementById('pastel-grid');
+function buildThemeGrid(){
+  const saved = loadSettings();
+  const activeId = saved.theme || 'dark';
+  const grid = document.getElementById('theme-grid');
   if(!grid) return;
-  const isLight = document.body.classList.contains('light');
-  const palette = isLight ? PASTELS_LIGHT : PASTELS_DARK;
-  grid.innerHTML = palette.map(p => {
-    const active = activeBg && activeBg.toLowerCase()===p.hex.toLowerCase() ? ' active' : '';
-    return `<div class="pastel-swatch${active}" style="background:${p.hex}"
-      title="${p.label}"
-      onclick="selectBg('${p.hex}',this)"></div>`;
-  }).join('') +
-  `<div class="pastel-swatch custom-bg" title="Eigene Farbe" onclick="document.getElementById('custom-bg-input').click()">＋
-    <input type="color" id="custom-bg-input" style="position:absolute;opacity:0;width:0;height:0"
-      oninput="selectBg(this.value,null)" onchange="selectBg(this.value,null)">
-  </div>`;
+  grid.innerHTML = THEMES.map(t=>{
+    const [bg, surf, acc, warm] = t.preview;
+    const active = t.id===activeId ? ' active' : '';
+    // mini preview with 4 color bars
+    return `<div class="theme-card${active}" onclick="previewTheme('${t.id}',this)">
+      <svg class="theme-preview" viewBox="0 0 60 52" xmlns="http://www.w3.org/2000/svg">
+        <rect width="60" height="52" fill="${bg}"/>
+        <rect x="4" y="6" width="52" height="12" rx="3" fill="${surf}" opacity=".9"/>
+        <rect x="8" y="9" width="18" height="6" rx="2" fill="${acc}" opacity=".9"/>
+        <rect x="4" y="22" width="24" height="8" rx="3" fill="${surf}" opacity=".9"/>
+        <rect x="32" y="22" width="24" height="8" rx="3" fill="${surf}" opacity=".9"/>
+        <rect x="7" y="24.5" width="10" height="3" rx="1.5" fill="${acc}" opacity=".8"/>
+        <rect x="35" y="24.5" width="10" height="3" rx="1.5" fill="${warm}" opacity=".8"/>
+        <rect x="4" y="34" width="52" height="7" rx="3" fill="${surf}" opacity=".9"/>
+        <rect x="8" y="36.5" width="28" height="2" rx="1" fill="${acc}" opacity=".5"/>
+        <rect x="4" y="44" width="52" height="4" rx="2" fill="${surf}" opacity=".5"/>
+      </svg>
+      <div class="theme-name">${t.name.split(' · ')[0]}<br><span style="opacity:.6;font-size:8.5px">${t.name.includes('·')?t.name.split(' · ')[1]:''}</span></div>
+    </div>`;
+  }).join('');
 }
 
-function selectBg(hex, el){
-  settingsDraft.bg = hex;
-  // visually update
-  document.querySelectorAll('.pastel-swatch').forEach(s=>s.classList.remove('active'));
+let _previewThemeId = null;
+function previewTheme(id, el){
+  _previewThemeId = id;
+  document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('active'));
   if(el) el.classList.add('active');
-  // live preview
-  document.documentElement.style.setProperty('--bg', hex);
-  document.documentElement.style.setProperty('--surface', adjustHex(hex, 8));
-  document.documentElement.style.setProperty('--surface2', adjustHex(hex, 14));
-}
-
-function previewFontColor(val){
-  const dot = document.getElementById('font-color-dot');
-  const hexEl = document.getElementById('font-color-hex');
-  if(dot) dot.style.background = val;
-  if(hexEl) hexEl.textContent = val;
-  settingsDraft.color = val;
-  document.documentElement.style.setProperty('--text', val);
+  const fs = document.getElementById('settings-font');
+  const font = fs ? fs.value : '';
+  applyTheme(id, font);
 }
 
 function saveSettings(){
   const fs = document.getElementById('settings-font');
-  if(fs) settingsDraft.font = fs.value;
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsDraft));
-  applyDesignSettings(settingsDraft);
+  const font = fs ? fs.value : '';
+  const id = _previewThemeId || loadSettings().theme || 'dark';
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify({theme:id, font}));
+  applyTheme(id, font);
   closeSettings();
   flashMsg('✓ Design gespeichert');
 }
 
 function resetSettings(){
   localStorage.removeItem(SETTINGS_KEY);
-  document.documentElement.removeAttribute('style');
+  document.body.classList.remove(...ALL_THEME_CLASSES, 'light');
   document.body.style.fontFamily = '';
+  _previewThemeId = null;
   closeSettings();
   flashMsg('Design zurückgesetzt');
 }
@@ -2023,7 +2078,7 @@ function resetSettings(){
 // Apply on load
 (function(){
   const s = loadSettings();
-  if(Object.keys(s).length) applyDesignSettings(s);
+  if(s.theme) applyTheme(s.theme, s.font||'');
 })();
 
 </script>
