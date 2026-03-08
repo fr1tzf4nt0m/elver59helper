@@ -2190,7 +2190,7 @@ function resetSettings(){
 
 // ── RICK ROLL ─────────────────────────────────────────────
 function openRickRoll(){
-  // ── Web Audio intro — sofort auf allen Browsern ──────────
+  // ── Web Audio intro sofort ────────────────────────────────
   (function(){
     try{
       const A=new(window.AudioContext||window.webkitAudioContext)();
@@ -2206,44 +2206,28 @@ function openRickRoll(){
       [[440,.00,.13,'sawtooth',1],[493.88,.15,.13,'sawtooth',1],[587.33,.30,.13,'sawtooth',1],[493.88,.46,.13,'sawtooth',1],
        [739.99,.62,.18,'sawtooth',1],[739.99,.84,.13,'sawtooth',1],[659.26,1.00,.28,'sawtooth',1],
        [659.26,1.32,.13,'sawtooth',1],[587.33,1.48,.28,'sawtooth',1],
-       [440,1.90,.13,'sawtooth',1],[493.88,2.06,.13,'sawtooth',1],[587.33,2.22,.13,'sawtooth',1],
-       [493.88,2.38,.13,'sawtooth',1],[587.33,2.55,.18,'sawtooth',1],[659.26,2.76,.45,'sawtooth',1],
-       [110,.00,.25,'triangle',.5],[110,.30,.20,'triangle',.5],[146.83,.62,.25,'triangle',.5],
-       [110,1.00,.25,'triangle',.5],[110,1.32,.20,'triangle',.5],[110,1.90,.25,'triangle',.5],
       ].forEach(([f,s,d,t,v])=>note(f,s,d,t,v));
     }catch(e){}
   })();
 
-  // ── Vimeo IDs — Fallback-Kette bei Fehler ────────────────
-  // title=0&byline=0&portrait=0 = kein Titel, kein Name, kein Logo
-  const vimeoIds = ['855191328','731303395','409573070','321268200','336892869'];
-  const params = '?autoplay=1&muted=0&title=0&byline=0&portrait=0&controls=1&playsinline=1';
-  let idIdx = 0;
+  // ── Vimeo 1071968720 — verifizierter Link, Österreich OK ──
   const frame = document.getElementById('rickroll-frame');
+  // #t=0 = von Anfang, autoplay, kein Titel/Logo/Byline
+  frame.src = 'https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1#t=0';
 
-  function loadVimeo(idx){
-    frame.src = 'https://player.vimeo.com/video/' + vimeoIds[idx] + params;
-  }
-  frame.onerror = function(){
-    idIdx++;
-    if(idIdx < vimeoIds.length) loadVimeo(idIdx);
-  };
-  // Also try next ID if iframe stays blank after 5s
-  let fallbackTimer = setTimeout(function checkLoad(){
-    try{
-      // If contentDocument is accessible and empty, try next
-      if(idIdx < vimeoIds.length - 1){ idIdx++; loadVimeo(idIdx); }
-    }catch(e){}
-  }, 5000);
-
-  loadVimeo(0);
   document.getElementById('rickroll-overlay').classList.remove('hidden');
-  document.body.style.overflow='hidden';
-  document.addEventListener('keydown',_rr_esc);
-  const cover=document.getElementById('rickroll-cover');
-  if(cover){cover.classList.remove('gone');setTimeout(()=>cover.classList.add('gone'),2200);}
+  document.body.style.overflow = 'hidden';
+  document.addEventListener('keydown', _rr_esc);
+
+  const cover = document.getElementById('rickroll-cover');
+  if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'), 2200); }
+
+  // ── Auto-close nach 20 Sekunden ───────────────────────────
+  if(window._rrTimer) clearTimeout(window._rrTimer);
+  window._rrTimer = setTimeout(()=>closeRickRoll(), 20000);
 }
 function closeRickRoll(){
+  if(window._rrTimer){ clearTimeout(window._rrTimer); window._rrTimer=null; }
   document.getElementById('rickroll-frame').src = '';
   document.getElementById('rickroll-overlay').classList.add('hidden');
   document.body.style.overflow = '';
