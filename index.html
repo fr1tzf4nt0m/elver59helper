@@ -28,7 +28,7 @@ body.theme-light{
   --warm:#8a5c00;--red:#b02820;--text:#0d1f13;--muted:#3e5848;--muted2:#7a9e86;
   --heading-font:'Inter',sans-serif;
 }
-body.theme-light #starfield{opacity:0;}
+body.theme-light #starfield{opacity:1;filter:hue-rotate(-80deg) brightness(0.6);}
 body.theme-light::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
     radial-gradient(ellipse at 15% 20%,rgba(134,200,130,.14) 0%,transparent 50%),
@@ -98,7 +98,7 @@ body.theme-pastel1{
   --warm:#c06030;--red:#c02848;--text:#2a1018;--muted:#9a6070;--muted2:#c898a8;
   --heading-font:'Playfair Display',serif;
 }
-body.theme-pastel1 #starfield{opacity:0;}
+body.theme-pastel1 #starfield{opacity:1;filter:hue-rotate(-80deg) brightness(0.6);}
 body.theme-pastel1::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
     radial-gradient(ellipse at 20% 10%,rgba(255,182,193,.35) 0%,transparent 45%),
@@ -113,7 +113,7 @@ body.theme-pastel2{
   --warm:#c08040;--red:#b83048;--text:#1a1430;--muted:#8878b8;--muted2:#b8b0d8;
   --heading-font:'Playfair Display',serif;
 }
-body.theme-pastel2 #starfield{opacity:0;}
+body.theme-pastel2 #starfield{opacity:1;filter:hue-rotate(-80deg) brightness(0.6);}
 body.theme-pastel2::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
     radial-gradient(ellipse at 70% 10%,rgba(180,160,240,.30) 0%,transparent 45%),
@@ -128,7 +128,7 @@ body.theme-pastel3{
   --warm:#b06820;--red:#c03040;--text:#0e2820;--muted:#5a8878;--muted2:#90c0b0;
   --heading-font:'Nunito',sans-serif;
 }
-body.theme-pastel3 #starfield{opacity:0;}
+body.theme-pastel3 #starfield{opacity:1;filter:hue-rotate(-80deg) brightness(0.6);}
 body.theme-pastel3::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
     radial-gradient(ellipse at 15% 15%,rgba(160,220,195,.30) 0%,transparent 45%),
@@ -405,7 +405,7 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 @keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 #starfield{position:fixed;inset:0;pointer-events:none;z-index:0;}
-body.light #starfield{opacity:0;}
+body.light #starfield{opacity:1;filter:hue-rotate(-80deg) brightness(0.6);}
 
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(14,18,16,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeDown .3s ease both;}
