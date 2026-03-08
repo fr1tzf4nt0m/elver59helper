@@ -830,8 +830,6 @@ document.addEventListener('keyup', e=>{
 document.addEventListener('blur', e=>{
   if(e.target.id==='sa-thema'||e.target.id==='sa-datum') syncAndSave();
 }, true);
-// touchend: jede Berührung speichert (iOS PWA Sicherheitsnetz)
-document.addEventListener('touchend', ()=>{ syncAndSave(); }, { passive:true });
 // Intervall: alle 3 Sekunden
 setInterval(syncAndSave, 3000);
 
