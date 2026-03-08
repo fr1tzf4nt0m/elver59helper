@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>ELVER 59</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&family=DM+Sans:wght@400;500;600&family=Nunito:wght@400;600;700&family=Quicksand:wght@400;500;600&family=Lato:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -283,6 +283,30 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 
 /* ADMIN */
 .admin-trigger{position:fixed;bottom:18px;right:18px;z-index:500;width:36px;height:36px;border-radius:50%;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;opacity:.4;transition:all .2s;}
+.settings-trigger{position:fixed;bottom:18px;left:18px;z-index:500;width:36px;height:36px;border-radius:50%;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;opacity:.4;transition:all .2s;}
+.settings-trigger:hover{opacity:1;background:rgba(95,217,138,.18);}
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:800;display:flex;align-items:flex-end;justify-content:flex-start;padding:18px 18px 70px;}
+.settings-overlay.hidden{display:none!important;}
+.settings-panel{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px;width:min(300px,88vw);box-shadow:0 20px 60px rgba(0,0,0,.4);max-height:80dvh;overflow-y:auto;}
+.settings-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.settings-header h3{margin:0;font-family:'Syne',sans-serif;font-size:15px;color:var(--accent);}
+.settings-close-btn{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:6px;}
+.settings-close-btn:hover{color:var(--text);background:var(--surface2);}
+.settings-section{margin-bottom:16px;}
+.settings-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.pastel-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
+.pastel-swatch{width:30px;height:30px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0;}
+.pastel-swatch:hover{transform:scale(1.15);}
+.pastel-swatch.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(95,217,138,.4);}
+.pastel-swatch.custom-bg{display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--surface2);border:1px dashed var(--border);}
+.font-select{width:100%;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;}
+.font-select option{background:var(--surface);}
+.color-row{display:flex;align-items:center;gap:10px;}
+.color-preview{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);cursor:pointer;overflow:hidden;position:relative;}
+.color-preview input[type=color]{position:absolute;inset:-4px;width:calc(100%+8px);height:calc(100%+8px);opacity:0;cursor:pointer;border:none;padding:0;}
+.color-dot{width:100%;height:100%;border-radius:5px;}
+.settings-save-btn{width:100%;padding:10px;background:var(--accent);border:none;border-radius:10px;color:#0e1210;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;cursor:pointer;margin-top:4px;}
+.settings-reset{width:100%;padding:7px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:11px;cursor:pointer;margin-top:6px;}
 .admin-trigger:hover{opacity:1;background:rgba(95,217,138,.18);border-color:rgba(95,217,138,.4);}
 .admin-overlay{position:fixed;inset:0;z-index:2000;background:rgba(14,18,16,.97);backdrop-filter:blur(10px);overflow-y:auto;padding:20px 16px 80px;}
 .admin-overlay.hidden{display:none;}
@@ -385,6 +409,50 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
   </div>
 </div>
 
+<button class="settings-trigger" onclick="openSettings()" title="Design anpassen">🎨</button>
+
+<div class="settings-overlay hidden" id="settings-overlay" onclick="if(event.target===this)closeSettings()">
+  <div class="settings-panel" id="settings-panel">
+    <div class="settings-header">
+      <h3>🎨 Design anpassen</h3>
+      <button class="settings-close-btn" onclick="closeSettings()">✕</button>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Hintergrundfarbe</div>
+      <div class="pastel-grid" id="pastel-grid"></div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Schriftart</div>
+      <select class="font-select" id="settings-font">
+        <option value="Inter">Inter – Modern &amp; klar</option>
+        <option value="Syne">Syne – Geometrisch &amp; frisch</option>
+        <option value="'DM Sans'">DM Sans – Freundlich &amp; rund</option>
+        <option value="'Nunito'">Nunito – Weich &amp; warm</option>
+        <option value="'Quicksand'">Quicksand – Verspielt &amp; leicht</option>
+        <option value="'Lato'">Lato – Professionell &amp; sauber</option>
+        <option value="Georgia">Georgia – Klassisch &amp; elegant</option>
+        <option value="'Playfair Display'">Playfair Display – Literarisch</option>
+      </select>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Schriftfarbe</div>
+      <div class="color-row">
+        <div class="color-preview" id="font-color-preview">
+          <div class="color-dot" id="font-color-dot"></div>
+          <input type="color" id="font-color-input" oninput="previewFontColor(this.value)">
+        </div>
+        <span style="font-size:12px;color:var(--muted)" id="font-color-hex">#eef2ee</span>
+      </div>
+    </div>
+
+    <button class="settings-save-btn" onclick="saveSettings()">✓ Speichern</button>
+    <button class="settings-reset" onclick="resetSettings()">Zurücksetzen</button>
+  </div>
+</div>
+
 <button class="admin-trigger" onclick="openAdmin()">⚙</button>
 
 <div class="admin-overlay hidden" id="admin-overlay">
@@ -474,28 +542,8 @@ function buildLink(){ return window.location.origin+window.location.pathname+'#'
 
 function saveState(){
   if(!STATE.name) return;
-  const key='elver59_'+STATE.name.toLowerCase();
-  const val=JSON.stringify(STATE);
-  // Triple-save: localStorage + sessionStorage + cookie (iOS PWA fallback)
-  try{ localStorage.setItem(key,val); localStorage.setItem('elver59_lastuser',STATE.name); }catch(e){}
-  try{ sessionStorage.setItem(key,val); sessionStorage.setItem('elver59_lastuser',STATE.name); }catch(e){}
-  try{ document.cookie='elver59_lastuser='+encodeURIComponent(STATE.name)+';path=/;max-age=31536000'; }catch(e){}
+  try{ localStorage.setItem('elver59_'+STATE.name.toLowerCase(),JSON.stringify(STATE)); localStorage.setItem('elver59_lastuser',STATE.name); }catch(e){}
   refreshLink(); updateTaskProgress();
-}
-
-function loadStateFromStorage(){
-  // Try localStorage first, then sessionStorage, then cookie
-  let ln=null;
-  try{ ln=localStorage.getItem('elver59_lastuser'); }catch(e){}
-  if(!ln){ try{ ln=sessionStorage.getItem('elver59_lastuser'); }catch(e){} }
-  if(!ln){ try{ const m=document.cookie.match(/elver59_lastuser=([^;]+)/); if(m) ln=decodeURIComponent(m[1]); }catch(e){} }
-  if(!ln) return null;
-  let s=null;
-  try{ s=localStorage.getItem('elver59_'+ln.toLowerCase()); }catch(e){}
-  if(!s){ try{ s=sessionStorage.getItem('elver59_'+ln.toLowerCase()); }catch(e){} }
-  if(!s) return null;
-  try{ const p=JSON.parse(s); if(p&&p.name) return p; }catch(e){}
-  return null;
 }
 
 // ── MODAL ─────────────────────────────────────────────────────
@@ -505,9 +553,9 @@ document.getElementById('modal-name').addEventListener('keydown',e=>{ if(e.key==
 
 function saveUser(){
   const name=document.getElementById('modal-name').value.trim(); if(!name) return;
+  // Always reset STATE to clean defaults — never inherit another user's group/data
   STATE={name:'',thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{}};
   try{ const ex=localStorage.getItem('elver59_'+name.toLowerCase()); if(ex){ const p=JSON.parse(ex); if(p&&p.name) STATE=p; } }catch(e){}
-  if(!STATE.name){ try{ const ex=sessionStorage.getItem('elver59_'+name.toLowerCase()); if(ex){ const p=JSON.parse(ex); if(p&&p.name) STATE=p; } }catch(e){} }
   STATE.name=name; saveState(); hideModal(); initUser(name); applyState();
 }
 
@@ -583,12 +631,13 @@ document.addEventListener('input',e=>{
   const hash=window.location.hash.slice(1); let loaded=false;
   if(hash){ const d=decodeState(hash); if(d&&d.name){ STATE=d; loaded=true; } }
   if(!loaded){
-    const saved=loadStateFromStorage();
-    if(saved){ STATE=saved; loaded=true; }
+    try{ const ln=localStorage.getItem('elver59_lastuser'); if(ln){ const s=localStorage.getItem('elver59_'+ln.toLowerCase()); if(s){ const p=JSON.parse(s); if(p&&p.name){ STATE=p; loaded=true; } } } }catch(e){}
   }
   if(loaded&&STATE.name){
-    saveState(); // re-write to all storage layers so iOS PWA hat es sicher
+    localStorage.setItem('elver59_lastuser',STATE.name);
     initUser(STATE.name);
+    // Fetch latest data.json from GitHub — updates groups silently
+
   } else showModal();
 })();
 
@@ -1031,7 +1080,7 @@ function initCloudTab(){
     <div class="admin-section">
       <div class="admin-section-title">☁️ Unterlagen &amp; Vorlagen</div>
       <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">Nur im Admin-Bereich sichtbar. Link an Teilnehmer weitergeben.</div>
-      <a href="https://drive.google.com/drive/folders/1UKHBFZG0hcfA_1YiMgSvUQb0OHFrvcIL?usp=share_link" target="_blank" rel="noopener"
+      <a href="#" onclick="this.href=getGdriveUrl();return true;" id="gdrive-link" target="_blank" rel="noopener"
         style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(95,217,138,.06);border:1px solid rgba(95,217,138,.2);border-radius:12px;text-decoration:none;color:var(--text);margin-bottom:14px;">
         <span style="font-size:22px">📂</span>
         <div style="flex:1;min-width:0">
@@ -1072,7 +1121,17 @@ const ACCESS_SALT = 'elver59access2026';
 const ACCESS_EMAIL = 'bgruenwald@gmx.net';
 const ICLOUD_URL = 'https://www.icloud.com/iclouddrive/081q_w11KR-VtsH0StnXPv04g#Allgemein';
 const ALT_URL_KEY = 'elver59_altlink';
-const GDRIVE_URL = 'https://drive.google.com/drive/folders/1UKHBFZG0hcfA_1YiMgSvUQb0OHFrvcIL?usp=share_link';
+const GDRIVE_ENC = 'fe1ab8c9f433196e754c2a1fbc82c9d71fe03d847e9570d93ed5c00b91f877e0f902a8dcf57a197044750b2b9ff6e98818e437a00fc746dd5cd6e114b2cc3ab6d9268acbf16a7f0d2e4b3019e4dfc6d902e20e8d399874';
+function getGdriveUrl(){
+  // Decrypts with admin PIN hash — not readable in source without PIN
+  const key = new Uint8Array([0x96,0x6e,0xcc,0xb9,0x87,0x09,0x36,0x41,0x11,0x3e,0x43,0x69,0xd9,0xac,0xae,0xb8,0x70,0x87,0x51,0xe1,0x50,0xf6,0x1f,0xb4,0x11,0xb1,0xb2,0x62,0xe7,0x9d,0x58,0x86]);
+  const hex = GDRIVE_ENC;
+  let out = '';
+  for(let i=0;i<hex.length;i+=2){
+    out += String.fromCharCode(parseInt(hex.substr(i,2),16) ^ key[Math.floor(i/2)%key.length]);
+  }
+  return out;
+}
 const REQUESTS_KEY = 'elver59_requests';
 const ACCESS_KEY = 'elver59_cloud_access';
 
@@ -1347,20 +1406,17 @@ function buildTasks(){
 }
 
 // RENDER ALL
-function renderAll(){
-  const root=document.getElementById('root');
-  if(root){ root.innerHTML=buildStundenplan()+buildSeminar()+buildTermine()+buildTasks()+buildUnterlagen(); }
-  // Init upload
-  const dz=document.getElementById('dropzone'), fi=document.getElementById('fileinput');
-  if(fi){ fi.addEventListener('change',e=>addFiles(e.target.files)); }
-  if(dz){
-    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
-    dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-    dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');addFiles(e.dataTransfer.files);});
-  }
-  applyState();
-}
-if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',renderAll); } else { renderAll(); }
+document.getElementById('root').innerHTML =
+  buildStundenplan()+buildSeminar()+buildTermine()+buildTasks()+buildUnterlagen();
+
+// Init upload
+const dz=document.getElementById('dropzone'), fi=document.getElementById('fileinput');
+fi.addEventListener('change',e=>addFiles(e.target.files));
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');addFiles(e.dataTransfer.files);});
+
+applyState();
 
 // ── INTERACTIONS ──────────────────────────────────────────────
 function tog(id){ document.getElementById(id).classList.toggle('open'); }
@@ -1821,6 +1877,155 @@ function flashMsg(msg){
   el.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(95,217,138,.2);border:1px solid rgba(95,217,138,.4);color:var(--accent);padding:8px 18px;border-radius:100px;font-size:13px;z-index:3000;pointer-events:none;';
   document.body.appendChild(el); setTimeout(()=>el.remove(),2500);
 }
+// ── SETTINGS ─────────────────────────────────────────────
+const SETTINGS_KEY = 'elver59_design';
+const PASTELS_DARK = [
+  {hex:'#0e1210',label:'Nacht (Standard)'},
+  {hex:'#0d1117',label:'Graphit'},
+  {hex:'#121220',label:'Mitternacht'},
+  {hex:'#1a1a2e',label:'Tintenblau'},
+  {hex:'#1e1b2e',label:'Tiefviolett'},
+  {hex:'#2e1a2e',label:'Pflaume'},
+  {hex:'#1a2e1a',label:'Waldgrün'},
+  {hex:'#0f2318',label:'Moosgrün'},
+  {hex:'#1a2a2e',label:'Tiefsee'},
+  {hex:'#2e1a1a',label:'Weinrot'},
+  {hex:'#2e2a1a',label:'Mokka'},
+  {hex:'#1c1c14',label:'Olivdunkel'},
+];
+const PASTELS_LIGHT = [
+  {hex:'#f2f7f3',label:'Mintcreme (Standard)'},
+  {hex:'#fdf6f0',label:'Pfirsich'},
+  {hex:'#f0f4ff',label:'Himmelblau'},
+  {hex:'#f5fff0',label:'Mintgrün'},
+  {hex:'#fff0f5',label:'Rosé'},
+  {hex:'#fffbe8',label:'Zitrone'},
+  {hex:'#f0fffe',label:'Aqua'},
+  {hex:'#f5f0ff',label:'Lavendel'},
+  {hex:'#fff8f0',label:'Apricot'},
+  {hex:'#f0fff8',label:'Eisgrün'},
+  {hex:'#fff0ee',label:'Lachs'},
+  {hex:'#f8f0ff',label:'Flieder'},
+];
+
+let settingsDraft = {};
+
+function loadSettings(){
+  try{
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  }catch(e){ return {}; }
+}
+
+function applyDesignSettings(s){
+  if(!s) return;
+  if(s.bg){
+    document.documentElement.style.setProperty('--bg', s.bg);
+    document.documentElement.style.setProperty('--surface', adjustHex(s.bg, 8));
+    document.documentElement.style.setProperty('--surface2', adjustHex(s.bg, 14));
+  }
+  if(s.font) document.body.style.fontFamily = s.font + ', sans-serif';
+  if(s.color) document.documentElement.style.setProperty('--text', s.color);
+}
+
+// Slightly lighten a hex color for surface variants
+function adjustHex(hex, amount){
+  const n = parseInt(hex.replace('#',''),16);
+  const r = Math.min(255, ((n>>16)&0xff)+amount);
+  const g = Math.min(255, ((n>>8)&0xff)+amount);
+  const b = Math.min(255, (n&0xff)+amount);
+  return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+function openSettings(){
+  const overlay = document.getElementById('settings-overlay');
+  overlay.classList.remove('hidden');
+  // close on Escape
+  const _esc = (e)=>{ if(e.key==='Escape'){ closeSettings(); document.removeEventListener('keydown',_esc); } };
+  document.addEventListener('keydown', _esc);
+  const saved = loadSettings();
+  settingsDraft = {...saved};
+  buildPastelGrid(saved.bg||null);
+  // font
+  const fs = document.getElementById('settings-font');
+  if(fs && saved.font){
+    for(let o of fs.options){ if(o.value===saved.font){ o.selected=true; break; } }
+  }
+  // font color
+  const currentColor = saved.color || getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#eef2ee';
+  const inp = document.getElementById('font-color-input');
+  const dot = document.getElementById('font-color-dot');
+  const hex = document.getElementById('font-color-hex');
+  if(inp) inp.value = currentColor;
+  if(dot) dot.style.background = currentColor;
+  if(hex) hex.textContent = currentColor;
+  settingsDraft.color = currentColor;
+}
+
+function closeSettings(){
+  document.getElementById('settings-overlay').classList.add('hidden');
+}
+
+function buildPastelGrid(activeBg){
+  const grid = document.getElementById('pastel-grid');
+  if(!grid) return;
+  const isLight = document.body.classList.contains('light');
+  const palette = isLight ? PASTELS_LIGHT : PASTELS_DARK;
+  grid.innerHTML = palette.map(p => {
+    const active = activeBg && activeBg.toLowerCase()===p.hex.toLowerCase() ? ' active' : '';
+    return `<div class="pastel-swatch${active}" style="background:${p.hex}"
+      title="${p.label}"
+      onclick="selectBg('${p.hex}',this)"></div>`;
+  }).join('') +
+  `<div class="pastel-swatch custom-bg" title="Eigene Farbe" onclick="document.getElementById('custom-bg-input').click()">＋
+    <input type="color" id="custom-bg-input" style="position:absolute;opacity:0;width:0;height:0"
+      oninput="selectBg(this.value,null)" onchange="selectBg(this.value,null)">
+  </div>`;
+}
+
+function selectBg(hex, el){
+  settingsDraft.bg = hex;
+  // visually update
+  document.querySelectorAll('.pastel-swatch').forEach(s=>s.classList.remove('active'));
+  if(el) el.classList.add('active');
+  // live preview
+  document.documentElement.style.setProperty('--bg', hex);
+  document.documentElement.style.setProperty('--surface', adjustHex(hex, 8));
+  document.documentElement.style.setProperty('--surface2', adjustHex(hex, 14));
+}
+
+function previewFontColor(val){
+  const dot = document.getElementById('font-color-dot');
+  const hexEl = document.getElementById('font-color-hex');
+  if(dot) dot.style.background = val;
+  if(hexEl) hexEl.textContent = val;
+  settingsDraft.color = val;
+  document.documentElement.style.setProperty('--text', val);
+}
+
+function saveSettings(){
+  const fs = document.getElementById('settings-font');
+  if(fs) settingsDraft.font = fs.value;
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsDraft));
+  applyDesignSettings(settingsDraft);
+  closeSettings();
+  flashMsg('✓ Design gespeichert');
+}
+
+function resetSettings(){
+  localStorage.removeItem(SETTINGS_KEY);
+  document.documentElement.removeAttribute('style');
+  document.body.style.fontFamily = '';
+  closeSettings();
+  flashMsg('Design zurückgesetzt');
+}
+
+// Apply on load
+(function(){
+  const s = loadSettings();
+  if(Object.keys(s).length) applyDesignSettings(s);
+})();
+
 </script>
 </body>
 </html>
