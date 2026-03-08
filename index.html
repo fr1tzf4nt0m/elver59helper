@@ -143,6 +143,7 @@ body{
   padding:40px 18px 80px;position:relative;overflow-x:hidden;transition:background .3s,color .3s;
 }
 body::before{content:'';position:fixed;top:-120px;left:50%;transform:translateX(-50%);width:500px;height:400px;background:radial-gradient(ellipse,rgba(95,217,138,.06) 0%,transparent 70%);pointer-events:none;z-index:0;}
+body.theme-pastel1::before,body.theme-pastel2::before,body.theme-pastel3::before{top:0;left:0;transform:none;width:100%;height:100%;}
 .container{width:100%;max-width:430px;position:relative;z-index:1;}
 .theme-btn{position:fixed;top:14px;right:14px;z-index:400;width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;opacity:.55;transition:all .2s;}
 .theme-btn:hover{opacity:1;border-color:rgba(95,217,138,.4);}
@@ -515,7 +516,7 @@ body.light #starfield{opacity:0;}
     </div>
     <div class="rickroll-video-wrap">
       <iframe id="rickroll-frame" src=""
-        allow="autoplay; fullscreen; picture-in-picture"
+        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
         allowfullscreen
         frameborder="0"></iframe>
       <div class="rickroll-cover" id="rickroll-cover">
@@ -2264,7 +2265,7 @@ const THEMES = [
     cls: 'theme-picasso2',
     preview: ['#060d1e','#121c34','#6090e8','#d0a030'],
   },
-  ,{
+  {
     id: 'pastel1',
     name: 'Pastell · Kirschblüte',
     cls: 'theme-pastel1',
@@ -2402,7 +2403,6 @@ function openRickRoll(){
     }catch(e){}
   })();
 
-  // Direkt im Click-Handler = User-Gesture = Sound auf ALLEN Browsern
   const frame=document.getElementById('rickroll-frame');
   frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1';
 
