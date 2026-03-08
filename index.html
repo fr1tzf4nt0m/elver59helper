@@ -670,6 +670,16 @@ document.addEventListener('input',e=>{
 
 // ── INIT ──────────────────────────────────────────────────────
 (function(){
+  // Hard-wipe admin on every cold load — safety net for any edge case
+  (function(){
+    const overlay=document.getElementById('admin-overlay');
+    if(overlay){ overlay.classList.add('hidden'); }
+    const main=document.getElementById('admin-main-screen');
+    if(main){ main.classList.add('hidden'); }
+    const pin=document.getElementById('admin-pin-screen');
+    if(pin){ pin.classList.remove('hidden'); }
+  })();
+
   const hash=window.location.hash.slice(1); let loaded=false;
   if(hash){ const d=decodeState(hash); if(d&&d.name){ STATE=d; loaded=true; } }
   if(!loaded){
@@ -1628,6 +1638,26 @@ function toggleTheme(){
   try{ localStorage.setItem('elver59_theme',l?'light':'dark'); }catch(e){}
 }
 (function(){ const t=localStorage.getItem('elver59_theme'); if(t==='light'){ document.body.classList.add('light'); document.getElementById('theme-btn').textContent='🌙'; } })();
+
+// ── ADMIN SECURITY: force-wipe on every page show/restore ────────────
+// Handles bfcache (back button), tab restore, visibility change
+window.addEventListener('pageshow', function(e){
+  // Always wipe & hide admin — even if browser restored DOM from cache
+  const overlay = document.getElementById('admin-overlay');
+  if(overlay){
+    overlay.classList.add('hidden');
+    _wipeAdmin();
+  }
+});
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState === 'visible'){
+    const overlay = document.getElementById('admin-overlay');
+    if(overlay && !overlay.classList.contains('hidden')){
+      // Tab became visible with admin open — close and wipe immediately
+      closeAdmin();
+    }
+  }
+});
 
 // STARS
 const canvas=document.getElementById('starfield'),ctx=canvas.getContext('2d');let stars=[];
