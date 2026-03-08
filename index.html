@@ -797,28 +797,43 @@ function copyLink(){
   });
 }
 
-document.addEventListener('input',e=>{
-  if(e.target.id==='sa-thema'){ STATE.thema=e.target.value; saveState(); }
-  if(e.target.id==='sa-datum'){ STATE.datum=e.target.value; saveState(); }
-});
-// iOS: Tastatur wird weggetippt → blur feuert → sofort speichern
-document.addEventListener('blur',e=>{
-  if(e.target.id==='sa-thema'||e.target.id==='sa-datum'){
-    syncStateFromDOM(); saveState();
-  }
-}, true);
-// Sicherheitsnetz: alle 10 Sekunden automatisch speichern (iOS PWA)
-setInterval(()=>{ try{ syncStateFromDOM(); saveState(); }catch(e){} }, 10000);
-
-// Liest alle DOM-Inputs und schreibt sie in STATE — wichtig für iOS bevor App geschlossen wird
+// ── SPEICHERN: aggressiv auf allen Events ────────────────────
 function syncStateFromDOM(){
   try{
     const thema=document.getElementById('sa-thema');
     const datum=document.getElementById('sa-datum');
-    if(thema) STATE.thema=thema.value;
-    if(datum) STATE.datum=datum.value;
+    if(thema && thema.value) STATE.thema=thema.value;
+    if(datum && datum.value) STATE.datum=datum.value;
   }catch(e){}
 }
+function syncAndSave(){
+  if(!STATE.name) return;
+  syncStateFromDOM();
+  saveState();
+}
+
+// input: jeder Tastendruck
+document.addEventListener('input', e=>{
+  if(e.target.id==='sa-thema'){ STATE.thema=e.target.value; saveState(); }
+  if(e.target.id==='sa-datum'){ STATE.datum=e.target.value; saveState(); }
+});
+// change: iOS Datum-Picker feuert nur change, kein input
+document.addEventListener('change', e=>{
+  if(e.target.id==='sa-thema'){ STATE.thema=e.target.value; saveState(); }
+  if(e.target.id==='sa-datum'){ STATE.datum=e.target.value; saveState(); }
+});
+// keyup: zusätzliche Absicherung
+document.addEventListener('keyup', e=>{
+  if(e.target.id==='sa-thema'||e.target.id==='sa-datum') syncAndSave();
+});
+// blur: Tastatur weggeklappt auf iOS
+document.addEventListener('blur', e=>{
+  if(e.target.id==='sa-thema'||e.target.id==='sa-datum') syncAndSave();
+}, true);
+// touchend: jede Berührung speichert (iOS PWA Sicherheitsnetz)
+document.addEventListener('touchend', ()=>{ syncAndSave(); }, { passive:true });
+// Intervall: alle 3 Sekunden
+setInterval(syncAndSave, 3000);
 
 // ── INIT ──────────────────────────────────────────────────────
 (function(){
@@ -1799,19 +1814,15 @@ window.addEventListener('pageshow', function(e){
 });
 document.addEventListener('visibilitychange', function(){
   if(document.visibilityState === 'hidden'){
-    // iOS PWA: kein beforeunload → hier speichern wenn App in Hintergrund geht
-    try{ syncStateFromDOM(); saveState(); }catch(e){}
+    try{ syncAndSave(); }catch(e){}
   }
   if(document.visibilityState === 'visible'){
     const overlay = document.getElementById('admin-overlay');
-    if(overlay && !overlay.classList.contains('hidden')){
-      closeAdmin();
-    }
+    if(overlay && !overlay.classList.contains('hidden')) closeAdmin();
   }
 });
-window.addEventListener('pagehide', function(){
-  try{ syncStateFromDOM(); saveState(); }catch(e){}
-});
+window.addEventListener('pagehide', function(){ try{ syncAndSave(); }catch(e){} });
+window.addEventListener('blur', function(){ try{ syncAndSave(); }catch(e){} });
 
 // STARS
 const canvas=document.getElementById('starfield'),ctx=canvas.getContext('2d');let stars=[];
