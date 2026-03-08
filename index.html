@@ -761,7 +761,7 @@ function applyState(){
       if(newCard){
         parent.removeChild(cloudCard);
         parent.insertBefore(newCard,next);
-        if(hasCloudAccess()) newCard.classList.add('open');
+        if(hasCloudAccess()) {} // offen lassen — User entscheidet selbst
       }
     }
   }catch(e){ console.warn('cloud rerender skipped',e); }
