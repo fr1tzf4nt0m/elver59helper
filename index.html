@@ -403,61 +403,7 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
       <div class="pin-err" id="pin-err"></div>
     </div>
   </div>
-  <div id="admin-main-screen" class="hidden">
-    <div class="admin-panel">
-      <div class="admin-header">
-        <div class="admin-title">⚙ Admin · ELVER 59</div>
-        <button class="admin-close" onclick="closeAdmin()">✕ Schließen</button>
-      </div>
-      <div class="admin-tabs">
-        <div class="admin-tab active" onclick="switchTab('users')">👤 Benutzer</div>
-        <div class="admin-tab" onclick="switchTab('groups')">👥 Gruppen</div>
-        <div class="admin-tab" onclick="switchTab('add')">✚ Neu</div>
-        <div class="admin-tab" onclick="switchTab('cloud')">☁️ Unterlagen</div>
-        <div class="admin-tab" id="tab-req-btn" onclick="switchTab('requests')">📥 Anfragen</div>
-      </div>
-
-      <div class="admin-tabpanel active" id="tab-users">
-        <div class="admin-section">
-          <div class="admin-section-title">Alle Benutzer</div>
-          <div id="admin-user-list"></div>
-        </div>
-        <div class="admin-section" id="admin-edit-section" style="display:none">
-          <div class="admin-section-title" id="admin-edit-title">Bearbeiten</div>
-          <div class="admin-form">
-            <label>Name</label><input id="edit-name" type="text"/>
-            <label>SA-Thema</label><textarea id="edit-thema" rows="2"></textarea>
-            <label>SA-Datum</label><input id="edit-datum" type="date"/>
-            <label>Gruppe</label>
-            <select id="edit-group">
-              <option value="0">Keine Gruppe</option>
-              <option value="1">Gruppe 1 – Schwangerschaft &amp; Säuglingsalter</option>
-              <option value="2">Gruppe 2 – Krippenkindalter</option>
-              <option value="3">Gruppe 3 – Kindergartenalter</option>
-              <option value="4">Gruppe 4 – Schulalter</option>
-              <option value="5">Gruppe 5 – Jugendalter</option>
-            </select>
-            <button class="admin-save-btn" onclick="saveEditedUser()">Speichern</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="admin-tabpanel" id="tab-groups">
-        <div class="admin-section">
-          <div class="admin-section-title">Gruppenzuweisung</div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Chip antippen = entfernen · unten zuweisen</div>
-          <div id="admin-group-list"></div>
-        </div>
-        <div class="admin-section">
-          <div class="admin-section-title">Nicht zugewiesen</div>
-          <div id="admin-unassigned"></div>
-        </div>
-      </div>
-
-      <div class="admin-tabpanel" id="tab-add"></div>
-      <div class="admin-tabpanel" id="tab-cloud"></div>
-      <div class="admin-tabpanel" id="tab-requests"></div>
-    </div>
+  <div id="admin-main-screen" class="hidden"></div>
 
 <script>
 // ── CONSTANTS ─────────────────────────────────────────────────
@@ -1642,12 +1588,17 @@ function toggleTheme(){
 // ── ADMIN SECURITY: force-wipe on every page show/restore ────────────
 // Handles bfcache (back button), tab restore, visibility change
 window.addEventListener('pageshow', function(e){
-  // Always wipe & hide admin — even if browser restored DOM from cache
+  // Always hide admin overlay — handles bfcache restore
   const overlay = document.getElementById('admin-overlay');
-  if(overlay){
-    overlay.classList.add('hidden');
-    _wipeAdmin();
-  }
+  if(overlay) overlay.classList.add('hidden');
+  // Destroy any admin UI that might have been cached
+  const main = document.getElementById('admin-main-screen');
+  if(main){ main.classList.add('hidden'); main.innerHTML=''; }
+  // Reset PIN state safely
+  pinInput=''; editingUser=null;
+  try{ updatePinDots(); } catch(e){}
+  try{ document.getElementById('pin-err').textContent=''; } catch(e){}
+  try{ document.getElementById('admin-pin-screen').classList.remove('hidden'); } catch(e){}
 });
 document.addEventListener('visibilitychange', function(){
   if(document.visibilityState === 'visible'){
@@ -1763,26 +1714,72 @@ function _resetAdminTimer(){
   }, 5*60*1000); // 5 Minuten
 }
 
+function buildAdminUI(){
+  const main = document.getElementById('admin-main-screen');
+  main.innerHTML = `
+    <div class="admin-panel">
+      <div class="admin-header">
+        <div class="admin-title">⚙ Admin · ELVER 59</div>
+        <button class="admin-close" onclick="closeAdmin()">✕ Schließen</button>
+      </div>
+      <div class="admin-tabs">
+        <div class="admin-tab active" onclick="switchTab('users')">👤 Benutzer</div>
+        <div class="admin-tab" onclick="switchTab('groups')">👥 Gruppen</div>
+        <div class="admin-tab" onclick="switchTab('add')">✚ Neu</div>
+        <div class="admin-tab" onclick="switchTab('cloud')">☁️ Unterlagen</div>
+        <div class="admin-tab" id="tab-req-btn" onclick="switchTab('requests')">📥 Anfragen</div>
+      </div>
+      <div class="admin-tabpanel active" id="tab-users">
+        <div class="admin-section">
+          <div class="admin-section-title">Alle Benutzer</div>
+          <div id="admin-user-list"></div>
+        </div>
+        <div class="admin-section" id="admin-edit-section" style="display:none">
+          <div class="admin-section-title" id="admin-edit-title">Bearbeiten</div>
+          <div class="admin-form">
+            <label>Name</label><input id="edit-name" type="text"/>
+            <label>SA-Thema</label><textarea id="edit-thema" rows="2"></textarea>
+            <label>SA-Datum</label><input id="edit-datum" type="date"/>
+            <label>Gruppe</label>
+            <select id="edit-group">
+              <option value="0">Keine Gruppe</option>
+              <option value="1">Gruppe 1</option>
+              <option value="2">Gruppe 2</option>
+              <option value="3">Gruppe 3</option>
+              <option value="4">Gruppe 4</option>
+              <option value="5">Gruppe 5</option>
+            </select>
+            <button class="admin-save-btn" onclick="saveEditedUser()">Speichern</button>
+          </div>
+        </div>
+      </div>
+      <div class="admin-tabpanel" id="tab-groups">
+        <div class="admin-section">
+          <div class="admin-section-title">Gruppenzuweisung</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Chip antippen = entfernen · unten zuweisen</div>
+          <div id="admin-group-list"></div>
+        </div>
+        <div class="admin-section">
+          <div class="admin-section-title">Nicht zugewiesen</div>
+          <div id="admin-unassigned"></div>
+        </div>
+      </div>
+      <div class="admin-tabpanel" id="tab-add"></div>
+      <div class="admin-tabpanel" id="tab-cloud"></div>
+      <div class="admin-tabpanel" id="tab-requests"></div>
+    </div>`;
+  renderAdminUsers(); renderAdminGroups(); refreshReqBadge();
+}
+
 function _wipeAdmin(){
-  // Completely reset admin state — called on every open AND close
   pinInput=''; editingUser=null;
   updatePinDots();
   document.getElementById('pin-err').textContent='';
-  // Always hide main, always show pin screen
-  document.getElementById('admin-main-screen').classList.add('hidden');
+  // Destroy entire admin UI — nothing remains in DOM after wipe
+  const main=document.getElementById('admin-main-screen');
+  main.classList.add('hidden');
+  main.innerHTML=''; // nuclear option: zero admin data in DOM
   document.getElementById('admin-pin-screen').classList.remove('hidden');
-  // Wipe any rendered user/group data from the DOM so it's never visible before PIN
-  const ul=document.getElementById('admin-user-list'); if(ul) ul.innerHTML='';
-  const gl=document.getElementById('admin-group-list'); if(gl) gl.innerHTML='';
-  const ua=document.getElementById('admin-unassigned'); if(ua) ua.innerHTML='';
-  document.getElementById('admin-edit-section').style.display='none';
-  // Wipe dynamic tab content so nothing leaks between sessions
-  ['tab-add','tab-cloud','tab-requests'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.innerHTML='';
-  });
-  // Switch tab back to users silently
-  document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
-  document.querySelectorAll('.admin-tabpanel').forEach((p,i)=>p.classList.toggle('active',i===0));
 }
 
 function openAdmin(){
@@ -1805,12 +1802,11 @@ function pinClear(){ pinInput=''; updatePinDots(); }
 function updatePinDots(){ for(let i=0;i<4;i++) document.getElementById('pd'+i)?.classList.toggle('filled',i<pinInput.length); }
 async function checkPin(){
   if(await verifyPin(pinInput)){
+    pinInput=''; updatePinDots(); // clear PIN from memory immediately
+    // Build entire admin UI now — nothing existed in DOM before this point
+    buildAdminUI();
     document.getElementById('admin-pin-screen').classList.add('hidden');
     document.getElementById('admin-main-screen').classList.remove('hidden');
-    pinInput=''; updatePinDots(); // clear PIN from memory immediately after unlock
-    // Always switch to users tab and render fresh on every open
-    switchTabSilent('users');
-    renderAdminUsers(); renderAdminGroups(); refreshReqBadge();
   } else {
     document.getElementById('pin-err').textContent='Falscher PIN';
     pinInput=''; updatePinDots();
