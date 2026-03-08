@@ -801,6 +801,24 @@ document.addEventListener('input',e=>{
   if(e.target.id==='sa-thema'){ STATE.thema=e.target.value; saveState(); }
   if(e.target.id==='sa-datum'){ STATE.datum=e.target.value; saveState(); }
 });
+// iOS: Tastatur wird weggetippt → blur feuert → sofort speichern
+document.addEventListener('blur',e=>{
+  if(e.target.id==='sa-thema'||e.target.id==='sa-datum'){
+    syncStateFromDOM(); saveState();
+  }
+}, true);
+// Sicherheitsnetz: alle 10 Sekunden automatisch speichern (iOS PWA)
+setInterval(()=>{ try{ syncStateFromDOM(); saveState(); }catch(e){} }, 10000);
+
+// Liest alle DOM-Inputs und schreibt sie in STATE — wichtig für iOS bevor App geschlossen wird
+function syncStateFromDOM(){
+  try{
+    const thema=document.getElementById('sa-thema');
+    const datum=document.getElementById('sa-datum');
+    if(thema) STATE.thema=thema.value;
+    if(datum) STATE.datum=datum.value;
+  }catch(e){}
+}
 
 // ── INIT ──────────────────────────────────────────────────────
 (function(){
@@ -1322,6 +1340,33 @@ const REQUESTS_KEY = 'elver59_requests';
 const ACCESS_KEY = 'elver59_cloud_access';
 
 // Generate deterministic 6-char unlock code from name
+async function generateManualCode(){
+  const nameEl=document.getElementById('manual-code-name');
+  const name=(nameEl?.value||'').trim();
+  if(!name){ nameEl?.focus(); return; }
+  const code=await genAccessCode(name);
+  const result=document.getElementById('manual-code-result');
+  const val=document.getElementById('manual-code-val');
+  if(val) val.textContent=code;
+  if(result) result.style.display='block';
+  window._manualCodeName=name;
+  window._manualCode=code;
+  window._manualCodeEmail=(document.getElementById('manual-code-email')?.value||'').trim();
+}
+function copyManualCode(){
+  if(!window._manualCode) return;
+  navigator.clipboard?.writeText(window._manualCode).catch(()=>{});
+  const btn=document.getElementById('manual-copy-btn');
+  if(btn){ btn.textContent='✓ Kopiert!'; setTimeout(()=>btn.textContent='📋 Kopieren',2000); }
+}
+function mailManualCode(){
+  const name=window._manualCodeName||'';
+  const code=window._manualCode||'';
+  const email=window._manualCodeEmail||'';
+  const subject=encodeURIComponent('ELVER 59 · Dein Freischalt-Code');
+  const body=encodeURIComponent(`Hallo ${name},\n\nhier ist dein persönlicher Freischalt-Code für die ELVER 59 Unterlagen:\n\n${code}\n\nGib ihn in der App unter ☁️ Unterlagen ein.\n\nlg Boris`);
+  window.open(`mailto:${email}?subject=${subject}&body=${body}`);
+}
 async function genAccessCode(name){
   const enc=new TextEncoder().encode(ACCESS_SALT+name.trim().toLowerCase());
   const buf=await crypto.subtle.digest('SHA-256',enc);
@@ -1427,7 +1472,7 @@ async function submitAccessRequest(){
 
   // Open mailto to Boris
   const subject=encodeURIComponent('Unterlagen-Zugang: '+name);
-  const body=encodeURIComponent('Hallo Boris,\n\nich bin '+name+', könntest du mir bitte den Freischalt-Code schicken?\n\nMit dem Code kann ich die Google Docs Unterlagen in der App freischalten.\n\nMeine E-Mail: '+email+'\n\nlg '+name);
+  const body=encodeURIComponent('Hallo Boris,\n\nich möchte die Unterlagen freischalten.\n\n📌 Mein Name in der App (exakt): '+name+'\n\n(Diesen Namen bitte für die Code-Generierung verwenden)\n\nMeine E-Mail: '+email+'\n\nlg '+name);
   window.location.href=`mailto:${ACCESS_EMAIL}?subject=${subject}&body=${body}`;
 
   // Show success state
@@ -1473,6 +1518,24 @@ async function renderAdminRequests(){
           <span id="req-count-badge" class="req-badge" style="display:none">0</span>
         </div>
         <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">Hier erscheinen alle Anfragen für die Unterlagen-Freischaltung. Code generieren → an User per Mail schicken.</div>
+
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;">
+          <div style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">🔑 Manuell Code generieren</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <input id="manual-code-name" type="text" placeholder="Name eingeben…" style="flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;">
+            <input id="manual-code-email" type="email" placeholder="E-Mail (optional)" style="flex:1;min-width:140px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;">
+            <button onclick="generateManualCode()" style="background:var(--accent);color:#0e1210;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;white-space:nowrap;">Code generieren</button>
+          </div>
+          <div id="manual-code-result" style="display:none;margin-top:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Freischalt-Code:</div>
+            <div id="manual-code-val" style="font-size:22px;font-weight:800;letter-spacing:.18em;color:var(--accent);font-family:'Syne',sans-serif;"></div>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+              <button id="manual-copy-btn" onclick="copyManualCode()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:11px;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;">📋 Kopieren</button>
+              <button id="manual-mail-btn" onclick="mailManualCode()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:11px;padding:5px 12px;cursor:pointer;font-family:'Inter',sans-serif;">📨 Per Mail senden</button>
+            </div>
+          </div>
+        </div>
+
         <div id="admin-req-list"></div>
         <div id="admin-req-empty" style="font-size:12px;color:var(--muted);text-align:center;padding:24px;font-style:italic;">Noch keine Anfragen.</div>
       </div>`;
@@ -1738,19 +1801,17 @@ window.addEventListener('pageshow', function(e){
 document.addEventListener('visibilitychange', function(){
   if(document.visibilityState === 'hidden'){
     // iOS PWA: kein beforeunload → hier speichern wenn App in Hintergrund geht
-    try{ saveState(); }catch(e){}
+    try{ syncStateFromDOM(); saveState(); }catch(e){}
   }
   if(document.visibilityState === 'visible'){
     const overlay = document.getElementById('admin-overlay');
     if(overlay && !overlay.classList.contains('hidden')){
-      // Tab became visible with admin open — close and wipe immediately
       closeAdmin();
     }
   }
 });
 window.addEventListener('pagehide', function(){
-  // Zusätzliche Absicherung für iOS
-  try{ saveState(); }catch(e){}
+  try{ syncStateFromDOM(); saveState(); }catch(e){}
 });
 
 // STARS
