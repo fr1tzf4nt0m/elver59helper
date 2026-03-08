@@ -1300,7 +1300,7 @@ function buildUnterlagen(){
   const altUrl=localStorage.getItem(ALT_URL_KEY)||'';
   if(unlocked){
     return xcard('c-cloud','☁️','Unterlagen Vorlagen',`<div class="access-unlocked">
-      <a class="access-file-btn" href="${GDRIVE_URL}" target="_blank" rel="noopener" onclick="trackFileAccess()">
+      <a class="access-file-btn" href="#" onclick="this.href=getGdriveUrl();trackFileAccess();return true;" target="_blank" rel="noopener">
         <div class="access-file-icon">📂</div>
         <div class="access-file-info">
           <div class="access-file-name">Unterlagen &amp; Vorlagen</div>
@@ -1374,9 +1374,16 @@ async function submitAccessCode(){
   const expected=await genAccessCode(name);
   if(code===expected){
     try{ localStorage.setItem(ACCESS_KEY+'_'+STATE.name.toLowerCase(),'1'); }catch(e){}
-    // Re-render card
     const card=document.getElementById('c-cloud');
-    if(card) card.outerHTML=buildUnterlagen();
+    if(card){
+      const parent=card.parentNode, next=card.nextSibling;
+      parent.removeChild(card);
+      const tmp=document.createElement('div');
+      tmp.innerHTML=buildUnterlagen();
+      const newCard=tmp.firstElementChild;
+      parent.insertBefore(newCard,next);
+      newCard.classList.add('open');
+    }
     flashMsg('✓ Unterlagen freigeschaltet!');
   } else {
     if(errEl){errEl.style.color='var(--red)';errEl.textContent='Falscher Code. Bitte nochmal prüfen.';}
@@ -2006,7 +2013,7 @@ function renderAdminAdd(){
         <label>SA-Thema (optional)</label><textarea id="new-thema" rows="2" placeholder="Entwicklung des Kindes…"></textarea>
         <label>SA-Datum (optional)</label><input id="new-datum" type="date" value="2026-03-10"/>
 
-        <button onclick="createUser()" style="margin-top:10px;padding:10px;background:rgba(95,217,138,.12);border:1px solid rgba(95,217,138,.25);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;width:100%">
+        <button onclick="adminAddUser()" style="margin-top:10px;padding:10px;background:rgba(95,217,138,.12);border:1px solid rgba(95,217,138,.25);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;width:100%">
           ✚ Benutzer anlegen
         </button>
       </div>
@@ -2017,7 +2024,8 @@ function getAllUsers(){
   const u=[];
   for(let i=0;i<localStorage.length;i++){
     const k=localStorage.key(i);
-    if(k&&k.startsWith('elver59_')&&!skip.includes(k)){
+    const _skip=['elver59_lastuser','elver59_requests','elver59_access_log','elver59_design','elver59_altlink'];
+    if(k&&k.startsWith('elver59_')&&!_skip.includes(k)){
       try{ const v=JSON.parse(localStorage.getItem(k)); if(v&&v.name) u.push(v); }catch(e){}
     }
   }
@@ -2081,7 +2089,7 @@ function renderAdminUsers(){
       </div>
       <div class="user-row-actions">
         <button class="abtn" onclick="startEdit('${u.name}')">✏</button>
-        <button class="abtn" title="${hasUserAccess(u.name)?'Unterlagen-Zugang sperren':'Kein Zugang'}" onclick="toggleUserAccess('${u.name}')" style="background:${hasUserAccess(u.name)?'rgba(95,217,138,.12)':'rgba(100,100,100,.08)'};border-color:${hasUserAccess(u.name)?'rgba(95,217,138,.3)':'var(--border)'};"></button>
+        <button class="abtn" title="${hasUserAccess(u.name)?'Zugang sperren':'Zugang geben'}" onclick="toggleUserAccess('${u.name}')" style="background:${hasUserAccess(u.name)?'rgba(95,217,138,.12)':'rgba(100,100,100,.08)'};border-color:${hasUserAccess(u.name)?'rgba(95,217,138,.3)':'var(--border)'}">${hasUserAccess(u.name)?'🔓':'🔒'}</button>
         <button class="abtn del" onclick="deleteUser('${u.name}')">✕</button>
       </div>
     </div>`;
@@ -2103,7 +2111,6 @@ function startEdit(name){
   document.getElementById('edit-name').value=data.name||name;
   document.getElementById('edit-thema').value=data.thema||'';
   document.getElementById('edit-datum').value=data.datum||'';
-  document.getElementById('edit-group').value=data.group||0;
   document.getElementById('admin-edit-section').style.display='block';
   document.getElementById('admin-edit-section').scrollIntoView({behavior:'smooth'});
 }
@@ -2114,8 +2121,7 @@ function saveEditedUser(){
   const existing=JSON.parse(localStorage.getItem(oldKey)||'{}');
   const newName=document.getElementById('edit-name').value.trim();
   if(!newName){ alert('Name darf nicht leer sein'); return; }
-  const newGroup=parseInt(document.getElementById('edit-group').value)||0;
-  const updated={...existing,name:newName,thema:document.getElementById('edit-thema').value,datum:document.getElementById('edit-datum').value,group:newGroup};
+  const updated={...existing,name:newName,thema:document.getElementById('edit-thema').value,datum:document.getElementById('edit-datum').value};
   if(newName.toLowerCase()!==editingUser.toLowerCase()) localStorage.removeItem(oldKey);
   localStorage.setItem('elver59_'+newName.toLowerCase(),JSON.stringify(updated));
 
@@ -2127,13 +2133,22 @@ function saveEditedUser(){
 
 function adminAddUser(){
   const name=document.getElementById('new-name').value.trim(); if(!name){ alert('Name eingeben'); return; }
-  const group=parseInt(document.getElementById('new-group').value)||0;
-  const data={name,thema:document.getElementById('new-thema').value.trim()||'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:document.getElementById('new-datum').value||'2026-03-10',tasks:{},group};
+  const data={name,thema:document.getElementById('new-thema').value.trim()||'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:document.getElementById('new-datum').value||'2026-03-10',tasks:{}};
   localStorage.setItem('elver59_'+name.toLowerCase(),JSON.stringify(data))
   document.getElementById('new-name').value=''; document.getElementById('new-thema').value='';
   renderAdminUsers(); flashMsg('✓ '+name+' angelegt');
 }
 
+function hasUserAccess(name){
+  try{ return localStorage.getItem(ACCESS_KEY+'_'+name.toLowerCase())==='1'; }catch(e){ return false; }
+}
+function toggleUserAccess(name){
+  const key=ACCESS_KEY+'_'+name.toLowerCase();
+  const current=localStorage.getItem(key)==='1';
+  if(current){ localStorage.removeItem(key); flashMsg(name+' · Zugang gesperrt ✕'); }
+  else{ localStorage.setItem(key,'1'); flashMsg(name+' · Zugang freigegeben ✓'); }
+  renderAdminUsers();
+}
 function flashMsg(msg){
   const el=document.createElement('div'); el.textContent=msg;
   el.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(95,217,138,.2);border:1px solid rgba(95,217,138,.4);color:var(--accent);padding:8px 18px;border-radius:100px;font-size:13px;z-index:3000;pointer-events:none;';
