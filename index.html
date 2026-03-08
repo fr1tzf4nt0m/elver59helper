@@ -848,7 +848,18 @@ setInterval(syncAndSave, 3000);
   })();
 
   const hash=window.location.hash.slice(1); let loaded=false;
-  if(hash){ const d=decodeState(hash); if(d&&d.name){ STATE=d; loaded=true; } }
+  let hashState=null;
+  if(hash){ const d=decodeState(hash); if(d&&d.name) hashState=d; }
+
+  // localStorage hat Vorrang vor Hash — neuere Daten sollen nicht überschrieben werden
+  if(hashState){
+    try{
+      const ls=localStorage.getItem('elver59_'+hashState.name.toLowerCase());
+      if(ls){ const p=JSON.parse(ls); if(p&&p.name){ STATE=p; loaded=true; } }
+    }catch(e){}
+    // Kein localStorage vorhanden → Hash verwenden (erster Start mit persönlichem Link)
+    if(!loaded){ STATE=hashState; loaded=true; }
+  }
   if(!loaded){
     try{ const ln=localStorage.getItem('elver59_lastuser'); if(ln){ const s=localStorage.getItem('elver59_'+ln.toLowerCase()); if(s){ const p=JSON.parse(s); if(p&&p.name){ STATE=p; loaded=true; } } } }catch(e){}
   }
