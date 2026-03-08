@@ -1,0 +1,53 @@
+{
+  "groups": {
+    "1": {
+      "label": "Gruppe 1",
+      "thema": "Schwangerschaft (pränatale Phase) & Säuglingsalter (0–1 Jahr)",
+      "members": [
+        "Anna Gedl",
+        "Ana Nikolic",
+        "Boris Grünwald",
+        "Selina Hammelhofer"
+      ]
+    },
+    "2": {
+      "label": "Gruppe 2",
+      "thema": "Krippenkindalter (1–3 Jahre)",
+      "members": [
+        "Jacqueline Intichar",
+        "Leticia Silva-Plesa",
+        "Uranzul Jigjidsuren",
+        "Nicole Luder"
+      ]
+    },
+    "3": {
+      "label": "Gruppe 3",
+      "thema": "Kindergartenalter (3–6 Jahre)",
+      "members": [
+        "Anesa Asani",
+        "Arnela Omerovic",
+        "Sahar Vafa"
+      ]
+    },
+    "4": {
+      "label": "Gruppe 4",
+      "thema": "Schulalter (6–11 Jahre)",
+      "members": [
+        "Paula Konda",
+        "Anna Purkarthofer",
+        "Laura Geada",
+        "Adrian Schöberl"
+      ]
+    },
+    "5": {
+      "label": "Gruppe 5",
+      "thema": "Jugendalter (12–15 Jahre)",
+      "members": [
+        "Andelka Dozan",
+        "Maria Miguel-Nimmerfall",
+        "Raji Kauther",
+        "Irem Sumaktas"
+      ]
+    }
+  }
+}
