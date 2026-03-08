@@ -42,13 +42,11 @@ body::before{content:'';position:fixed;top:-120px;left:50%;transform:translateX(
 .user-avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#5fd98a,#3ab86a);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#0e1210;font-family:'Syne',sans-serif;}
 .user-name{font-size:12px;font-weight:600;color:var(--accent2);font-family:'Syne',sans-serif;letter-spacing:.04em;}
 .user-change{font-size:10px;color:var(--muted);margin-left:2px;}
-.group-badge{display:inline-flex;align-items:center;gap:5px;border-radius:100px;padding:3px 10px;margin-bottom:14px;font-size:11px;font-weight:600;font-family:'Syne',sans-serif;letter-spacing:.03em;}
-.gb0{background:rgba(90,112,96,.1);border:1px solid var(--border);color:var(--muted);}
-.gb1{background:rgba(95,217,138,.12);border:1px solid rgba(95,217,138,.3);color:var(--accent);}
-.gb2{background:rgba(240,201,110,.1);border:1px solid rgba(240,201,110,.3);color:var(--warm);}
-.gb3{background:rgba(147,112,219,.1);border:1px solid rgba(147,112,219,.3);color:#9370db;}
-.gb4{background:rgba(232,97,77,.1);border:1px solid rgba(232,97,77,.3);color:var(--red);}
-.gb5{background:rgba(100,180,230,.1);border:1px solid rgba(100,180,230,.3);color:#64b4e6;}
+
+
+
+
+
 
 /* DIVIDER */
 .sdiv{display:flex;align-items:center;gap:10px;margin-bottom:14px;animation:fadeUp .6s .15s ease both;}
@@ -233,8 +231,8 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 .pgroup.mine{border-color:rgba(95,217,138,.3);background:rgba(95,217,138,.04);}
 .pgroup-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .pgroup-num{width:28px;height:28px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;font-family:'Syne',sans-serif;color:#0e1210;}
-.gn1{background:#5fd98a;}.gn2{background:#f0c96e;}.gn3{background:#9370db;}
-.gn4{background:#e8614d;}.gn5{background:#64b4e6;}
+
+
 .pgroup-title{font-size:13px;font-weight:600;font-family:'Syne',sans-serif;flex:1;}
 .pgroup-you{font-size:10px;color:var(--accent);background:rgba(95,217,138,.12);border-radius:100px;padding:2px 7px;font-weight:600;}
 .pgroup-members{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
@@ -362,9 +360,8 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
         <span class="user-name" id="user-name-display">–</span>
         <span class="user-change">wechseln</span>
       </div>
-      <div id="group-badge-wrap"></div>
     </div>
-    <p class="subtitle">Peergroup · Ausbildung · Ressourcen</p>
+    <p class="subtitle">Ausbildung · Ressourcen</p>
   </div>
 
   <div class="sdiv"><span>Übersicht</span></div>
@@ -408,99 +405,36 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 <script>
 // ── CONSTANTS ─────────────────────────────────────────────────
 const UPLOAD_EMAIL = 'gmbh@elver.at';
-const GROUP_NAMES_DEFAULT = ['','Gruppe 1','Gruppe 2','Gruppe 3','Gruppe 4','Gruppe 5'];
-const GC = ['gb0','gb1','gb2','gb3','gb4','gb5'];
-const DEFAULT_THEMEN = ['','Schwangerschaft (pränatale Phase) & Säuglingsalter (0–1 Jahr)','Krippenkindalter (1–3 Jahre)','Kindergartenalter (3–6 Jahre)','Schulalter (6–11 Jahre)','Jugendalter (12–15 Jahre)'];
 
-// Dynamic group name (reads from groups data, falls back to default)
-function groupName(gn){ const g=loadGroups(); return (g[gn]&&g[gn].label)||GROUP_NAMES_DEFAULT[gn]||'Gruppe '+gn; }
+
 
 // ── STATE ─────────────────────────────────────────────────────
-let STATE = { name:'', thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr', datum:'2026-03-10', tasks:{}, group:0 };
+let STATE = { name:'', thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr', datum:'2026-03-10', tasks:{} };
 
-const DATA_JSON_URL = 'https://raw.githubusercontent.com/fr1tzf4nt0m/elver59helper/main/data.json';
-// Cache: groups loaded from GitHub override localStorage
-// localStorage is still used as fallback when offline
-
-async function fetchRemoteData(){
-  try{
-    const res = await fetch(DATA_JSON_URL+'?t='+Date.now());
-    if(!res.ok) return null;
-    const remote = await res.json();
-    if(remote && remote.groups){
-      // Only sync label + thema from remote — never overwrite members (personal data stays local)
-      const local = loadGroups();
-      Object.keys(remote.groups).forEach(gn=>{
-        if(local[gn]){
-          if(remote.groups[gn].label !== undefined) local[gn].label = remote.groups[gn].label;
-          if(remote.groups[gn].thema !== undefined) local[gn].thema = remote.groups[gn].thema;
-        }
-      });
-      localStorage.setItem('elver59_groups', JSON.stringify(local));
-      return local;
-    }
-    return null;
-  }catch(e){ return null; }
-}
-
-function loadGroups(){
-  try{
-    const raw=localStorage.getItem('elver59_groups');
-    if(raw) return JSON.parse(raw);
-    const g=createGroups();
-    localStorage.setItem('elver59_groups',JSON.stringify(g));
-    return g;
-  }catch(e){ return createGroups(); }
-}
-function createGroups(){
-  const g={};
-  const members=[
-    [],
-    ['Anna Gedl','Ana Nikolic','Boris Grünwald','Selina Hammelhofer'],
-    ['Jacqueline Intichar','Leticia Silva-Plesa','Uranzul Jigjidsuren','Nicole Luder'],
-    ['Anesa Asani','Arnela Omerovic','Sahar Vafa'],
-    ['Paula Konda','Anna Purkarthofer','Laura Geada','Adrian Schöberl'],
-    ['Andelka Dozan','Maria Miguel-Nimmerfall','Raji Kauther','Irem Sumaktas'],
-  ];
-  for(let i=1;i<=5;i++) g[i]={label:'Gruppe '+i, thema:DEFAULT_THEMEN[i], members:members[i]||[]};
-  return g;
-}
-function saveGroups(g){ try{ localStorage.setItem('elver59_groups',JSON.stringify(g)); }catch(e){} }
-
-// Generate data.json content for admin to copy to GitHub
-function generateDataJSON(){
-  const groups = loadGroups();
-  // Strip members — no personal data in public file
-  const safe = {};
-  Object.keys(groups).forEach(gn=>{
-    safe[gn] = { label: groups[gn].label, thema: groups[gn].thema };
-  });
-  return JSON.stringify({ groups: safe }, null, 2);
-}
 
 // ── SEED ALL KNOWN MEMBERS ─────────────────────────────────
 // Ensures every class member is visible in admin even if they
 // haven't personally logged in on this device yet.
 const ALL_MEMBERS = [
-  {name:'Anna Gedl',       group:1},
-  {name:'Ana Nikolic',     group:1},
-  {name:'Boris Grünwald',  group:1},
-  {name:'Selina Hammelhofer', group:1},
-  {name:'Jacqueline Intichar', group:2},
-  {name:'Leticia Silva-Plesa', group:2},
-  {name:'Uranzul Jigjidsuren', group:2},
-  {name:'Nicole Luder',    group:2},
-  {name:'Anesa Asani',     group:3},
-  {name:'Arnela Omerovic', group:3},
-  {name:'Sahar Vafa',      group:3},
-  {name:'Paula Konda',     group:4},
-  {name:'Anna Purkarthofer', group:4},
-  {name:'Laura Geada',     group:4},
-  {name:'Adrian Schöberl', group:4},
-  {name:'Andelka Dozan',   group:5},
-  {name:'Maria Miguel-Nimmerfall', group:5},
-  {name:'Raji Kauther',    group:5},
-  {name:'Irem Sumaktas',   group:5},
+  {name:'Anna Gedl'},
+  {name:'Ana Nikolic'},
+  {name:'Boris Grünwald'},
+  {name:'Selina Hammelhofer'},
+  {name:'Jacqueline Intichar'},
+  {name:'Leticia Silva-Plesa'},
+  {name:'Uranzul Jigjidsuren'},
+  {name:'Nicole Luder'},
+  {name:'Anesa Asani'},
+  {name:'Arnela Omerovic'},
+  {name:'Sahar Vafa'},
+  {name:'Paula Konda'},
+  {name:'Anna Purkarthofer'},
+  {name:'Laura Geada'},
+  {name:'Adrian Schöberl'},
+  {name:'Andelka Dozan'},
+  {name:'Maria Miguel-Nimmerfall'},
+  {name:'Raji Kauther'},
+  {name:'Irem Sumaktas'},
 ];
 // Clean up old global access key (was per-device, now per-user)
 (function migrateAccessKey(){
@@ -518,7 +452,7 @@ function seedKnownMembers(){
     const k='elver59_'+m.name.toLowerCase();
     try{
       if(!localStorage.getItem(k)){
-        const entry={name:m.name,thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{},group:0};
+        const entry={name:m.name,thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{}};
         localStorage.setItem(k,JSON.stringify(entry));
       }
     }catch(e){}
@@ -544,7 +478,7 @@ document.getElementById('modal-name').addEventListener('keydown',e=>{ if(e.key==
 function saveUser(){
   const name=document.getElementById('modal-name').value.trim(); if(!name) return;
   // Always reset STATE to clean defaults — never inherit another user's group/data
-  STATE={name:'',group:0,thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{}};
+  STATE={name:'',thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{}};
   try{ const ex=localStorage.getItem('elver59_'+name.toLowerCase()); if(ex){ const p=JSON.parse(ex); if(p&&p.name) STATE=p; } }catch(e){}
   STATE.name=name; saveState(); hideModal(); initUser(name); applyState();
 }
@@ -553,15 +487,7 @@ function initUser(name){
   document.getElementById('user-chip-wrap').style.display='block';
   document.getElementById('user-name-display').textContent=name;
   document.getElementById('user-avatar').textContent=name.charAt(0).toUpperCase();
-  updateGroupBadge(); requestNotifPermission();
-}
-
-function updateGroupBadge(){
-  const w=document.getElementById('group-badge-wrap'); if(!w) return;
-  const g=STATE.group||0;
-  w.innerHTML=g>0
-    ? `<div class="group-badge ${GC[g]}">${groupName(g)}</div>`
-    : `<div class="group-badge gb0">Noch keiner Gruppe zugewiesen</div>`;
+  requestNotifPermission();
 }
 
 // ── APPLY STATE ───────────────────────────────────────────────
@@ -576,7 +502,7 @@ function applyState(){
     const l=document.getElementById('t'+i+'l');
     if(l){ l.style.opacity=d?'.38':'1'; l.style.textDecoration=d?'line-through':''; }
   }
-  updateGroupBadge(); refreshLink(); updateTaskProgress(); updateGroupThemaInput();
+  refreshLink(); updateTaskProgress(); 
 }
 
 function updateTaskProgress(){
@@ -635,9 +561,7 @@ document.addEventListener('input',e=>{
     localStorage.setItem('elver59_lastuser',STATE.name);
     initUser(STATE.name);
     // Fetch latest data.json from GitHub — updates groups silently
-    fetchRemoteData().then(remoteGroups=>{
-      if(remoteGroups){ refreshGroupCard(); updateGroupBadge(); }
-    });
+
   } else showModal();
 })();
 
@@ -1102,45 +1026,18 @@ function initCloudTab(){
         <strong style="color:var(--text)">2.</strong> Text kopieren → auf GitHub <code style="background:rgba(95,217,138,.1);padding:1px 5px;border-radius:3px;font-size:10px">data.json</code> öffnen → ✏️ → alles ersetzen → Commit<br>
         <strong style="color:var(--text)">3.</strong> Alle sehen die Änderung beim nächsten Öffnen/Aktualisieren ✓
       </div>
-      <button onclick="showDataJSON()" style="width:100%;padding:11px;background:rgba(95,217,138,.1);border:1px solid rgba(95,217,138,.3);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-bottom:8px">
-        📄 data.json generieren
-      </button>
+
       <div id="data-json-wrap" style="display:none">
         <textarea id="data-json-out" rows="9" readonly
           style="width:100%;background:rgba(0,0,0,.2);border:1px solid rgba(95,217,138,.2);border-radius:8px;padding:8px;font-size:10px;color:var(--accent);font-family:monospace;resize:vertical;box-sizing:border-box;margin-bottom:6px"></textarea>
         <div style="display:flex;align-items:center;gap:8px">
-          <button onclick="copyDataJSON()" style="padding:7px 16px;background:rgba(95,217,138,.15);border:1px solid rgba(95,217,138,.3);border-radius:8px;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer">📋 Kopieren</button>
+          
           <a href="https://github.com/fr1tzf4nt0m/elver59helper/edit/main/data.json" target="_blank" style="padding:7px 16px;background:rgba(100,180,230,.1);border:1px solid rgba(100,180,230,.3);border-radius:8px;color:#64b4e6;font-size:12px;font-weight:700;text-decoration:none">✏️ GitHub öffnen</a>
           <span id="json-copy-ok" style="font-size:11px;color:var(--accent);display:none">✓ Kopiert!</span>
         </div>
       </div>
     </div>`;
   renderAccessLog();
-}
-
-function showDataJSON(){
-  const json = generateDataJSON();
-  const ta = document.getElementById('data-json-out');
-  const wrap = document.getElementById('data-json-wrap');
-  if(ta) ta.value = json;
-  if(wrap) wrap.style.display = 'block';
-  if(ta) ta.select();
-}
-
-function copyDataJSON(){
-  const ta = document.getElementById('data-json-out');
-  if(!ta) return;
-  ta.select();
-  try{
-    navigator.clipboard.writeText(ta.value).then(()=>{
-      const ok = document.getElementById('json-copy-ok');
-      if(ok){ ok.style.display='inline'; setTimeout(()=>ok.style.display='none', 2500); }
-    });
-  }catch(e){
-    document.execCommand('copy');
-    const ok = document.getElementById('json-copy-ok');
-    if(ok){ ok.style.display='inline'; setTimeout(()=>ok.style.display='none', 2500); }
-  }
 }
 
 // ── UNTERLAGEN ACCESS SYSTEM ──────────────────────────────────
@@ -1419,52 +1316,12 @@ function buildTasks(){
     return `<div class="tsec"><div class="tglabel">${g.g}</div>${items}</div>`;
   }).join('');
   const extra=`<div class="prog-bar-wrap"><div class="prog-bar"><div class="prog-bar-fill" id="task-prog-fill" style="width:0%"></div></div><span class="prog-label" id="task-prog-label">0/0</span></div>`;
-  return xcard('c-tk','✅','Tasks – Peer Group',secs,extra);
-}
-
-// PEER GROUPS
-function buildGroupsInner(){
-  const groups=loadGroups();
-  const myName=(STATE.name||'').toLowerCase();
-  return Object.keys(groups).map(gn=>{
-    const g=groups[gn];
-    // isMine: user must BOTH have matching STATE.group AND actually be in members list
-    const members=(g.members||[]);
-    const inMembers=myName&&members.some(m=>m.toLowerCase()===myName);
-    const myG=STATE.group||0;
-    const isMine=inMembers&&myG>0&&parseInt(gn)===myG;
-    // "me" chip: highlight if member name contains user's name OR matches exactly
-    const memberChips=g.members.length
-      ? g.members.map(m=>{
-          const isMe=myName&&(m.toLowerCase()===myName||m.toLowerCase().startsWith(myName+' ')||m.toLowerCase().includes(' '+myName));
-          return `<span class="pmember${isMe?' me':''}">${m}${isMe?' (Du)':''}</span>`;
-        }).join('')
-      : `<span style="font-size:11px;color:var(--muted);font-style:italic;">Noch leer</span>`;
-    return `<div class="pgroup${isMine?' mine':''}" id="pgrp-${gn}">
-      <div class="pgroup-head">
-        <div class="pgroup-num gn${gn}">${gn}</div>
-        <div class="pgroup-title">${g.label||GROUP_NAMES_DEFAULT[gn]}</div>
-        ${isMine?`<span class="pgroup-you">Deine Gruppe</span>`:''}
-      </div>
-      <div class="pgroup-members">${memberChips}</div>
-      ${isMine
-        ? `<input class="pgroup-thema-input" id="glabel-${gn}" value="${(g.label||'Gruppe '+gn).replace(/"/g,'&quot;')}" placeholder="Gruppenname…" style="margin-bottom:6px;font-weight:700;font-size:13px;" />
-           <textarea class="pgroup-thema-input" id="gthema-${gn}" rows="2" placeholder="Gruppenthema eingeben…">${g.thema||''}</textarea>
-           <button class="pgroup-save-btn" onclick="saveGroupData(${gn})">✓ Speichern</button>`
-        : `<div class="pgroup-thema-static">${g.thema||'Kein Thema eingetragen'}</div>`
-      }
-    </div>`;
-  }).join('');
-}
-
-function buildGroups(){
-  setTimeout(()=>{ document.getElementById('c-pg-d').textContent='5 Gruppen · eigenes Thema bearbeiten'; },0);
-  return xcard('c-pg','👥','Peer-Groups',buildGroupsInner());
+  return xcard('c-tk','✅','To Do\'s',secs,extra);
 }
 
 // RENDER ALL
 document.getElementById('root').innerHTML =
-  buildStundenplan()+buildSeminar()+buildTermine()+buildTasks()+buildGroups()+buildUnterlagen();
+  buildStundenplan()+buildSeminar()+buildTermine()+buildTasks()+buildUnterlagen();
 
 // Init upload
 const dz=document.getElementById('dropzone'), fi=document.getElementById('fileinput');
@@ -1487,37 +1344,7 @@ function togT(id){
   saveState();
 }
 
-function saveGroupData(gn){
-  // Security: only a member of this group may save
-  const groups=loadGroups();
-  if(!groups[gn]) return;
-  const members=(groups[gn].members||[]).map(m=>m.toLowerCase());
-  if(!STATE.name||!members.includes(STATE.name.toLowerCase())){
-    flashMsg('⛔ Nur Gruppenmitglieder können das ändern'); return;
-  }
-  const labelInp=document.getElementById('glabel-'+gn);
-  const themaInp=document.getElementById('gthema-'+gn);
-  if(labelInp&&labelInp.value.trim()) groups[gn].label=labelInp.value.trim();
-  if(themaInp) groups[gn].thema=themaInp.value;
-  saveGroups(groups);
-  refreshGroupCard();
-  flashMsg('✓ Gruppe gespeichert');
-}
-
 // Refresh the rendered peer-group card body live (no page reload needed)
-function refreshGroupCard(){
-  const card=document.getElementById('c-pg'); if(!card) return;
-  const body=card.querySelector('.xbody'); if(!body) return;
-  body.innerHTML=buildGroupsInner();
-}
-
-function updateGroupThemaInput(){
-  const myG=STATE.group||0; if(!myG) return;
-  const groups=loadGroups();
-  const g=groups[myG]; if(!g) return;
-  const inp=document.getElementById('gthema-'+myG);
-  if(inp) inp.value=g.thema||'';
-}
 
 // FILES
 let files=[];
@@ -1727,7 +1554,6 @@ function buildAdminUI(){
       </div>
       <div class="admin-tabs">
         <div class="admin-tab active" onclick="switchTab('users')">👤 Benutzer</div>
-        <div class="admin-tab" onclick="switchTab('groups')">👥 Gruppen</div>
         <div class="admin-tab" onclick="switchTab('add')">✚ Neu</div>
         <div class="admin-tab" onclick="switchTab('cloud')">☁️ Unterlagen</div>
         <div class="admin-tab" id="tab-req-btn" onclick="switchTab('requests')">📥 Anfragen</div>
@@ -1737,41 +1563,24 @@ function buildAdminUI(){
           <div class="admin-section-title">Alle Benutzer</div>
           <div id="admin-user-list"></div>
         </div>
+
         <div class="admin-section" id="admin-edit-section" style="display:none">
           <div class="admin-section-title" id="admin-edit-title">Bearbeiten</div>
           <div class="admin-form">
             <label>Name</label><input id="edit-name" type="text"/>
             <label>SA-Thema</label><textarea id="edit-thema" rows="2"></textarea>
             <label>SA-Datum</label><input id="edit-datum" type="date"/>
-            <label>Gruppe</label>
-            <select id="edit-group">
-              <option value="0">Keine Gruppe</option>
-              <option value="1">Gruppe 1</option>
-              <option value="2">Gruppe 2</option>
-              <option value="3">Gruppe 3</option>
-              <option value="4">Gruppe 4</option>
-              <option value="5">Gruppe 5</option>
-            </select>
+
             <button class="admin-save-btn" onclick="saveEditedUser()">Speichern</button>
           </div>
         </div>
       </div>
-      <div class="admin-tabpanel" id="tab-groups">
-        <div class="admin-section">
-          <div class="admin-section-title">Gruppenzuweisung</div>
-          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Chip antippen = entfernen · unten zuweisen</div>
-          <div id="admin-group-list"></div>
-        </div>
-        <div class="admin-section">
-          <div class="admin-section-title">Nicht zugewiesen</div>
-          <div id="admin-unassigned"></div>
-        </div>
-      </div>
+
       <div class="admin-tabpanel" id="tab-add"></div>
       <div class="admin-tabpanel" id="tab-cloud"></div>
       <div class="admin-tabpanel" id="tab-requests"></div>
     </div>`;
-  renderAdminUsers(); renderAdminGroups(); refreshReqBadge();
+  renderAdminUsers(); refreshReqBadge();
 }
 
 function _wipeAdmin(){
@@ -1822,18 +1631,17 @@ document.getElementById('admin-overlay').addEventListener('click',function(e){
   if(e.target===this) closeAdmin();
 });
 function switchTabSilent(n){
-  const tabs=['users','groups','add','cloud','requests'];
+  const tabs=['users','add','cloud','requests'];
   document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===n));
   document.querySelectorAll('.admin-tabpanel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+n)?.classList.add('active');
 }
 function switchTab(n){
-  const tabs=['users','groups','add','cloud','requests'];
+  const tabs=['users','add','cloud','requests'];
   document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===n));
   document.querySelectorAll('.admin-tabpanel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+n)?.classList.add('active');
   if(n==='users') renderAdminUsers();
-  if(n==='groups') renderAdminGroups();
   if(n==='add') renderAdminAdd();
   if(n==='cloud') initCloudTab();
   if(n==='requests') renderAdminRequests();
@@ -1849,13 +1657,7 @@ function renderAdminAdd(){
         <label>Vorname</label><input id="new-name" type="text" placeholder="z.B. Anna"/>
         <label>SA-Thema (optional)</label><textarea id="new-thema" rows="2" placeholder="Entwicklung des Kindes…"></textarea>
         <label>SA-Datum (optional)</label><input id="new-datum" type="date" value="2026-03-10"/>
-        <label>Gruppe (optional)</label>
-        <select id="new-group">
-          <option value="0">Keine Gruppe</option>
-          <option value="1">Gruppe 1</option><option value="2">Gruppe 2</option>
-          <option value="3">Gruppe 3</option><option value="4">Gruppe 4</option>
-          <option value="5">Gruppe 5</option>
-        </select>
+
         <button onclick="createUser()" style="margin-top:10px;padding:10px;background:rgba(95,217,138,.12);border:1px solid rgba(95,217,138,.25);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;width:100%">
           ✚ Benutzer anlegen
         </button>
@@ -1864,7 +1666,6 @@ function renderAdminAdd(){
 }
 
 function getAllUsers(){
-  const skip=['elver59_lastuser','elver59_groups','elver59_theme'];
   const u=[];
   for(let i=0;i<localStorage.length;i++){
     const k=localStorage.key(i);
@@ -1873,6 +1674,38 @@ function getAllUsers(){
     }
   }
   return u.sort((a,b)=>a.name.localeCompare(b.name));
+}
+
+function renderAdminCheckins(){
+  const panel = document.getElementById('admin-checkin-section');
+  if(!panel) return;
+  const today = new Date().toLocaleDateString('de-AT',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const allUsers = getAllUsers();
+  const checkedIn = [];
+  const absent = [];
+  allUsers.forEach(u=>{
+    try{
+      const raw = localStorage.getItem('elver59_checkins_'+u.name.toLowerCase());
+      const history = raw ? JSON.parse(raw) : [];
+      const todayEntry = history.find(e=>e.date===today);
+      if(todayEntry) checkedIn.push({...u, entry:todayEntry});
+      else absent.push(u);
+    }catch(e){ absent.push(u); }
+  });
+
+  panel.innerHTML = `
+    <div class="admin-section-title" style="margin-top:14px">📍 Anwesenheit heute · ${today}</div>
+    <div style="display:flex;gap:10px;margin-bottom:10px;font-size:11px">
+      <span style="background:rgba(95,217,138,.15);border:1px solid rgba(95,217,138,.3);border-radius:100px;padding:3px 10px;color:var(--accent)">✅ Eingecheckt: ${checkedIn.length}</span>
+      <span style="background:rgba(232,97,77,.08);border:1px solid rgba(232,97,77,.2);border-radius:100px;padding:3px 10px;color:var(--red)">⏳ Noch nicht: ${absent.length}</span>
+    </div>
+    ${checkedIn.length ? `<div style="margin-bottom:8px">${checkedIn.map(u=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:rgba(95,217,138,.06);border-radius:8px;margin-bottom:4px;font-size:12px">
+        <span style="font-weight:600;color:var(--text)">${u.name}</span>
+        <span style="color:var(--accent)">${u.entry.time} · ${u.entry.dist<300?'<span style="color:var(--accent)">':'<span style="color:var(--warm)">'}${u.entry.dist}m</span></span>
+      </div>`).join('')}</div>` : ''}
+    ${absent.length ? `<div style="font-size:11px;color:var(--muted);margin-top:4px">${absent.map(u=>u.name).join(' · ')}</div>` : ''}
+  `;
 }
 
 function renderAdminUsers(){
@@ -1900,38 +1733,18 @@ function renderAdminUsers(){
       </div>
       <div class="user-row-actions">
         <button class="abtn" onclick="startEdit('${u.name}')">✏</button>
-        <button class="abtn" title="${hasUserAccess(u.name)?'Unterlagen-Zugang sperren':'Kein Zugang'}" onclick="toggleUserAccess('${u.name}')" style="background:${hasUserAccess(u.name)?'rgba(95,217,138,.12)':'rgba(100,100,100,.08)'};border-color:${hasUserAccess(u.name)?'rgba(95,217,138,.3)':'var(--border)'};">${hasUserAccess(u.name)?'☁️':'🔒'}</button>
+        <button class="abtn" title="${hasUserAccess(u.name)?'Unterlagen-Zugang sperren':'Kein Zugang'}" onclick="toggleUserAccess('${u.name}')" style="background:${hasUserAccess(u.name)?'rgba(95,217,138,.12)':'rgba(100,100,100,.08)'};border-color:${hasUserAccess(u.name)?'rgba(95,217,138,.3)':'var(--border)'};"></button>
         <button class="abtn del" onclick="deleteUser('${u.name}')">✕</button>
       </div>
     </div>`;
   }).join('');
 }
 
-function hasUserAccess(name){
-  try{ return localStorage.getItem(ACCESS_KEY+'_'+name.toLowerCase())==='1'; }catch(e){ return false; }
-}
-function toggleUserAccess(name){
-  const key=ACCESS_KEY+'_'+name.toLowerCase();
-  try{
-    if(localStorage.getItem(key)==='1'){
-      localStorage.removeItem(key);
-      flashMsg('🔒 Zugang für '+name+' gesperrt');
-    } else {
-      localStorage.setItem(key,'1');
-      flashMsg('☁️ Zugang für '+name+' freigeschaltet');
-    }
-  }catch(e){}
-  renderAdminUsers();
-}
-
 function deleteUser(name){
   if(!confirm(`"${name}" wirklich löschen?`)) return;
-  const groups=loadGroups();
-  Object.values(groups).forEach(g=>{ g.members=g.members.filter(m=>m!==name); });
-  saveGroups(groups);
   localStorage.removeItem('elver59_'+name.toLowerCase());
   if(localStorage.getItem('elver59_lastuser')===name) localStorage.removeItem('elver59_lastuser');
-  renderAdminUsers(); renderAdminGroups();
+  renderAdminUsers();
   flashMsg('✓ '+name+' gelöscht');
 }
 
@@ -1957,101 +1770,20 @@ function saveEditedUser(){
   const updated={...existing,name:newName,thema:document.getElementById('edit-thema').value,datum:document.getElementById('edit-datum').value,group:newGroup};
   if(newName.toLowerCase()!==editingUser.toLowerCase()) localStorage.removeItem(oldKey);
   localStorage.setItem('elver59_'+newName.toLowerCase(),JSON.stringify(updated));
-  const groups=loadGroups();
-  Object.keys(groups).forEach(gn=>{ groups[gn].members=groups[gn].members.filter(m=>m!==editingUser&&m!==newName); });
-  if(newGroup>0&&groups[newGroup]&&!groups[newGroup].members.includes(newName)) groups[newGroup].members.push(newName);
-  saveGroups(groups);
+
   editingUser=null;
   document.getElementById('admin-edit-section').style.display='none';
-  refreshGroupCard(); updateGroupBadge();
-  renderAdminUsers(); renderAdminGroups(); flashMsg('✓ Gespeichert');
+ 
+  renderAdminUsers(); flashMsg('✓ Gespeichert');
 }
 
 function adminAddUser(){
   const name=document.getElementById('new-name').value.trim(); if(!name){ alert('Name eingeben'); return; }
   const group=parseInt(document.getElementById('new-group').value)||0;
   const data={name,thema:document.getElementById('new-thema').value.trim()||'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:document.getElementById('new-datum').value||'2026-03-10',tasks:{},group};
-  localStorage.setItem('elver59_'+name.toLowerCase(),JSON.stringify(data));
-  if(group>0){ const groups=loadGroups(); if(groups[group]&&!groups[group].members.includes(name)) groups[group].members.push(name); saveGroups(groups); }
+  localStorage.setItem('elver59_'+name.toLowerCase(),JSON.stringify(data))
   document.getElementById('new-name').value=''; document.getElementById('new-thema').value='';
-  renderAdminUsers(); renderAdminGroups(); flashMsg('✓ '+name+' angelegt');
-}
-
-function renderAdminGroups(){
-  const groups=loadGroups(), allUsers=getAllUsers();
-  const assigned=Object.values(groups).flatMap(g=>g.members);
-  const unassigned=allUsers.filter(u=>!assigned.includes(u.name));
-
-  document.getElementById('admin-group-list').innerHTML=Object.keys(groups).map(gn=>{
-    const g=groups[gn];
-    const chips=g.members.map(m=>`<span class="agroup-chip" onclick="removeFromGroup(${gn},'${m}')">${m} ✕</span>`).join('');
-    return `<div class="agroup-row">
-      <div class="agroup-row-head">
-        <div class="pgroup-num gn${gn}" style="width:24px;height:24px;font-size:11px;">${gn}</div>
-        <strong style="font-size:12px;flex:1;">${g.label||GROUP_NAMES_DEFAULT[gn]}</strong>
-        <span class="agroup-edit-toggle" onclick="toggleGroupEdit(${gn})" style="font-size:11px;color:var(--muted);cursor:pointer;padding:2px 6px;border:1px solid var(--border);border-radius:5px;transition:all .15s;" onmouseover="this.style.color='var(--accent)';this.style.borderColor='rgba(95,217,138,.4)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">✏ Edit</span>
-      </div>
-      <div class="agroup-chips" style="margin-bottom:6px;">${chips||'<span style="font-size:11px;color:var(--muted);font-style:italic;">Leer</span>'}</div>
-      <div id="agroup-edit-${gn}" style="display:none;margin-top:6px;border-top:1px solid var(--border);padding-top:8px;">
-        <div style="font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;">Gruppenname</div>
-        <input id="aglabel-${gn}" value="${(g.label||GROUP_NAMES_DEFAULT[gn]).replace(/"/g,'&quot;')}" style="width:100%;background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.15);border-radius:7px;padding:5px 8px;font-size:12px;color:var(--text);font-family:'Inter',sans-serif;outline:none;margin-bottom:7px;"/>
-        <div style="font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;">Gruppenthema / Altersphase</div>
-        <textarea id="agthema-${gn}" rows="2" style="width:100%;background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.15);border-radius:7px;padding:5px 8px;font-size:12px;color:var(--text);font-family:'Inter',sans-serif;outline:none;resize:none;margin-bottom:7px;">${g.thema||''}</textarea>
-        <button onclick="saveGroupMeta(${gn})" style="font-size:11px;padding:5px 12px;background:rgba(95,217,138,.15);border:1px solid rgba(95,217,138,.3);border-radius:6px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;width:100%;">✓ Speichern</button>
-      </div>
-    </div>`;
-  }).join('');
-
-  const ua=document.getElementById('admin-unassigned');
-  if(unassigned.length){
-    ua.innerHTML=`<div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Antippen zum Zuweisen:</div>`+
-      unassigned.map(u=>`<div style="margin-bottom:6px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
-        <span style="font-size:12px;font-weight:600;min-width:60px;">${u.name}</span>
-        ${[1,2,3,4,5].map(gn=>`<span class="agroup-add" onclick="addToGroup(${gn},'${u.name}')">Gr.${gn}+</span>`).join('')}
-      </div>`).join('');
-  } else { ua.innerHTML='<div class="admin-empty">Alle zugewiesen ✓</div>'; }
-}
-
-function toggleGroupEdit(gn){
-  const el=document.getElementById('agroup-edit-'+gn);
-  if(el) el.style.display=el.style.display==='none'?'block':'none';
-}
-
-function saveGroupMeta(gn){
-  const groups=loadGroups();
-  if(!groups[gn]) return;
-  const lbl=document.getElementById('aglabel-'+gn)?.value.trim();
-  const thm=document.getElementById('agthema-'+gn)?.value.trim();
-  if(lbl) groups[gn].label=lbl;
-  if(thm!==undefined) groups[gn].thema=thm;
-  saveGroups(groups);
-  document.getElementById('agroup-edit-'+gn).style.display='none';
-  renderAdminGroups();
-  refreshGroupCard();
-  updateGroupBadge();
-  flashMsg('✓ Gruppe '+gn+' aktualisiert');
-}
-
-function addToGroup(gn,name){
-  const groups=loadGroups();
-  Object.values(groups).forEach(g=>{ g.members=g.members.filter(m=>m!==name); });
-  if(groups[gn]&&!groups[gn].members.includes(name)) groups[gn].members.push(name);
-  saveGroups(groups);
-  try{ const k='elver59_'+name.toLowerCase(); const u=JSON.parse(localStorage.getItem(k)||'{}'); u.group=parseInt(gn); localStorage.setItem(k,JSON.stringify(u)); }catch(e){}
-  // If this is the current logged-in user, update their live STATE too
-  if(STATE.name&&name.toLowerCase()===STATE.name.toLowerCase()){ STATE.group=parseInt(gn); saveState(); updateGroupBadge(); }
-  refreshGroupCard();
-  renderAdminGroups(); renderAdminUsers(); flashMsg('✓ '+name+' → Gruppe '+gn);
-}
-
-function removeFromGroup(gn,name){
-  const groups=loadGroups();
-  if(groups[gn]) groups[gn].members=groups[gn].members.filter(m=>m!==name);
-  saveGroups(groups);
-  try{ const k='elver59_'+name.toLowerCase(); const u=JSON.parse(localStorage.getItem(k)||'{}'); u.group=0; localStorage.setItem(k,JSON.stringify(u)); }catch(e){}
-  if(STATE.name&&name.toLowerCase()===STATE.name.toLowerCase()){ STATE.group=0; saveState(); updateGroupBadge(); }
-  refreshGroupCard();
-  renderAdminGroups(); renderAdminUsers(); flashMsg('✓ '+name+' aus Gruppe '+gn+' entfernt');
+  renderAdminUsers(); flashMsg('✓ '+name+' angelegt');
 }
 
 function flashMsg(msg){
