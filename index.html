@@ -91,6 +91,52 @@ body.theme-picasso2::before{content:'';position:fixed;inset:0;z-index:0;pointer-
     radial-gradient(ellipse at 100% 50%,rgba(208,160,48,.06) 0%,transparent 40%);
 }
 
+/* ── THEME: Pastell Rose · Kirschblüte ─────────────── */
+body.theme-pastel1{
+  --bg:#fdf0f3;--surface:#fff5f7;--surface2:#fce8ed;
+  --border:#f0c4cf;--accent:#d4527a;--accent2:#b83860;
+  --warm:#c06030;--red:#c02848;--text:#2a1018;--muted:#9a6070;--muted2:#c898a8;
+  --heading-font:'Playfair Display',serif;
+}
+body.theme-pastel1 #starfield{opacity:0;}
+body.theme-pastel1::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 20% 10%,rgba(255,182,193,.35) 0%,transparent 45%),
+    radial-gradient(ellipse at 80% 80%,rgba(255,160,180,.20) 0%,transparent 40%),
+    radial-gradient(ellipse at 50% 50%,rgba(255,240,245,.5) 0%,transparent 70%);
+}
+
+/* ── THEME: Pastell Lavendel · Dämmerung ───────────── */
+body.theme-pastel2{
+  --bg:#f2f0fb;--surface:#f8f6ff;--surface2:#ece8fa;
+  --border:#cfc8f0;--accent:#7058c8;--accent2:#5840a8;
+  --warm:#c08040;--red:#b83048;--text:#1a1430;--muted:#8878b8;--muted2:#b8b0d8;
+  --heading-font:'Playfair Display',serif;
+}
+body.theme-pastel2 #starfield{opacity:0;}
+body.theme-pastel2::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 70% 10%,rgba(180,160,240,.30) 0%,transparent 45%),
+    radial-gradient(ellipse at 20% 85%,rgba(160,140,220,.20) 0%,transparent 40%),
+    radial-gradient(ellipse at 50% 50%,rgba(245,242,255,.5) 0%,transparent 65%);
+}
+
+/* ── THEME: Pastell Mint · Morgentau ───────────────── */
+body.theme-pastel3{
+  --bg:#eef8f4;--surface:#f5fdf9;--surface2:#e4f4ee;
+  --border:#b8dece;--accent:#2a9068;--accent2:#1a7050;
+  --warm:#b06820;--red:#c03040;--text:#0e2820;--muted:#5a8878;--muted2:#90c0b0;
+  --heading-font:'Nunito',sans-serif;
+}
+body.theme-pastel3 #starfield{opacity:0;}
+body.theme-pastel3::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 15% 15%,rgba(160,220,195,.30) 0%,transparent 45%),
+    radial-gradient(ellipse at 85% 75%,rgba(130,200,170,.20) 0%,transparent 40%),
+    radial-gradient(ellipse at 50% 50%,rgba(235,250,244,.5) 0%,transparent 65%);
+}
+
+
 body{
   background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;
   min-height:100dvh;display:flex;flex-direction:column;align-items:center;
@@ -670,6 +716,16 @@ function saveUser(){
   STATE={name:'',thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{}};
   try{ const ex=localStorage.getItem('elver59_'+name.toLowerCase()); if(ex){ const p=JSON.parse(ex); if(p&&p.name) STATE=p; } }catch(e){}
   STATE.name=name; saveState(); hideModal(); initUser(name); applyState();
+  // PWA standalone: remind user to save personal link (iOS wipes localStorage)
+  if(window.navigator.standalone && STATE.name){
+    setTimeout(()=>{
+      const msg=document.createElement('div');
+      msg.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(240,201,110,.18);border:1px solid rgba(240,201,110,.4);color:#f0c96e;padding:10px 16px;border-radius:14px;font-size:12px;z-index:3000;pointer-events:none;text-align:center;max-width:280px;line-height:1.5;';
+      msg.innerHTML='📎 Tipp: Kopiere deinen persönlichen Link<br><span style="opacity:.7;font-size:11px">→ Seminararbeit-Karte → 🔗 Link</span>';
+      document.body.appendChild(msg);
+      setTimeout(()=>msg.remove(),5000);
+    },1200);
+  }
 }
 
 function initUser(name){
@@ -693,18 +749,21 @@ function applyState(){
   }
   refreshLink(); updateTaskProgress();
   // Re-render Unterlagen card on user switch — access is per-user
-  const cloudCard=document.getElementById('c-cloud');
-  if(cloudCard){
-    const wasOpen=cloudCard.classList.contains('open');
-    const parent=cloudCard.parentNode, next=cloudCard.nextSibling;
-    parent.removeChild(cloudCard);
-    const tmp=document.createElement('div');
-    tmp.innerHTML=buildUnterlagen();
-    const newCard=tmp.firstElementChild;
-    parent.insertBefore(newCard,next);
-    if(hasCloudAccess()&&wasOpen) newCard.classList.add('open');
-    else if(hasCloudAccess()) newCard.classList.add('open');
-  }
+  try{
+    const cloudCard=document.getElementById('c-cloud');
+    if(cloudCard){
+      const wasOpen=cloudCard.classList.contains('open');
+      const parent=cloudCard.parentNode, next=cloudCard.nextSibling;
+      const tmp=document.createElement('div');
+      tmp.innerHTML=buildUnterlagen();
+      const newCard=tmp.firstElementChild;
+      if(newCard){
+        parent.removeChild(cloudCard);
+        parent.insertBefore(newCard,next);
+        if(hasCloudAccess()) newCard.classList.add('open');
+      }
+    }
+  }catch(e){ console.warn('cloud rerender skipped',e); }
 }
 
 function updateTaskProgress(){
@@ -2204,6 +2263,24 @@ const THEMES = [
     name: 'Picasso · Blau',
     cls: 'theme-picasso2',
     preview: ['#060d1e','#121c34','#6090e8','#d0a030'],
+  },
+  ,{
+    id: 'pastel1',
+    name: 'Pastell · Kirschblüte',
+    cls: 'theme-pastel1',
+    preview: ['#fdf0f3','#fff5f7','#d4527a','#c06030'],
+  },
+  {
+    id: 'pastel2',
+    name: 'Pastell · Lavendel',
+    cls: 'theme-pastel2',
+    preview: ['#f2f0fb','#f8f6ff','#7058c8','#c08040'],
+  },
+  {
+    id: 'pastel3',
+    name: 'Pastell · Morgentau',
+    cls: 'theme-pastel3',
+    preview: ['#eef8f4','#f5fdf9','#2a9068','#b06820'],
   },
 ];
 
