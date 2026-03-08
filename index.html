@@ -2279,7 +2279,7 @@ function resetSettings(){
 
 // ── RICK ROLL ─────────────────────────────────────────────
 function openRickRoll(){
-  // ── Synth sofort ─────────────────────────────────────────
+  // Synth sofort
   (function(){
     try{
       const A=new(window.AudioContext||window.webkitAudioContext)();
@@ -2294,34 +2294,29 @@ function openRickRoll(){
       }
       [[440,.00,.13,'sawtooth',1],[493.88,.15,.13,'sawtooth',1],[587.33,.30,.13,'sawtooth',1],
        [493.88,.46,.13,'sawtooth',1],[739.99,.62,.18,'sawtooth',1],[739.99,.84,.13,'sawtooth',1],
-       [659.26,1.00,.28,'sawtooth',1],[659.26,1.32,.13,'sawtooth',1],[587.33,1.48,.28,'sawtooth',1],
-       [110,.00,.25,'triangle',.5],[110,.30,.20,'triangle',.5],[146.83,.62,.25,'triangle',.5],
+       [659.26,1.00,.28,'sawtooth',1],[110,.00,.25,'triangle',.5],[110,.30,.20,'triangle',.5],
       ].forEach(([f,s,d,t,v])=>note(f,s,d,t,v));
     }catch(e){}
   })();
 
-  // Zeige immer die Tap-Maske — iframe wird erst beim Tap geladen
-  // Das gilt für ALLE Browser: Chrome, Safari, Android, iOS
-  document.getElementById('rickroll-overlay').classList.remove('hidden');
-  document.body.style.overflow='hidden';
-  document.addEventListener('keydown',_rr_esc);
-  const cover=document.getElementById('rickroll-cover');
-  const tap=document.getElementById('rickroll-tap');
-  if(cover) cover.classList.add('gone');
-  if(tap) tap.classList.remove('gone');
-}
-
-function rickrollUnmute(){
-  // Direkt im Click-Handler = Sound auf Safari + Chrome + Android garantiert
+  // Direkt im Click-Handler = User-Gesture = Sound auf ALLEN Browsern
   const frame=document.getElementById('rickroll-frame');
   frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1';
+
   const tap=document.getElementById('rickroll-tap');
   const cover=document.getElementById('rickroll-cover');
   if(tap) tap.classList.add('gone');
-  if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'),1800); }
+  if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'),2000); }
+
+  document.getElementById('rickroll-overlay').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+  document.addEventListener('keydown',_rr_esc);
   if(window._rrTimer) clearTimeout(window._rrTimer);
   window._rrTimer=setTimeout(()=>closeRickRoll(),20000);
 }
+
+function rickrollUnmute(){ /* nicht mehr nötig, bleibt für Kompatibilität */ }
+
 
 
 function closeRickRoll(){
