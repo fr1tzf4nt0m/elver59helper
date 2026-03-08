@@ -691,7 +691,20 @@ function applyState(){
     const l=document.getElementById('t'+i+'l');
     if(l){ l.style.opacity=d?'.38':'1'; l.style.textDecoration=d?'line-through':''; }
   }
-  refreshLink(); updateTaskProgress(); 
+  refreshLink(); updateTaskProgress();
+  // Re-render Unterlagen card on user switch — access is per-user
+  const cloudCard=document.getElementById('c-cloud');
+  if(cloudCard){
+    const wasOpen=cloudCard.classList.contains('open');
+    const parent=cloudCard.parentNode, next=cloudCard.nextSibling;
+    parent.removeChild(cloudCard);
+    const tmp=document.createElement('div');
+    tmp.innerHTML=buildUnterlagen();
+    const newCard=tmp.firstElementChild;
+    parent.insertBefore(newCard,next);
+    if(hasCloudAccess()&&wasOpen) newCard.classList.add('open');
+    else if(hasCloudAccess()) newCard.classList.add('open');
+  }
 }
 
 function updateTaskProgress(){
