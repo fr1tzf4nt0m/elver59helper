@@ -1356,7 +1356,7 @@ async function submitAccessRequest(){
 
   // Open mailto to Boris
   const subject=encodeURIComponent('Unterlagen-Zugang: '+name);
-  const body=encodeURIComponent('Hallo Boris,\n\n'+name+' ('+email+') möchte Zugang zu den Unterlagen.\n\nGehe in den Admin-Bereich → Tab Anfragen → Code für '+name+' generieren.\n\nlg');
+  const body=encodeURIComponent('Hallo Boris,\n\nich bin '+name+', könntest du mir bitte den Freischalt-Code schicken?\n\nMit dem Code kann ich die Google Docs Unterlagen in der App freischalten.\n\nMeine E-Mail: '+email+'\n\nlg '+name);
   window.location.href=`mailto:${ACCESS_EMAIL}?subject=${subject}&body=${body}`;
 
   // Show success state
