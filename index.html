@@ -375,7 +375,7 @@ body.light #starfield{opacity:0;}
 .modal-note{font-size:10.5px;color:var(--muted2);margin-top:10px;}
 
 /* ADMIN */
-.admin-trigger{position:fixed;bottom:18px;right:18px;z-index:500;width:36px;height:36px;border-radius:50%;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;opacity:.4;transition:all .2s;}
+.admin-trigger{position:fixed;bottom:18px;right:18px;z-index:500;width:36px;height:36px;border-radius:50%;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;opacity:.55;transition:all .2s;}
 /* ── SETTINGS PANEL ─────────────────────────────────── */
 .settings-trigger{position:fixed;bottom:18px;left:18px;z-index:500;width:36px;height:36px;border-radius:50%;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;opacity:.4;transition:all .2s;}
 .settings-trigger:hover{opacity:1;background:rgba(95,217,138,.18);}
@@ -525,7 +525,7 @@ body.light #starfield{opacity:0;}
     <div class="fcredit">
       <span class="heart"><svg width="12" height="11" viewBox="0 0 12 11" fill="none"><path d="M6 10C6 10 1 6.5 1 3.5A2.5 2.5 0 016 2a2.5 2.5 0 015 1.5C11 6.5 6 10 6 10Z" fill="#5fd98a"/></svg></span>
       <span class="fctext">created with love by</span>
-      <span class="bo-wrap"><span class="bo-box"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><text x="1.5" y="11" font-family="Syne,sans-serif" font-size="11" font-weight="800" fill="#5fd98a">b</text></svg></span><span class="bo-name">bo</span></span>
+      <span class="bo-wrap" onclick="openAdmin()" style="cursor:pointer;" title=""><span class="bo-box"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><text x="1.5" y="11" font-family="Syne,sans-serif" font-size="11" font-weight="800" fill="#5fd98a">b</text></svg></span><span class="bo-name">bo</span></span>
     </div>
   </div>
 </div>
@@ -2206,64 +2206,65 @@ function resetSettings(){
 
 // ── RICK ROLL ─────────────────────────────────────────────
 function openRickRoll(){
-  // ── Synth intro sofort ────────────────────────────────────
+  // ── Synth sofort ─────────────────────────────────────────
   (function(){
     try{
       const A=new(window.AudioContext||window.webkitAudioContext)();
       const master=A.createGain(); master.gain.value=0.22; master.connect(A.destination);
-      function note(freq,start,dur,type,vol){
+      function note(f,s,d,t,v){
         const o=A.createOscillator(),g=A.createGain();
-        o.type=type; o.frequency.value=freq; o.connect(g); g.connect(master);
-        const t=A.currentTime+start;
-        g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.8*vol,t+.02);
-        g.gain.setValueAtTime(.6*vol,t+.05); g.gain.linearRampToValueAtTime(0,t+dur);
-        o.start(t); o.stop(t+dur+.05);
+        o.type=t; o.frequency.value=f; o.connect(g); g.connect(master);
+        const T=A.currentTime+s;
+        g.gain.setValueAtTime(0,T); g.gain.linearRampToValueAtTime(.8*v,T+.02);
+        g.gain.setValueAtTime(.6*v,T+.05); g.gain.linearRampToValueAtTime(0,T+d);
+        o.start(T); o.stop(T+d+.05);
       }
-      [[440,.00,.13,'sawtooth',1],[493.88,.15,.13,'sawtooth',1],[587.33,.30,.13,'sawtooth',1],[493.88,.46,.13,'sawtooth',1],
-       [739.99,.62,.18,'sawtooth',1],[739.99,.84,.13,'sawtooth',1],[659.26,1.00,.28,'sawtooth',1],
-       [659.26,1.32,.13,'sawtooth',1],[587.33,1.48,.28,'sawtooth',1],
+      [[440,.00,.13,'sawtooth',1],[493.88,.15,.13,'sawtooth',1],[587.33,.30,.13,'sawtooth',1],
+       [493.88,.46,.13,'sawtooth',1],[739.99,.62,.18,'sawtooth',1],[739.99,.84,.13,'sawtooth',1],
+       [659.26,1.00,.28,'sawtooth',1],[659.26,1.32,.13,'sawtooth',1],[587.33,1.48,.28,'sawtooth',1],
+       [110,.00,.25,'triangle',.5],[110,.30,.20,'triangle',.5],[146.83,.62,.25,'triangle',.5],
       ].forEach(([f,s,d,t,v])=>note(f,s,d,t,v));
     }catch(e){}
   })();
 
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   const needsTap = isIOS || isSafari;
-  const frame = document.getElementById('rickroll-frame');
-
-  // Start muted on Safari (will unmute on tap), unmuted on others
-  frame.src = 'https://player.vimeo.com/video/1071968720?autoplay=1&muted='+(needsTap?'1':'0')
-    +'&title=0&byline=0&portrait=0&playsinline=1&controls=1';
 
   document.getElementById('rickroll-overlay').classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-  document.addEventListener('keydown', _rr_esc);
+  document.body.style.overflow='hidden';
+  document.addEventListener('keydown',_rr_esc);
 
-  const cover = document.getElementById('rickroll-cover');
-  const tap = document.getElementById('rickroll-tap');
+  const cover=document.getElementById('rickroll-cover');
+  const tap=document.getElementById('rickroll-tap');
 
   if(needsTap){
-    // Show tap-to-unmute overlay, hide spinner cover
+    // Safari: zeige "Hilfe anfordern" Bild — iframe noch NICHT laden
+    // Der Tap auf VERBINDEN wird der echte User-Gesture sein
     if(cover) cover.classList.add('gone');
     if(tap) tap.classList.remove('gone');
   } else {
-    // Hide tap overlay immediately, show spinner until video loads
+    // Chrome/Android: direkt mit Ton laden
     if(tap) tap.classList.add('gone');
-    if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'), 2200); }
+    const frame=document.getElementById('rickroll-frame');
+    frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1';
+    if(cover){cover.classList.remove('gone');setTimeout(()=>cover.classList.add('gone'),2200);}
+    if(window._rrTimer) clearTimeout(window._rrTimer);
+    window._rrTimer=setTimeout(()=>closeRickRoll(),20000);
   }
-
-  if(window._rrTimer) clearTimeout(window._rrTimer);
-  window._rrTimer = setTimeout(()=>closeRickRoll(), 20000);
 }
 
 function rickrollUnmute(){
-  const tap = document.getElementById('rickroll-tap');
-  const frame = document.getElementById('rickroll-frame');
-  const cover = document.getElementById('rickroll-cover');
-  // Reload with muted=0 — this tap IS the user gesture Safari needs
-  frame.src = 'https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1';
+  // DIESER TAP ist der User-Gesture — Safari erlaubt jetzt Autoplay+Sound
+  const frame=document.getElementById('rickroll-frame');
+  const tap=document.getElementById('rickroll-tap');
+  const cover=document.getElementById('rickroll-cover');
+  // Jetzt erst iframe laden — direkt im Click-Handler = Sound garantiert
+  frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1';
   if(tap) tap.classList.add('gone');
-  if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'), 1800); }
+  if(cover){cover.classList.remove('gone');setTimeout(()=>cover.classList.add('gone'),2000);}
+  if(window._rrTimer) clearTimeout(window._rrTimer);
+  window._rrTimer=setTimeout(()=>closeRickRoll(),20000);
 }
 function closeRickRoll(){
   if(window._rrTimer){ clearTimeout(window._rrTimer); window._rrTimer=null; }
