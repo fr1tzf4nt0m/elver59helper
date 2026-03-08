@@ -492,6 +492,27 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
           <div id="admin-access-empty" style="font-size:12px;color:var(--muted);text-align:center;padding:20px;font-style:italic">Noch kein Zugriff aufgezeichnet.</div>
           <button onclick="clearAccessLog()" style="margin-top:10px;padding:6px 12px;background:rgba(232,97,77,.08);border:1px solid rgba(232,97,77,.2);border-radius:8px;font-size:11px;color:var(--red);cursor:pointer;font-weight:600">🗑 Log leeren</button>
         </div>
+        <div class="admin-section" style="margin-top:4px;border-top:1px solid var(--border);padding-top:14px">
+          <div class="admin-section-title">🔄 Gruppen für alle aktualisieren</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.7">
+            Änderungen die du im Admin machst sind zunächst nur auf <em>deinem</em> Gerät. So spielst du sie an alle aus:<br>
+            <strong style="color:var(--text)">1.</strong> Klick auf „data.json generieren"<br>
+            <strong style="color:var(--text)">2.</strong> Text kopieren → auf GitHub <code style="background:rgba(95,217,138,.1);padding:1px 5px;border-radius:3px;font-size:10px">data.json</code> öffnen → ✏️ → alles ersetzen → Commit<br>
+            <strong style="color:var(--text)">3.</strong> Alle sehen die Änderung beim nächsten Öffnen/Aktualisieren ✓
+          </div>
+          <button onclick="showDataJSON()" style="width:100%;padding:11px;background:rgba(95,217,138,.1);border:1px solid rgba(95,217,138,.3);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-bottom:8px">
+            📄 data.json generieren
+          </button>
+          <div id="data-json-wrap" style="display:none">
+            <textarea id="data-json-out" rows="9" readonly
+              style="width:100%;background:rgba(0,0,0,.2);border:1px solid rgba(95,217,138,.2);border-radius:8px;padding:8px;font-size:10px;color:var(--accent);font-family:monospace;resize:vertical;box-sizing:border-box;margin-bottom:6px"></textarea>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button onclick="copyDataJSON()" style="padding:7px 16px;background:rgba(95,217,138,.15);border:1px solid rgba(95,217,138,.3);border-radius:8px;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer">📋 Kopieren</button>
+              <a href="https://github.com/fr1tzf4nt0m/elver59helper/edit/main/data.json" target="_blank" style="padding:7px 16px;background:rgba(100,180,230,.1);border:1px solid rgba(100,180,230,.3);border-radius:8px;color:#64b4e6;font-size:12px;font-weight:700;text-decoration:none">✏️ GitHub öffnen</a>
+              <span id="json-copy-ok" style="font-size:11px;color:var(--accent);display:none">✓ Kopiert!</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="admin-tabpanel" id="tab-requests">
         <div class="admin-section">
@@ -511,7 +532,7 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 <script>
 // ── CONSTANTS ─────────────────────────────────────────────────
 const UPLOAD_EMAIL = 'gmbh@elver.at';
-const GROUP_NAMES_DEFAULT = ['','Schwangerschaft & Säuglingsalter','Krippenkindalter','Kindergartenalter','Schulalter','Jugendalter'];
+const GROUP_NAMES_DEFAULT = ['','Gruppe 1','Gruppe 2','Gruppe 3','Gruppe 4','Gruppe 5'];
 const GC = ['gb0','gb1','gb2','gb3','gb4','gb5'];
 const DEFAULT_THEMEN = ['','Schwangerschaft (pränatale Phase) & Säuglingsalter (0–1 Jahr)','Krippenkindalter (1–3 Jahre)','Kindergartenalter (3–6 Jahre)','Schulalter (6–11 Jahre)','Jugendalter (12–15 Jahre)'];
 
@@ -520,6 +541,24 @@ function groupName(gn){ const g=loadGroups(); return (g[gn]&&g[gn].label)||GROUP
 
 // ── STATE ─────────────────────────────────────────────────────
 let STATE = { name:'', thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr', datum:'2026-03-10', tasks:{}, group:0 };
+
+const DATA_JSON_URL = 'https://raw.githubusercontent.com/fr1tzf4nt0m/elver59helper/main/data.json';
+// Cache: groups loaded from GitHub override localStorage
+// localStorage is still used as fallback when offline
+
+async function fetchRemoteData(){
+  try{
+    const res = await fetch(DATA_JSON_URL+'?t='+Date.now());
+    if(!res.ok) return null;
+    const json = await res.json();
+    if(json && json.groups){
+      // Merge remote groups into localStorage so the rest of the app works sync
+      localStorage.setItem('elver59_groups', JSON.stringify(json.groups));
+      return json.groups;
+    }
+    return null;
+  }catch(e){ return null; }
+}
 
 function loadGroups(){
   try{
@@ -540,10 +579,16 @@ function createGroups(){
     ['Paula Konda','Anna Purkarthofer','Laura Geada','Adrian Schöberl'],
     ['Andelka Dozan','Maria Miguel-Nimmerfall','Raji Kauther','Irem Sumaktas'],
   ];
-  for(let i=1;i<=5;i++) g[i]={label:GROUP_NAMES_DEFAULT[i], thema:DEFAULT_THEMEN[i], members:members[i]||[]};
+  for(let i=1;i<=5;i++) g[i]={label:'Gruppe '+i, thema:DEFAULT_THEMEN[i], members:members[i]||[]};
   return g;
 }
 function saveGroups(g){ try{ localStorage.setItem('elver59_groups',JSON.stringify(g)); }catch(e){} }
+
+// Generate data.json content for admin to copy to GitHub
+function generateDataJSON(){
+  const groups = loadGroups();
+  return JSON.stringify({ groups }, null, 2);
+}
 
 // ── SEED ALL KNOWN MEMBERS ─────────────────────────────────
 // Ensures every class member is visible in admin even if they
@@ -681,8 +726,14 @@ document.addEventListener('input',e=>{
   if(!loaded){
     try{ const ln=localStorage.getItem('elver59_lastuser'); if(ln){ const s=localStorage.getItem('elver59_'+ln.toLowerCase()); if(s){ const p=JSON.parse(s); if(p&&p.name){ STATE=p; loaded=true; } } } }catch(e){}
   }
-  if(loaded&&STATE.name){ localStorage.setItem('elver59_lastuser',STATE.name); initUser(STATE.name); }
-  else showModal();
+  if(loaded&&STATE.name){
+    localStorage.setItem('elver59_lastuser',STATE.name);
+    initUser(STATE.name);
+    // Fetch latest data.json from GitHub — updates groups silently
+    fetchRemoteData().then(remoteGroups=>{
+      if(remoteGroups){ refreshGroupCard(); updateGroupBadge(); }
+    });
+  } else showModal();
 })();
 
 // ── DATA ──────────────────────────────────────────────────────
@@ -1119,6 +1170,31 @@ function openAltLink(){
 }
 function initCloudTab(){
   renderAccessLog();
+}
+
+function showDataJSON(){
+  const json = generateDataJSON();
+  const ta = document.getElementById('data-json-out');
+  const wrap = document.getElementById('data-json-wrap');
+  if(ta) ta.value = json;
+  if(wrap) wrap.style.display = 'block';
+  if(ta) ta.select();
+}
+
+function copyDataJSON(){
+  const ta = document.getElementById('data-json-out');
+  if(!ta) return;
+  ta.select();
+  try{
+    navigator.clipboard.writeText(ta.value).then(()=>{
+      const ok = document.getElementById('json-copy-ok');
+      if(ok){ ok.style.display='inline'; setTimeout(()=>ok.style.display='none', 2500); }
+    });
+  }catch(e){
+    document.execCommand('copy');
+    const ok = document.getElementById('json-copy-ok');
+    if(ok){ ok.style.display='inline'; setTimeout(()=>ok.style.display='none', 2500); }
+  }
 }
 
 // ── UNTERLAGEN ACCESS SYSTEM ──────────────────────────────────
