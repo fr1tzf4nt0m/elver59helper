@@ -1352,6 +1352,7 @@ const ACCESS_EMAIL = 'bgruenwald@gmx.net';
 const ICLOUD_URL = 'https://www.icloud.com/iclouddrive/081q_w11KR-VtsH0StnXPv04g#Allgemein';
 const ALT_URL_KEY = 'elver59_altlink';
 const GDRIVE_ENC = 'fe1ab8c9f433196e754c2a1fbc82c9d71fe03d847e9570d93ed5c00b91f877e0f902a8dcf57a197044750b2b9ff6e98818e437a00fc746dd5cd6e114b2cc3ab6d9268acbf16a7f0d2e4b3019e4dfc6d902e20e8d399874';
+const TEAMS_ENC = 'fe1ab8c9f433196e7452350cabcdda9603ef3093358670dd7fc59c0188f077bcf054e3cba87a5f35744d6c2c95faebea45be7ea7229376d374d6d70082f33da3a45e88d6ec7c5b247f4a264698c0c2df15ea34883ec97cc7778c834490f83abba748a984c27b6229577f';
 function getGdriveUrl(){
   // Decrypts with admin PIN hash — not readable in source without PIN
   const key = new Uint8Array([0x96,0x6e,0xcc,0xb9,0x87,0x09,0x36,0x41,0x11,0x3e,0x43,0x69,0xd9,0xac,0xae,0xb8,0x70,0x87,0x51,0xe1,0x50,0xf6,0x1f,0xb4,0x11,0xb1,0xb2,0x62,0xe7,0x9d,0x58,0x86]);
@@ -1359,6 +1360,14 @@ function getGdriveUrl(){
   let out = '';
   for(let i=0;i<hex.length;i+=2){
     out += String.fromCharCode(parseInt(hex.substr(i,2),16) ^ key[Math.floor(i/2)%key.length]);
+  }
+  return out;
+}
+function getTeamsUrl(){
+  const key = new Uint8Array([0x96,0x6e,0xcc,0xb9,0x87,0x09,0x36,0x41,0x11,0x3e,0x43,0x69,0xd9,0xac,0xae,0xb8,0x70,0x87,0x51,0xe1,0x50,0xf6,0x1f,0xb4,0x11,0xb1,0xb2,0x62,0xe7,0x9d,0x58,0x86]);
+  let out = '';
+  for(let i=0;i<TEAMS_ENC.length;i+=2){
+    out += String.fromCharCode(parseInt(TEAMS_ENC.substr(i,2),16) ^ key[Math.floor(i/2)%key.length]);
   }
   return out;
 }
@@ -1455,7 +1464,7 @@ function buildUnterlagen(){
       <div style="font-size:10px;color:var(--muted);text-align:center;padding:4px 0">Zuletzt geöffnet: <span id="last-access-label" style="color:var(--accent)">—</span></div>
       <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
         <div style="font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;text-align:center">Direkt über Teams</div>
-        <a class="access-file-btn" href="https://elverat.sharepoint.com/:f:/r/sites/ELVER59/Freigegebene%20Dokumente/Allgemein?csf=1&web=1&e=ErThFA" target="_blank" rel="noopener" style="text-decoration:none">
+        <a class="access-file-btn" href="#" onclick="this.href=getTeamsUrl();return true;" target="_blank" rel="noopener" style="text-decoration:none">
           <div class="access-file-icon">🏢</div>
           <div class="access-file-info">
             <div class="access-file-name">Teams · Unterlagen</div>
@@ -1490,7 +1499,7 @@ function buildUnterlagen(){
       </div>
       <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
         <div style="font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;text-align:center">Direkt über Teams</div>
-        <a class="access-file-btn" href="https://elverat.sharepoint.com/:f:/r/sites/ELVER59/Freigegebene%20Dokumente/Allgemein?csf=1&web=1&e=ErThFA" target="_blank" rel="noopener" style="text-decoration:none">
+        <a class="access-file-btn" href="#" onclick="this.href=getTeamsUrl();return true;" target="_blank" rel="noopener" style="text-decoration:none">
           <div class="access-file-icon">🏢</div>
           <div class="access-file-info">
             <div class="access-file-name">Teams · Unterlagen</div>
