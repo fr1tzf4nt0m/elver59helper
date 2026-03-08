@@ -1425,13 +1425,16 @@ function buildTasks(){
 // PEER GROUPS
 function buildGroupsInner(){
   const groups=loadGroups();
-  const myG=STATE.group||0;
+  const myName=(STATE.name||'').toLowerCase();
   return Object.keys(groups).map(gn=>{
     const g=groups[gn];
-    const isMine=myG>0&&parseInt(gn)===myG;
+    // isMine: user must BOTH have matching STATE.group AND actually be in members list
+    const members=(g.members||[]);
+    const inMembers=myName&&members.some(m=>m.toLowerCase()===myName);
+    const myG=STATE.group||0;
+    const isMine=inMembers&&myG>0&&parseInt(gn)===myG;
     // "me" chip: highlight if member name contains user's name OR matches exactly
-    const myName=(STATE.name||'').toLowerCase();
-    const members=g.members.length
+    const memberChips=g.members.length
       ? g.members.map(m=>{
           const isMe=myName&&(m.toLowerCase()===myName||m.toLowerCase().startsWith(myName+' ')||m.toLowerCase().includes(' '+myName));
           return `<span class="pmember${isMe?' me':''}">${m}${isMe?' (Du)':''}</span>`;
@@ -1443,7 +1446,7 @@ function buildGroupsInner(){
         <div class="pgroup-title">${g.label||GROUP_NAMES_DEFAULT[gn]}</div>
         ${isMine?`<span class="pgroup-you">Deine Gruppe</span>`:''}
       </div>
-      <div class="pgroup-members">${members}</div>
+      <div class="pgroup-members">${memberChips}</div>
       ${isMine
         ? `<input class="pgroup-thema-input" id="glabel-${gn}" value="${(g.label||'Gruppe '+gn).replace(/"/g,'&quot;')}" placeholder="Gruppenname…" style="margin-bottom:6px;font-weight:700;font-size:13px;" />
            <textarea class="pgroup-thema-input" id="gthema-${gn}" rows="2" placeholder="Gruppenthema eingeben…">${g.thema||''}</textarea>
