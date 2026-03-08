@@ -1721,7 +1721,7 @@ document.getElementById('root').innerHTML =
   buildStundenplan()+buildSeminar()+buildTermine()+buildTasks()+buildUnterlagen();
 
 // Auto-open cloud card if unlocked
-if(hasCloudAccess()){ const cc=document.getElementById('c-cloud'); if(cc){ cc.classList.add('open'); } }
+// Auto-open cloud card disabled — alle Karten starten geschlossen
 
 // Init upload
 const dz=document.getElementById('dropzone'), fi=document.getElementById('fileinput');
