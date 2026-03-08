@@ -626,6 +626,15 @@ const ALL_MEMBERS = [
   {name:'Raji Kauther',    group:5},
   {name:'Irem Sumaktas',   group:5},
 ];
+// Clean up old global access key (was per-device, now per-user)
+(function migrateAccessKey(){
+  try{
+    if(localStorage.getItem('elver59_cloud_access')==='1'){
+      localStorage.removeItem('elver59_cloud_access');
+    }
+  }catch(e){}
+})();
+
 function seedKnownMembers(){
   ALL_MEMBERS.forEach(m=>{
     const k='elver59_'+m.name.toLowerCase();
@@ -1228,7 +1237,8 @@ async function genAccessCode(name){
 
 // Check if user already has access
 function hasCloudAccess(){
-  try{ return localStorage.getItem(ACCESS_KEY)==='1'; }catch(e){ return false; }
+  if(!STATE.name) return false;
+  try{ return localStorage.getItem(ACCESS_KEY+'_'+STATE.name.toLowerCase())==='1'; }catch(e){ return false; }
 }
 
 // Save a new access request to localStorage
@@ -1339,7 +1349,7 @@ async function submitAccessCode(){
   const name=STATE.name||'';
   const expected=await genAccessCode(name);
   if(code===expected){
-    try{ localStorage.setItem(ACCESS_KEY,'1'); }catch(e){}
+    try{ localStorage.setItem(ACCESS_KEY+'_'+STATE.name.toLowerCase(),'1'); }catch(e){}
     // Re-render card
     const card=document.getElementById('c-cloud');
     if(card) card.outerHTML=buildUnterlagen();
@@ -1827,10 +1837,28 @@ function renderAdminUsers(){
       </div>
       <div class="user-row-actions">
         <button class="abtn" onclick="startEdit('${u.name}')">✏</button>
+        <button class="abtn" title="${hasUserAccess(u.name)?'Unterlagen-Zugang sperren':'Kein Zugang'}" onclick="toggleUserAccess('${u.name}')" style="background:${hasUserAccess(u.name)?'rgba(95,217,138,.12)':'rgba(100,100,100,.08)'};border-color:${hasUserAccess(u.name)?'rgba(95,217,138,.3)':'var(--border)'};">${hasUserAccess(u.name)?'☁️':'🔒'}</button>
         <button class="abtn del" onclick="deleteUser('${u.name}')">✕</button>
       </div>
     </div>`;
   }).join('');
+}
+
+function hasUserAccess(name){
+  try{ return localStorage.getItem(ACCESS_KEY+'_'+name.toLowerCase())==='1'; }catch(e){ return false; }
+}
+function toggleUserAccess(name){
+  const key=ACCESS_KEY+'_'+name.toLowerCase();
+  try{
+    if(localStorage.getItem(key)==='1'){
+      localStorage.removeItem(key);
+      flashMsg('🔒 Zugang für '+name+' gesperrt');
+    } else {
+      localStorage.setItem(key,'1');
+      flashMsg('☁️ Zugang für '+name+' freigeschaltet');
+    }
+  }catch(e){}
+  renderAdminUsers();
 }
 
 function deleteUser(name){
