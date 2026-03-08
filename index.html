@@ -174,6 +174,45 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 .sp-search:focus{border-color:rgba(95,217,138,.4);}
 .sp-search::placeholder{color:var(--muted2);}
 .sp-empty{font-size:13px;color:var(--muted);text-align:center;padding:20px;font-style:italic;}
+
+/* ACCESS REQUEST */
+.access-card{border-radius:16px;overflow:hidden;border:1px solid var(--border);background:var(--surface);}
+.access-locked{display:flex;flex-direction:column;align-items:center;padding:28px 20px;gap:8px;text-align:center;}
+.access-lock-icon{font-size:36px;margin-bottom:4px;filter:grayscale(.4);}
+.access-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--text);}
+.access-sub{font-size:12px;color:var(--muted);line-height:1.5;max-width:260px;}
+.access-btn{margin-top:10px;padding:10px 22px;background:var(--accent);color:#0e1210;border:none;border-radius:100px;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;cursor:pointer;transition:opacity .2s;}
+.access-btn:hover{opacity:.85;}
+.access-form{padding:20px;border-top:1px solid var(--border);display:none;flex-direction:column;gap:10px;}
+.access-form.open{display:flex;}
+.access-input{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+.access-input:focus{border-color:rgba(95,217,138,.4);}
+.access-send-btn{padding:10px;background:rgba(95,217,138,.12);border:1px solid rgba(95,217,138,.25);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;}
+.access-send-btn:hover{background:rgba(95,217,138,.2);}
+.access-code-row{display:flex;gap:8px;align-items:center;}
+.access-code-input{flex:1;letter-spacing:.15em;font-size:15px;font-weight:700;text-align:center;text-transform:uppercase;}
+.access-divider{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);}
+.access-divider::before,.access-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.access-unlocked{display:flex;flex-direction:column;gap:10px;padding:16px;}
+.access-file-btn{display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);transition:border-color .18s,background .18s;}
+.access-file-btn:hover{border-color:rgba(95,217,138,.35);background:rgba(95,217,138,.04);}
+.access-file-icon{font-size:20px;flex-shrink:0;}
+.access-file-info{flex:1;min-width:0;}
+.access-file-name{font-size:13px;font-weight:600;}
+.access-file-desc{font-size:11px;color:var(--muted);margin-top:1px;}
+/* admin request badge */
+.req-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:100px;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:0 4px;margin-left:6px;}
+.req-item{padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;}
+.req-item-name{font-weight:700;font-size:13px;color:var(--text);}
+.req-item-email{font-size:11px;color:var(--muted);margin-top:2px;}
+.req-item-time{font-size:10px;color:var(--muted2);margin-top:1px;}
+.req-code-box{margin-top:10px;padding:10px 14px;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.2);border-radius:8px;display:none;}
+.req-code-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--accent);letter-spacing:.18em;}
+.req-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;}
+.req-btn{padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid;transition:all .15s;}
+.req-btn-gen{background:rgba(95,217,138,.1);border-color:rgba(95,217,138,.3);color:var(--accent);}
+.req-btn-mail{background:rgba(100,180,230,.1);border-color:rgba(100,180,230,.3);color:#64b4e6;}
+.req-btn-del{background:rgba(232,97,77,.08);border-color:rgba(232,97,77,.25);color:var(--red);}
 .sp-slide{animation:spSlideIn .22s ease both;}
 @keyframes spSlideIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
 .sp-slide-back{animation:spSlideBack .22s ease both;}
@@ -374,6 +413,8 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
         <div class="admin-tab active" onclick="switchTab('users')">👤 Benutzer</div>
         <div class="admin-tab" onclick="switchTab('groups')">👥 Gruppen</div>
         <div class="admin-tab" onclick="switchTab('add')">✚ Neu</div>
+        <div class="admin-tab" onclick="switchTab('cloud')">☁️ Unterlagen</div>
+        <div class="admin-tab" id="tab-req-btn" onclick="switchTab('requests')">📥 Anfragen</div>
       </div>
 
       <div class="admin-tabpanel active" id="tab-users">
@@ -431,6 +472,38 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
           </div>
         </div>
       </div>
+      <div class="admin-tabpanel" id="tab-cloud">
+        <div class="admin-section">
+          <div class="admin-section-title">☁️ Unterlagen &amp; Vorlagen</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">Nur im Admin-Bereich sichtbar. Link an Teilnehmer weitergeben.</div>
+
+          <a href="https://drive.google.com/drive/folders/1UKHBFZG0hcfA_1YiMgSvUQb0OHFrvcIL?usp=share_link" target="_blank" rel="noopener"
+            style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(95,217,138,.06);border:1px solid rgba(95,217,138,.2);border-radius:12px;text-decoration:none;color:var(--text);margin-bottom:14px;">
+            <span style="font-size:22px">📂</span>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:700;font-size:13px">Unterlagen &amp; Vorlagen</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:2px;word-break:break-all">drive.google.com · Jeder mit Link · kein Login</div>
+            </div>
+            <span style="color:var(--accent)">→</span>
+          </a>
+
+          <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px">📊 Zugriffe</div>
+          <div id="admin-access-log" style="max-height:260px;overflow-y:auto"></div>
+          <div id="admin-access-empty" style="font-size:12px;color:var(--muted);text-align:center;padding:20px;font-style:italic">Noch kein Zugriff aufgezeichnet.</div>
+          <button onclick="clearAccessLog()" style="margin-top:10px;padding:6px 12px;background:rgba(232,97,77,.08);border:1px solid rgba(232,97,77,.2);border-radius:8px;font-size:11px;color:var(--red);cursor:pointer;font-weight:600">🗑 Log leeren</button>
+        </div>
+      </div>
+      <div class="admin-tabpanel" id="tab-requests">
+        <div class="admin-section">
+          <div class="admin-section-title" style="display:flex;align-items:center;gap:6px">
+            📥 Zugriffsanfragen
+            <span id="req-count-badge" class="req-badge" style="display:none">0</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">Hier erscheinen alle Anfragen für die Unterlagen-Freischaltung. Code generieren → an User per Mail schicken.</div>
+          <div id="admin-req-list"></div>
+          <div id="admin-req-empty" style="font-size:12px;color:var(--muted);text-align:center;padding:24px;font-style:italic;">Noch keine Anfragen.</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -471,6 +544,49 @@ function createGroups(){
   return g;
 }
 function saveGroups(g){ try{ localStorage.setItem('elver59_groups',JSON.stringify(g)); }catch(e){} }
+
+// ── SEED ALL KNOWN MEMBERS ─────────────────────────────────
+// Ensures every class member is visible in admin even if they
+// haven't personally logged in on this device yet.
+const ALL_MEMBERS = [
+  {name:'Anna Gedl',       group:1},
+  {name:'Ana Nikolic',     group:1},
+  {name:'Boris Grünwald',  group:1},
+  {name:'Selina Hammelhofer', group:1},
+  {name:'Jacqueline Intichar', group:2},
+  {name:'Leticia Silva-Plesa', group:2},
+  {name:'Uranzul Jigjidsuren', group:2},
+  {name:'Nicole Luder',    group:2},
+  {name:'Anesa Asani',     group:3},
+  {name:'Arnela Omerovic', group:3},
+  {name:'Sahar Vafa',      group:3},
+  {name:'Paula Konda',     group:4},
+  {name:'Anna Purkarthofer', group:4},
+  {name:'Laura Geada',     group:4},
+  {name:'Adrian Schöberl', group:4},
+  {name:'Andelka Dozan',   group:5},
+  {name:'Maria Miguel-Nimmerfall', group:5},
+  {name:'Raji Kauther',    group:5},
+  {name:'Irem Sumaktas',   group:5},
+];
+function seedKnownMembers(){
+  ALL_MEMBERS.forEach(m=>{
+    const k='elver59_'+m.name.toLowerCase();
+    try{
+      const ex=localStorage.getItem(k);
+      if(!ex){
+        // Create minimal entry — will be enriched when user logs in themselves
+        const entry={name:m.name,thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{},group:m.group};
+        localStorage.setItem(k,JSON.stringify(entry));
+      } else {
+        // Entry exists — ensure group is set if missing
+        const p=JSON.parse(ex);
+        if(p&&!p.group){ p.group=m.group; localStorage.setItem(k,JSON.stringify(p)); }
+      }
+    }catch(e){}
+  });
+}
+seedKnownMembers();
 
 function encodeState(){ try{ return btoa(unescape(encodeURIComponent(JSON.stringify(STATE)))); }catch(e){ return ''; } }
 function decodeState(h){ try{ return JSON.parse(decodeURIComponent(escape(atob(h)))); }catch(e){ return null; } }
@@ -934,6 +1050,278 @@ function spRenderSearch(q){
   }).join('');
 }
 
+// ── FILE ACCESS TRACKING ──────────────────────────────────────
+const ACCESS_LOG_KEY = 'elver59_access_log';
+
+function trackFileAccess(){
+  if(!STATE.name) return;
+  try{
+    const log=getAccessLog();
+    log.unshift({name:STATE.name, time:Date.now(), device:navigator.userAgent.includes('Android')?'Android':navigator.userAgent.includes('iPhone')||navigator.userAgent.includes('iPad')?'iOS':'Desktop'});
+    // Keep last 100 entries
+    if(log.length>100) log.splice(100);
+    localStorage.setItem(ACCESS_LOG_KEY, JSON.stringify(log));
+  }catch(e){}
+}
+
+function getAccessLog(){
+  try{ return JSON.parse(localStorage.getItem(ACCESS_LOG_KEY)||'[]'); }catch(e){ return []; }
+}
+
+function getLastAccessTime(){
+  const log=getAccessLog();
+  if(!log.length) return '–';
+  const d=new Date(log[0].time);
+  return d.getDate()+'.'+(d.getMonth()+1)+'. '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+
+function renderAccessLog(){
+  const log=getAccessLog();
+  const el=document.getElementById('admin-access-log');
+  const empty=document.getElementById('admin-access-empty');
+  if(!el) return;
+  if(!log.length){ el.innerHTML=''; if(empty) empty.style.display='block'; return; }
+  if(empty) empty.style.display='none';
+  // Group by name: show each unique user's last access + count
+  const byName={};
+  log.forEach(e=>{ if(!byName[e.name]) byName[e.name]={count:0,last:e.time,device:e.device}; byName[e.name].count++; });
+  el.innerHTML=Object.entries(byName)
+    .sort((a,b)=>b[1].last-a[1].last)
+    .map(([name,d])=>{
+      const dt=new Date(d.last);
+      const dtStr=dt.getDate()+'.'+(dt.getMonth()+1)+'. '+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
+      const devIcon=d.device==='Android'?'🤖':d.device==='iOS'?'🍎':'💻';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:9px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;margin-bottom:6px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:rgba(95,217,138,.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--accent);flex-shrink:0">${name.charAt(0).toUpperCase()}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:var(--text)">${name}</div>
+          <div style="font-size:10px;color:var(--muted)">${devIcon} ${d.device} · zuletzt ${dtStr}</div>
+        </div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;background:rgba(95,217,138,.1);padding:3px 8px;border-radius:100px">${d.count}×</div>
+      </div>`;
+    }).join('');
+}
+
+function clearAccessLog(){
+  if(!confirm('Zugriffs-Log wirklich leeren?')) return;
+  try{ localStorage.removeItem(ACCESS_LOG_KEY); }catch(e){}
+  renderAccessLog();
+}
+
+function saveAltLink(v){
+  try{ localStorage.setItem('elver59_altlink', v); }catch(e){}
+  const s=document.getElementById('alt-link-status');
+  if(s) s.textContent = v ? '✓ Gespeichert' : '';
+}
+function openAltLink(){
+  const v=document.getElementById('alt-link-input')?.value || localStorage.getItem('elver59_altlink')||'';
+  if(v) window.open(v,'_blank'); else alert('Kein Link eingetragen.');
+}
+function initCloudTab(){
+  renderAccessLog();
+}
+
+// ── UNTERLAGEN ACCESS SYSTEM ──────────────────────────────────
+const ACCESS_SALT = 'elver59access2026';
+const ACCESS_EMAIL = 'bgruenwald@gmx.net';
+const ICLOUD_URL = 'https://www.icloud.com/iclouddrive/081q_w11KR-VtsH0StnXPv04g#Allgemein';
+const ALT_URL_KEY = 'elver59_altlink';
+const GDRIVE_URL = 'https://drive.google.com/drive/folders/1UKHBFZG0hcfA_1YiMgSvUQb0OHFrvcIL?usp=share_link';
+const REQUESTS_KEY = 'elver59_requests';
+const ACCESS_KEY = 'elver59_cloud_access';
+
+// Generate deterministic 6-char unlock code from name
+async function genAccessCode(name){
+  const enc=new TextEncoder().encode(ACCESS_SALT+name.trim().toLowerCase());
+  const buf=await crypto.subtle.digest('SHA-256',enc);
+  const hex=Array.from(new Uint8Array(buf)).map(x=>x.toString(16).padStart(2,'0')).join('');
+  return hex.slice(0,6).toUpperCase();
+}
+
+// Check if user already has access
+function hasCloudAccess(){
+  try{ return localStorage.getItem(ACCESS_KEY)==='1'; }catch(e){ return false; }
+}
+
+// Save a new access request to localStorage
+function saveRequest(name, email){
+  try{
+    const reqs=getRequests();
+    // Avoid duplicate for same name
+    const exists=reqs.find(r=>r.name.toLowerCase()===name.toLowerCase());
+    if(exists){ exists.email=email; exists.time=Date.now(); }
+    else reqs.push({name, email, time:Date.now(), id: Date.now()+'_'+Math.random().toString(36).slice(2,6)});
+    localStorage.setItem(REQUESTS_KEY, JSON.stringify(reqs));
+  }catch(e){}
+}
+
+function getRequests(){
+  try{ return JSON.parse(localStorage.getItem(REQUESTS_KEY)||'[]'); }catch(e){ return []; }
+}
+
+function deleteRequest(id){
+  try{
+    const reqs=getRequests().filter(r=>r.id!==id);
+    localStorage.setItem(REQUESTS_KEY, JSON.stringify(reqs));
+  }catch(e){}
+}
+
+function updateReqBadge(){
+  const n=getRequests().length;
+  const badge=document.getElementById('req-count-badge');
+  const btn=document.getElementById('tab-req-btn');
+  if(!badge||!btn) return;
+  badge.textContent=n;
+  badge.style.display=n>0?'inline-flex':'none';
+}
+
+// Build the public Unterlagen card
+function buildUnterlagen(){
+  const unlocked=hasCloudAccess();
+  const altUrl=localStorage.getItem(ALT_URL_KEY)||'';
+  if(unlocked){
+    return xcard('c-cloud','☁️','Unterlagen Vorlagen',`<div class="access-unlocked">
+      <a class="access-file-btn" href="${GDRIVE_URL}" target="_blank" rel="noopener" onclick="trackFileAccess()">
+        <div class="access-file-icon">📂</div>
+        <div class="access-file-info">
+          <div class="access-file-name">Unterlagen &amp; Vorlagen</div>
+          <div class="access-file-desc">Google Drive · Alle Geräte · kein Login nötig</div>
+        </div>
+        <span style="color:var(--accent);font-size:14px">→</span>
+      </a>
+      <div style="font-size:10px;color:var(--muted);text-align:center;padding:4px 0">Zuletzt geöffnet: <span id="last-access-time">${getLastAccessTime()}</span></div>
+    </div>`);
+  }
+
+  // Locked state
+  return xcard('c-cloud','☁️','Unterlagen Vorlagen',`
+    <div class="access-card">
+      <div class="access-locked" id="access-locked-view">
+        <div class="access-lock-icon">🔒</div>
+        <div class="access-title">Zugang erforderlich</div>
+        <div class="access-sub">Die Seminarunterlagen sind geschützt. Stelle eine Anfrage – du bekommst einen persönlichen Freischalt-Code.</div>
+        <button class="access-btn" onclick="showAccessForm()">Zugang anfragen</button>
+      </div>
+      <div class="access-form" id="access-form-view">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Deine E-Mail-Adresse</div>
+        <input class="access-input" id="access-email-inp" type="email" placeholder="deine@email.at"/>
+        <button class="access-send-btn" onclick="submitAccessRequest()">📨 Anfrage senden</button>
+        <div class="access-divider">oder Code eingeben</div>
+        <div class="access-code-row">
+          <input class="access-input access-code-input" id="access-code-inp" type="text" maxlength="6" placeholder="CODE" oninput="this.value=this.value.toUpperCase()"/>
+          <button class="access-send-btn" style="white-space:nowrap;padding:10px 14px" onclick="submitAccessCode()">✓</button>
+        </div>
+        <div id="access-err" style="font-size:11px;color:var(--red);min-height:14px;text-align:center"></div>
+      </div>
+    </div>`);
+}
+
+function showAccessForm(){
+  document.getElementById('access-locked-view').style.display='none';
+  document.getElementById('access-form-view').classList.add('open');
+  setTimeout(()=>document.getElementById('access-email-inp')?.focus(),80);
+}
+
+async function submitAccessRequest(){
+  const emailEl=document.getElementById('access-email-inp');
+  const errEl=document.getElementById('access-err');
+  const email=(emailEl?.value||'').trim();
+  if(!email||!email.includes('@')){ if(errEl) errEl.textContent='Bitte eine gültige E-Mail eingeben.'; return; }
+  const name=STATE.name||'Unbekannt';
+
+  // Save request locally (admin will see it)
+  saveRequest(name, email);
+
+  // Open mailto to Boris
+  const subject=encodeURIComponent('Unterlagen-Zugang: '+name);
+  const body=encodeURIComponent('Hallo Boris,\n\n'+name+' ('+email+') möchte Zugang zu den Unterlagen.\n\nGehe in den Admin-Bereich → Tab Anfragen → Code für '+name+' generieren.\n\nlg');
+  window.location.href=`mailto:${ACCESS_EMAIL}?subject=${subject}&body=${body}`;
+
+  // Show success state
+  if(emailEl) emailEl.value='';
+  if(errEl) errEl.style.color='var(--accent)';
+  if(errEl) errEl.textContent='✓ Anfrage gesendet! Du bekommst deinen Code per Mail.';
+}
+
+async function submitAccessCode(){
+  const inp=document.getElementById('access-code-inp');
+  const errEl=document.getElementById('access-err');
+  const code=(inp?.value||'').trim().toUpperCase();
+  if(code.length!==6){ if(errEl){errEl.style.color='var(--red)';errEl.textContent='Code muss 6 Zeichen haben.';} return; }
+  const name=STATE.name||'';
+  const expected=await genAccessCode(name);
+  if(code===expected){
+    try{ localStorage.setItem(ACCESS_KEY,'1'); }catch(e){}
+    // Re-render card
+    const card=document.getElementById('c-cloud');
+    if(card) card.outerHTML=buildUnterlagen();
+    flashMsg('✓ Unterlagen freigeschaltet!');
+  } else {
+    if(errEl){errEl.style.color='var(--red)';errEl.textContent='Falscher Code. Bitte nochmal prüfen.';}
+    if(inp) inp.value='';
+  }
+}
+
+// Admin: render requests list
+async function renderAdminRequests(){
+  const reqs=getRequests();
+  const listEl=document.getElementById('admin-req-list');
+  const emptyEl=document.getElementById('admin-req-empty');
+  if(!listEl) return;
+  if(!reqs.length){
+    listEl.innerHTML=''; if(emptyEl) emptyEl.style.display='block'; return;
+  }
+  if(emptyEl) emptyEl.style.display='none';
+  listEl.innerHTML=''; // will append
+  for(const r of reqs){
+    const code=await genAccessCode(r.name);
+    const dt=new Date(r.time);
+    const dtStr=dt.getDate()+'.'+(dt.getMonth()+1)+'.'+dt.getFullYear()+' '+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
+    const div=document.createElement('div');
+    div.className='req-item';
+    div.id='req-'+r.id;
+    div.innerHTML=`
+      <div class="req-item-name">👤 ${r.name}</div>
+      <div class="req-item-email">📧 ${r.email}</div>
+      <div class="req-item-time">🕐 ${dtStr}</div>
+      <div class="req-code-box" id="codebox-${r.id}">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Freischalt-Code für ${r.name}:</div>
+        <div class="req-code-val" id="codeval-${r.id}">${code}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px">Per Mail an ${r.email} schicken</div>
+      </div>
+      <div class="req-actions">
+        <button class="req-btn req-btn-gen" onclick="showReqCode('${r.id}')">🔑 Code anzeigen</button>
+        <button class="req-btn req-btn-mail" onclick="mailCode('${r.name}','${r.email}','${code}')">📨 Code per Mail</button>
+        <button class="req-btn req-btn-del" onclick="deleteReq('${r.id}')">✕ Erledigt</button>
+      </div>`;
+    listEl.appendChild(div);
+  }
+  updateReqBadge();
+}
+
+function showReqCode(id){
+  const box=document.getElementById('codebox-'+id);
+  if(box) box.style.display=box.style.display==='block'?'none':'block';
+}
+
+function mailCode(name, email, code){
+  const subject=encodeURIComponent('Dein Unterlagen-Freischalt-Code · ELVER 59');
+  const body=encodeURIComponent('Hallo '+name+',\n\ndein persönlicher Freischalt-Code für die Unterlagen:\n\n   '+code+'\n\nÖffne die App → Karte Unterlagen Vorlagen → Code eingeben → fertig.\n\nhttps://fr1tzf4nt0m.github.io/elver59helper\n\nLiebe Grüße\nBoris');
+  window.location.href=`mailto:${email}?subject=${subject}&body=${body}`;
+}
+
+function deleteReq(id){
+  deleteRequest(id);
+  document.getElementById('req-'+id)?.remove();
+  updateReqBadge();
+  const listEl=document.getElementById('admin-req-list');
+  const emptyEl=document.getElementById('admin-req-empty');
+  if(listEl&&!listEl.children.length&&emptyEl) emptyEl.style.display='block';
+}
+
+// Show request badge on admin open
+function refreshReqBadge(){ updateReqBadge(); }
+
 function getKW(d){
   const dt=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
   const day=dt.getUTCDay()||7;
@@ -1036,12 +1424,7 @@ function buildGroups(){
 
 // RENDER ALL
 document.getElementById('root').innerHTML =
-  buildStundenplan()+buildSeminar()+buildTermine()+buildTasks()+buildGroups()+
-  `<a class="lcard" href="https://www.icloud.com/iclouddrive/081q_w11KR-VtsH0StnXPv04g#Allgemein" target="_blank" rel="noopener">
-    <div class="cicon">☁️</div>
-    <div style="flex:1;min-width:0"><div class="clabel">Unterlagen Vorlagen</div><div class="cdesc">Seminar-Dateien · Vorlagen · iCloud</div></div>
-    <div class="carrow">→</div>
-  </a>`;
+  buildStundenplan()+buildSeminar()+buildTermine()+buildTasks()+buildGroups()+buildUnterlagen();
 
 // Init upload
 const dz=document.getElementById('dropzone'), fi=document.getElementById('fileinput');
@@ -1287,8 +1670,10 @@ async function checkPin(){
   if(await verifyPin(pinInput)){
     document.getElementById('admin-pin-screen').classList.add('hidden');
     document.getElementById('admin-main-screen').classList.remove('hidden');
-    renderAdminUsers(); renderAdminGroups();
     pinInput=''; updatePinDots(); // clear PIN from memory immediately after unlock
+    // Always switch to users tab and render fresh on every open
+    switchTabSilent('users');
+    renderAdminUsers(); renderAdminGroups(); refreshReqBadge();
   } else {
     document.getElementById('pin-err').textContent='Falscher PIN';
     pinInput=''; updatePinDots();
@@ -1300,10 +1685,21 @@ async function checkPin(){
 document.getElementById('admin-overlay').addEventListener('click',function(e){
   if(e.target===this) closeAdmin();
 });
-function switchTab(n){
-  document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',['users','groups','add'][i]===n));
+function switchTabSilent(n){
+  const tabs=['users','groups','add','cloud','requests'];
+  document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===n));
   document.querySelectorAll('.admin-tabpanel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+n)?.classList.add('active');
+}
+function switchTab(n){
+  const tabs=['users','groups','add','cloud','requests'];
+  document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===n));
+  document.querySelectorAll('.admin-tabpanel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+n)?.classList.add('active');
+  if(n==='users') renderAdminUsers();
+  if(n==='groups') renderAdminGroups();
+  if(n==='cloud') initCloudTab();
+  if(n==='requests') renderAdminRequests();
 }
 
 function getAllUsers(){
@@ -1322,18 +1718,31 @@ function renderAdminUsers(){
   const list=document.getElementById('admin-user-list');
   const users=getAllUsers();
   if(!users.length){ list.innerHTML='<div class="admin-empty">Noch keine Benutzer.</div>'; return; }
-  list.innerHTML=users.map(u=>`
-    <div class="user-row">
+  // Count stats
+  const total=users.length;
+  const active=users.filter(u=>u.datum||u.thema!=='Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr'||Object.keys(u.tasks||{}).length>0).length;
+  const statsHtml=`<div style="font-size:10px;color:var(--muted);margin-bottom:10px;padding:6px 8px;background:rgba(95,217,138,.05);border-radius:8px;border:1px solid rgba(95,217,138,.1)">
+    👥 ${total} Teilnehmer · ✅ ${active} aktiv eingeloggt · 🕐 ${total-active} noch nicht eingeloggt
+  </div>`;
+  list.innerHTML=statsHtml+users.map(u=>{
+    // Detect if user has actually logged in (has custom data beyond seed defaults)
+    const hasLoggedIn=u.datum||(u.thema&&u.thema!=='Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr')||Object.keys(u.tasks||{}).length>0;
+    const statusDot=hasLoggedIn
+      ?`<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:3px;vertical-align:middle"></span>`
+      :`<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted2);margin-right:3px;vertical-align:middle"></span>`;
+    const themaDisplay=u.thema&&u.thema!=='Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr'?u.thema.slice(0,38)+(u.thema.length>38?'…':''):'–';
+    return `<div class="user-row">
       <div class="user-row-avatar">${u.name.charAt(0).toUpperCase()}</div>
       <div class="user-row-info">
-        <div class="user-row-name">${u.name} <span style="font-size:10px;color:var(--muted);font-weight:400">${u.group>0?'Gr.'+u.group:'–'}</span></div>
-        <div class="user-row-meta">${u.thema?u.thema.slice(0,38)+'…':'–'} · ${u.datum||'–'}</div>
+        <div class="user-row-name">${statusDot}${u.name} <span style="font-size:10px;color:var(--muted);font-weight:400">${u.group>0?'Gr.'+u.group:'–'}</span></div>
+        <div class="user-row-meta">${themaDisplay} · ${u.datum||'–'}</div>
       </div>
       <div class="user-row-actions">
         <button class="abtn" onclick="startEdit('${u.name}')">✏</button>
         <button class="abtn del" onclick="deleteUser('${u.name}')">✕</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function deleteUser(name){
