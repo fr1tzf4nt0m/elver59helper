@@ -636,18 +636,14 @@ const ALL_MEMBERS = [
 })();
 
 function seedKnownMembers(){
+  // Only pre-create entries so admin sees full roster.
+  // Group assignment is NEVER automatic — only via admin.
   ALL_MEMBERS.forEach(m=>{
     const k='elver59_'+m.name.toLowerCase();
     try{
-      const ex=localStorage.getItem(k);
-      if(!ex){
-        // Create minimal entry — will be enriched when user logs in themselves
-        const entry={name:m.name,thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{},group:m.group};
+      if(!localStorage.getItem(k)){
+        const entry={name:m.name,thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{},group:0};
         localStorage.setItem(k,JSON.stringify(entry));
-      } else {
-        // Entry exists — ensure group is set if missing
-        const p=JSON.parse(ex);
-        if(p&&!p.group){ p.group=m.group; localStorage.setItem(k,JSON.stringify(p)); }
       }
     }catch(e){}
   });
@@ -1507,8 +1503,9 @@ function buildGroupsInner(){
       </div>
       <div class="pgroup-members">${members}</div>
       ${isMine
-        ? `<textarea class="pgroup-thema-input" id="gthema-${gn}" rows="2" placeholder="Gruppenthema eingeben…">${g.thema||''}</textarea>
-           <button class="pgroup-save-btn" onclick="saveGroupThema(${gn})">✓ Thema speichern</button>`
+        ? `<input class="pgroup-thema-input" id="glabel-${gn}" value="${(g.label||'Gruppe '+gn).replace(/"/g,'&quot;')}" placeholder="Gruppenname…" style="margin-bottom:6px;font-weight:700;font-size:13px;" />
+           <textarea class="pgroup-thema-input" id="gthema-${gn}" rows="2" placeholder="Gruppenthema eingeben…">${g.thema||''}</textarea>
+           <button class="pgroup-save-btn" onclick="saveGroupData(${gn})">✓ Speichern</button>`
         : `<div class="pgroup-thema-static">${g.thema||'Kein Thema eingetragen'}</div>`
       }
     </div>`;
@@ -1545,13 +1542,21 @@ function togT(id){
   saveState();
 }
 
-function saveGroupThema(gn){
-  const inp=document.getElementById('gthema-'+gn); if(!inp) return;
+function saveGroupData(gn){
+  // Security: only a member of this group may save
   const groups=loadGroups();
-  if(groups[gn]) groups[gn].thema=inp.value;
+  if(!groups[gn]) return;
+  const members=(groups[gn].members||[]).map(m=>m.toLowerCase());
+  if(!STATE.name||!members.includes(STATE.name.toLowerCase())){
+    flashMsg('⛔ Nur Gruppenmitglieder können das ändern'); return;
+  }
+  const labelInp=document.getElementById('glabel-'+gn);
+  const themaInp=document.getElementById('gthema-'+gn);
+  if(labelInp&&labelInp.value.trim()) groups[gn].label=labelInp.value.trim();
+  if(themaInp) groups[gn].thema=themaInp.value;
   saveGroups(groups);
   refreshGroupCard();
-  flashMsg('✓ Gruppenthema gespeichert');
+  flashMsg('✓ Gruppe gespeichert');
 }
 
 // Refresh the rendered peer-group card body live (no page reload needed)
@@ -1731,6 +1736,17 @@ function danceTitle(){
 let pinInput='', editingUser=null;
 async function verifyPin(p){ const e=new TextEncoder().encode('elver59x'+p); const b=await crypto.subtle.digest('SHA-256',e); const h=Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join(''); return h==='966eccb987093641113e4369d9acaeb8708751e150f61fb411b1b262e79d5886'; }
 
+let _adminTimer=null;
+function _resetAdminTimer(){
+  clearTimeout(_adminTimer);
+  _adminTimer=setTimeout(()=>{
+    if(!document.getElementById('admin-overlay').classList.contains('hidden')){
+      closeAdmin();
+      flashMsg('⏱ Admin automatisch gesperrt');
+    }
+  }, 5*60*1000); // 5 Minuten
+}
+
 function _wipeAdmin(){
   // Completely reset admin state — called on every open AND close
   pinInput=''; editingUser=null;
@@ -1752,11 +1768,14 @@ function _wipeAdmin(){
 function openAdmin(){
   _wipeAdmin();
   document.getElementById('admin-overlay').classList.remove('hidden');
+  _resetAdminTimer();
+  document.getElementById('admin-overlay').addEventListener('pointermove', _resetAdminTimer, { passive: true });
   // Focus first pin key after short delay
   setTimeout(()=>{ document.querySelector('.pin-key')?.focus(); },120);
 }
 
 function closeAdmin(){
+  clearTimeout(_adminTimer);
   document.getElementById('admin-overlay').classList.add('hidden');
   _wipeAdmin(); // wipe immediately on close — data never lingers
 }
