@@ -2418,12 +2418,21 @@ function openRickRoll(){
   })();
 
   const frame=document.getElementById('rickroll-frame');
-  frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1';
-
   const tap=document.getElementById('rickroll-tap');
   const cover=document.getElementById('rickroll-cover');
-  if(tap) tap.classList.add('gone');
-  if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'),2000); }
+  const isIOSStandalone = (window.navigator.standalone === true);
+
+  if(isIOSStandalone){
+    // iOS Homescreen-App: stumm starten, Overlay zeigen → User tippt → Ton
+    frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=1&title=0&byline=0&portrait=0&playsinline=1&controls=1';
+    if(tap) tap.classList.remove('gone');
+    if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'),1800); }
+  } else {
+    // Safari/Desktop/Android: direkt mit Ton, kein Overlay
+    frame.src='https://player.vimeo.com/video/1071968720?autoplay=1&muted=0&title=0&byline=0&portrait=0&playsinline=1&controls=1';
+    if(tap) tap.classList.add('gone');
+    if(cover){ cover.classList.remove('gone'); setTimeout(()=>cover.classList.add('gone'),2000); }
+  }
 
   document.getElementById('rickroll-overlay').classList.remove('hidden');
   document.body.style.overflow='hidden';
