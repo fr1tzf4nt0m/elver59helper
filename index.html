@@ -152,7 +152,7 @@ body.theme-pastel1::before,body.theme-pastel2::before,body.theme-pastel3::before
 .theme-btn:hover{opacity:1;border-color:rgba(95,217,138,.4);}
 
 /* HEADER */
-.header{text-align:center;margin-bottom:32px;animation:fadeDown .7s ease both;}
+.header{text-align:center;margin-bottom:32px;opacity:0;transform:translateY(-16px);animation:fadeDown .7s ease forwards;}
 .logo-mark{display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:18px;background:transparent;border:1px solid transparent,138,.2);margin:0 auto 16px;cursor:pointer;transition:transform .15s,box-shadow .2s;}
 .logo-mark:hover{transform:scale(1.08);box-shadow:0 0 18px rgba(95,217,138,.25);}
 .logo-mark:active{transform:scale(.95);}
@@ -173,13 +173,13 @@ body.theme-pastel1::before,body.theme-pastel2::before,body.theme-pastel3::before
 
 
 /* DIVIDER */
-.sdiv{display:flex;align-items:center;gap:10px;margin-bottom:14px;animation:fadeUp .6s .15s ease both;}
+.sdiv{display:flex;align-items:center;gap:10px;margin-bottom:14px;opacity:0;transform:translateY(14px);animation:fadeUp .6s .15s ease forwards;}
 .sdiv::before,.sdiv::after{content:'';flex:1;height:1px;background:var(--border);}
 .sdiv span{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted2);}
 
 /* CARDS */
 .cards{display:flex;flex-direction:column;gap:10px;}
-.cards>*{animation:fadeUp .5s ease both;}
+.cards>*{opacity:0;transform:translateY(14px);animation:fadeUp .5s ease forwards;}
 .cards>*:nth-child(1){animation-delay:.12s}.cards>*:nth-child(2){animation-delay:.20s}
 .cards>*:nth-child(3){animation-delay:.28s}.cards>*:nth-child(4){animation-delay:.36s}
 .cards>*:nth-child(5){animation-delay:.44s}.cards>*:nth-child(6){animation-delay:.52s}
@@ -395,7 +395,7 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 .hilfe-btn:hover{background:linear-gradient(135deg,rgba(232,97,77,.2),rgba(232,97,77,.1));transform:translateY(-1px);}
 .sos-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;margin:20px auto 6px;background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:100px;color:var(--muted);font-size:11px;letter-spacing:.08em;cursor:pointer;transition:all .2s;opacity:.55;}
 .sos-btn:hover{opacity:1;border-color:rgba(232,97,77,.4);color:var(--red);}
-.footer{margin-top:44px;text-align:center;animation:fadeUp .5s .65s ease both;}
+.footer{margin-top:44px;text-align:center;opacity:0;transform:translateY(14px);animation:fadeUp .5s .65s ease forwards;}
 .ftop{font-size:10.5px;color:var(--muted2);letter-spacing:.08em;margin-bottom:10px;}
 .fcredit{display:inline-flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:6px 14px;}
 .fctext{font-size:11px;color:var(--muted);}
@@ -709,6 +709,14 @@ function saveState(){
 // ── MODAL ─────────────────────────────────────────────────────
 function showModal(){ document.getElementById('modal').classList.remove('hidden'); setTimeout(()=>document.getElementById('modal-name').focus(),100); }
 function hideModal(){ document.getElementById('modal').classList.add('hidden'); }
+
+// Android animation safety net: ensure cards become visible even if animation fails
+function _ensureCardsVisible(){
+  setTimeout(function(){
+    var cards=document.querySelectorAll('.cards > *');
+    for(var i=0;i<cards.length;i++){ cards[i].style.opacity='1'; cards[i].style.transform='none'; }
+  }, 800);
+}
 document.getElementById('modal-name').addEventListener('keydown',e=>{ if(e.key==='Enter') saveUser(); });
 
 function saveUser(){
@@ -717,6 +725,7 @@ function saveUser(){
   STATE={name:'',thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{}};
   try{ const ex=localStorage.getItem('elver59_'+name.toLowerCase()); if(ex){ const p=JSON.parse(ex); if(p&&p.name) STATE=p; } }catch(e){}
   STATE.name=name; saveState(); hideModal(); initUser(name); applyState();
+  _ensureCardsVisible();
   // PWA standalone: remind user to save personal link (iOS wipes localStorage)
   if(window.navigator.standalone && STATE.name){
     setTimeout(()=>{
@@ -873,6 +882,7 @@ setInterval(syncAndSave, 3000);
     localStorage.setItem('elver59_lastuser',STATE.name);
     initUser(STATE.name);
     applyState();
+    _ensureCardsVisible();
   } else showModal();
 })();
 
@@ -2168,16 +2178,15 @@ function renderAdminDesign(){
       const parts=t.name.split(' · ');
       const active=t.id===activeId?' active':'';
       return `<div class="theme-card${active}" onclick="previewAdminTheme('${t.id}',this)">
-        <svg class="theme-preview" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
-          <rect width="120" height="60" fill="${bg}"/>
-          <rect x="8" y="8" width="104" height="16" rx="5" fill="${surf}"/>
-          <rect x="14" y="13" width="36" height="6" rx="3" fill="${acc}" opacity=".9"/>
-          <rect x="8" y="30" width="50" height="12" rx="5" fill="${surf}"/>
-          <rect x="14" y="34" width="22" height="4" rx="2" fill="${acc}" opacity=".7"/>
-          <rect x="64" y="30" width="48" height="12" rx="5" fill="${surf}"/>
-          <rect x="70" y="34" width="16" height="4" rx="2" fill="${warm}" opacity=".7"/>
-          <rect x="8" y="48" width="104" height="6" rx="3" fill="${surf}" opacity=".6"/>
-        </svg>
+        <div class="theme-preview" style="background:${bg};position:relative;overflow:hidden">
+          <div style="position:absolute;top:8px;left:6.7%;width:86.6%;height:16px;background:${surf};border-radius:5px"></div>
+          <div style="position:absolute;top:13px;left:11.7%;width:30%;height:6px;background:${acc};border-radius:3px;opacity:.9"></div>
+          <div style="position:absolute;top:30px;left:6.7%;width:41.6%;height:12px;background:${surf};border-radius:5px"></div>
+          <div style="position:absolute;top:34px;left:11.7%;width:18.3%;height:4px;background:${acc};border-radius:2px;opacity:.7"></div>
+          <div style="position:absolute;top:30px;right:6.7%;width:40%;height:12px;background:${surf};border-radius:5px"></div>
+          <div style="position:absolute;top:34px;right:10%;width:13.3%;height:4px;background:${warm};border-radius:2px;opacity:.7"></div>
+          <div style="position:absolute;top:48px;left:6.7%;width:86.6%;height:6px;background:${surf};border-radius:3px;opacity:.6"></div>
+        </div>
         <div class="theme-name">${parts[0]}</div>
         <span class="theme-sub">${parts[1]||'&nbsp;'}</span>
       </div>`;
@@ -2498,19 +2507,17 @@ function buildThemeGrid(){
   grid.innerHTML = THEMES.map(t=>{
     const [bg, surf, acc, warm] = t.preview;
     const active = t.id===activeId ? ' active' : '';
-    // mini preview with 4 color bars
     const parts = t.name.split(' · ');
     return `<div class="theme-card${active}" onclick="previewTheme('${t.id}',this)">
-      <svg class="theme-preview" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
-        <rect width="120" height="60" fill="${bg}"/>
-        <rect x="8" y="8" width="104" height="16" rx="5" fill="${surf}"/>
-        <rect x="14" y="13" width="36" height="6" rx="3" fill="${acc}" opacity=".9"/>
-        <rect x="8" y="30" width="50" height="12" rx="5" fill="${surf}"/>
-        <rect x="14" y="34" width="22" height="4" rx="2" fill="${acc}" opacity=".7"/>
-        <rect x="64" y="30" width="48" height="12" rx="5" fill="${surf}"/>
-        <rect x="70" y="34" width="16" height="4" rx="2" fill="${warm}" opacity=".7"/>
-        <rect x="8" y="48" width="104" height="6" rx="3" fill="${surf}" opacity=".6"/>
-      </svg>
+      <div class="theme-preview" style="background:${bg};position:relative;overflow:hidden">
+        <div style="position:absolute;top:8px;left:6.7%;width:86.6%;height:16px;background:${surf};border-radius:5px"></div>
+        <div style="position:absolute;top:13px;left:11.7%;width:30%;height:6px;background:${acc};border-radius:3px;opacity:.9"></div>
+        <div style="position:absolute;top:30px;left:6.7%;width:41.6%;height:12px;background:${surf};border-radius:5px"></div>
+        <div style="position:absolute;top:34px;left:11.7%;width:18.3%;height:4px;background:${acc};border-radius:2px;opacity:.7"></div>
+        <div style="position:absolute;top:30px;right:6.7%;width:40%;height:12px;background:${surf};border-radius:5px"></div>
+        <div style="position:absolute;top:34px;right:10%;width:13.3%;height:4px;background:${warm};border-radius:2px;opacity:.7"></div>
+        <div style="position:absolute;top:48px;left:6.7%;width:86.6%;height:6px;background:${surf};border-radius:3px;opacity:.6"></div>
+      </div>
       <div class="theme-name">${parts[0]}</div>
       <span class="theme-sub">${parts[1]||'&nbsp;'}</span>
     </div>`;
