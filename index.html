@@ -917,9 +917,8 @@ setInterval(syncAndSave, 3000);
     localStorage.setItem('elver59_lastuser',STATE.name);
     // Nach dem Merge sofort in localStorage zurückschreiben — sichert den Stand
     try{ localStorage.setItem('elver59_'+STATE.name.toLowerCase(), JSON.stringify(STATE)); }catch(e){}
-    initUser(STATE.name);
-    applyState();
-    _ensureCardsVisible();
+    // initUser + applyState werden NACH dem DOM-Render aufgerufen (siehe nach root.innerHTML)
+    window._initUserPending = STATE.name;
   } else showModal();
   // Brave/macOS safety: force cards visible even if CSS animation never fires
   setTimeout(function(){
@@ -1792,7 +1791,13 @@ dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');}
 dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
 dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');addFiles(e.dataTransfer.files);});
 
+// Deferred init: jetzt ist der DOM bereit — Name, Thema, Tasks, Link einsetzen
+if(window._initUserPending){
+  initUser(window._initUserPending);
+  window._initUserPending = null;
+}
 applyState();
+_ensureCardsVisible();
 
 // ── INTERACTIONS ──────────────────────────────────────────────
 function tog(id){ document.getElementById(id).classList.toggle('open'); }
