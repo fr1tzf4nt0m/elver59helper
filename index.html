@@ -645,7 +645,7 @@ const UPLOAD_EMAIL = 'gmbh@elver.at';
 
 
 // ── STATE ─────────────────────────────────────────────────────
-let STATE = { name:'', thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr', datum:'2026-03-10', tasks:{} };
+let STATE = { name:'', thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr', datum:'2026-03-10', tasks:{}, _design:{theme:'pastel3',font:'Syne'} };
 
 
 // ── SEED ALL KNOWN MEMBERS ─────────────────────────────────
@@ -688,7 +688,7 @@ function seedKnownMembers(){
     const k='elver59_'+m.name.toLowerCase();
     try{
       if(!localStorage.getItem(k)){
-        const entry={name:m.name,thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{}};
+        const entry={name:m.name,thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{},_design:{theme:'pastel3',font:'Syne'}};
         localStorage.setItem(k,JSON.stringify(entry));
       }
     }catch(e){}
@@ -721,10 +721,18 @@ document.getElementById('modal-name').addEventListener('keydown',e=>{ if(e.key==
 
 function saveUser(){
   const name=document.getElementById('modal-name').value.trim(); if(!name) return;
-  // Always reset STATE to clean defaults — never inherit another user's group/data
-  STATE={name:'',thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{}};
-  try{ const ex=localStorage.getItem('elver59_'+name.toLowerCase()); if(ex){ const p=JSON.parse(ex); if(p&&p.name) STATE=p; } }catch(e){}
-  STATE.name=name; saveState(); hideModal(); initUser(name); applyState();
+  // Reset STATE to clean defaults — never inherit another user's group/data
+  STATE={name:'',thema:'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:'',tasks:{},_design:{theme:'pastel3',font:'Syne'}};
+  try{
+    const ex=localStorage.getItem('elver59_'+name.toLowerCase());
+    if(ex){ const p=JSON.parse(ex); if(p&&p.name) STATE=p; }
+  }catch(e){}
+  STATE.name=name;
+  // Design des neuen Users anwenden (oder Fallback: Morgentau)
+  const design=STATE._design||{theme:'pastel3',font:'Syne'};
+  _persistDesign(design);
+  applyTheme(design.theme||'pastel3', design.font||'Syne');
+  saveState(); hideModal(); initUser(name); applyState();
   _ensureCardsVisible();
   // PWA standalone: remind user to save personal link (iOS wipes localStorage)
   if(window.navigator.standalone && STATE.name){
@@ -866,13 +874,29 @@ setInterval(syncAndSave, 3000);
   let hashState=null;
   if(hash){ const d=decodeState(hash); if(d&&d.name) hashState=d; }
 
-  // localStorage hat Vorrang vor Hash — neuere Daten sollen nicht überschrieben werden
+  // Merge-Strategie: Hash-Link enthält den zuletzt gespeicherten Stand des Users.
+  // localStorage kann zusätzliche/neuere Task-Klicks enthalten — wird gemergt.
+  // group und _design kommen IMMER aus dem Hash (können nicht im LS geändert werden ohne Hash).
   if(hashState){
     try{
       const ls=localStorage.getItem('elver59_'+hashState.name.toLowerCase());
-      if(ls){ const p=JSON.parse(ls); if(p&&p.name){ STATE=p; loaded=true; } }
+      if(ls){
+        const p=JSON.parse(ls);
+        if(p&&p.name){
+          // Basis: localStorage (enthält ggf. neuere Task-Daten)
+          STATE=p;
+          // Hash-Felder die im LS fehlen könnten, immer überschreiben:
+          if(hashState.thema) STATE.thema=hashState.thema;
+          if(hashState.datum) STATE.datum=hashState.datum;
+          if(hashState.group!=null) STATE.group=hashState.group;
+          if(hashState._design) STATE._design=hashState._design;
+          // Tasks: Union — Hash-Tasks als Basis, LS-Tasks ergänzen/überschreiben
+          STATE.tasks=Object.assign({}, hashState.tasks||{}, p.tasks||{});
+          loaded=true;
+        }
+      }
     }catch(e){}
-    // Kein localStorage vorhanden → Hash verwenden (erster Start mit persönlichem Link)
+    // Kein localStorage vorhanden → Hash komplett verwenden (erster Start / iOS-Wipe)
     if(!loaded){ STATE=hashState; loaded=true; }
   }
   if(!loaded){
@@ -880,6 +904,8 @@ setInterval(syncAndSave, 3000);
   }
   if(loaded&&STATE.name){
     localStorage.setItem('elver59_lastuser',STATE.name);
+    // Nach dem Merge sofort in localStorage zurückschreiben — sichert den Stand
+    try{ localStorage.setItem('elver59_'+STATE.name.toLowerCase(), JSON.stringify(STATE)); }catch(e){}
     initUser(STATE.name);
     applyState();
     _ensureCardsVisible();
@@ -2356,7 +2382,7 @@ function saveEditedUser(){
 
 function adminAddUser(){
   const name=document.getElementById('new-name').value.trim(); if(!name){ alert('Name eingeben'); return; }
-  const data={name,thema:document.getElementById('new-thema').value.trim()||'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:document.getElementById('new-datum').value||'2026-03-10',tasks:{}};
+  const data={name,thema:document.getElementById('new-thema').value.trim()||'Entwicklung des Kindes von der Geburt bis zum 15. Lebensjahr',datum:document.getElementById('new-datum').value||'2026-03-10',tasks:{},_design:{theme:'pastel3',font:'Syne'}};
   localStorage.setItem('elver59_'+name.toLowerCase(),JSON.stringify(data))
   document.getElementById('new-name').value=''; document.getElementById('new-thema').value='';
   renderAdminUsers(); flashMsg('✓ '+name+' angelegt');
@@ -2555,10 +2581,10 @@ function resetSettings(){
   flashMsg('Design zurückgesetzt');
 }
 
-// Apply on load
+// Apply on load — Fallback: Pastell · Morgentau
 (function(){
   const s = loadSettings();
-  if(s.theme) applyTheme(s.theme, s.font||'');
+  applyTheme(s.theme||'pastel3', s.font||'Syne');
 })();
 
 // ── RICK ROLL ─────────────────────────────────────────────
