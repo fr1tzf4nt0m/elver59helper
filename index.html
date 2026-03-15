@@ -838,8 +838,8 @@ function syncStateFromDOM(){
   try{
     const thema=document.getElementById('sa-thema');
     const datum=document.getElementById('sa-datum');
-    if(thema && thema.value) STATE.thema=thema.value;
-    if(datum && datum.value) STATE.datum=datum.value;
+    if(thema) STATE.thema=thema.value;
+    if(datum) STATE.datum=datum.value;
   }catch(e){}
 }
 function syncAndSave(){
@@ -894,14 +894,15 @@ setInterval(syncAndSave, 3000);
       if(ls){
         const p=JSON.parse(ls);
         if(p&&p.name){
-          // Basis: localStorage (enthält ggf. neuere Task-Daten)
+          // Basis: localStorage — enthält die neuesten Benutzer-Eingaben (thema, datum, tasks)
           STATE=p;
-          // Hash-Felder die im LS fehlen könnten, immer überschreiben:
-          if(hashState.thema) STATE.thema=hashState.thema;
-          if(hashState.datum) STATE.datum=hashState.datum;
+          // NUR group und _design kommen aus dem Hash — die kann der User nicht im LS ändern
           if(hashState.group!=null) STATE.group=hashState.group;
           if(hashState._design) STATE._design=hashState._design;
-          // Tasks: Union — Hash-Tasks als Basis, LS-Tasks ergänzen/überschreiben
+          // thema und datum: localStorage hat Vorrang (neuere Eingabe), Hash nur als Fallback
+          if(!STATE.thema && hashState.thema) STATE.thema=hashState.thema;
+          if(!STATE.datum && hashState.datum) STATE.datum=hashState.datum;
+          // Tasks: Union — LS-Tasks haben Vorrang (neuere Klicks), Hash ergänzt fehlende
           STATE.tasks=Object.assign({}, hashState.tasks||{}, p.tasks||{});
           loaded=true;
         }
