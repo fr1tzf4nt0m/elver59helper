@@ -191,6 +191,7 @@ body.theme-pastel1::before,body.theme-pastel2::before,body.theme-pastel3::before
 .cards>*:nth-child(1){animation-delay:.12s}.cards>*:nth-child(2){animation-delay:.20s}
 .cards>*:nth-child(3){animation-delay:.28s}.cards>*:nth-child(4){animation-delay:.36s}
 .cards>*:nth-child(5){animation-delay:.44s}.cards>*:nth-child(6){animation-delay:.52s}
+.cards>*:nth-child(7){animation-delay:.60s}
 
 /* LINK CARD */
 .lcard{display:flex;align-items:center;gap:14px;padding:15px 18px;background:var(--surface);border:1px solid var(--border);border-radius:16px;text-decoration:none;color:var(--text);transition:border-color .2s,transform .15s,background .2s;position:relative;overflow:hidden;}
@@ -376,6 +377,73 @@ input[type="date"].editable::-webkit-calendar-picker-indicator{filter:invert(.4)
 .pgroup-thema-input:focus{border-color:rgba(95,217,138,.4);}
 .pgroup-save-btn{font-size:11px;padding:4px 12px;background:rgba(95,217,138,.15);border:1px solid rgba(95,217,138,.3);border-radius:6px;color:var(--accent);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
 .pgroup-save-btn:hover{background:rgba(95,217,138,.25);}
+
+/* LZK QUIZ */
+.lzk-wrap{padding:4px 0;}
+.lzk-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.lzk-score-wrap{display:flex;align-items:center;gap:10px;}
+.lzk-score-ring{position:relative;width:44px;height:44px;}
+.lzk-score-ring svg{transform:rotate(-90deg);}
+.lzk-score-ring circle{transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1);}
+.lzk-score-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:var(--accent);}
+.lzk-score-label{font-size:10px;color:var(--muted);letter-spacing:.04em;}
+.lzk-reset-btn{background:none;border:1px solid var(--border);border-radius:7px;color:var(--muted);font-size:10px;padding:4px 10px;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;}
+.lzk-reset-btn:hover{border-color:var(--red);color:var(--red);}
+.lzk-cats{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px;}
+.lzk-cat-btn{background:none;border:1px solid var(--border);border-radius:100px;color:var(--muted);font-size:11px;padding:4px 10px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap;}
+.lzk-cat-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(95,217,138,.08);}
+.lzk-cat-btn .lzk-cat-count{font-size:9px;opacity:.6;margin-left:3px;}
+.lzk-question-card{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:18px 16px;margin-bottom:10px;transition:border-color .25s,box-shadow .25s;}
+.lzk-question-card.answered-correct{border-color:rgba(95,217,138,.35);box-shadow:0 0 16px rgba(95,217,138,.06);}
+.lzk-question-card.answered-wrong{border-color:rgba(232,97,77,.25);box-shadow:0 0 16px rgba(232,97,77,.04);}
+.lzk-q-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.lzk-q-num{font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--accent);background:rgba(95,217,138,.1);border-radius:6px;padding:2px 7px;flex-shrink:0;}
+.lzk-q-cat{font-size:10px;color:var(--muted);letter-spacing:.04em;}
+.lzk-q-text{font-size:13.5px;font-weight:500;line-height:1.5;margin-bottom:12px;color:var(--text);}
+.lzk-options{display:flex;flex-direction:column;gap:6px;}
+.lzk-opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .18s;user-select:none;}
+.lzk-opt:hover:not(.disabled){border-color:rgba(95,217,138,.3);background:rgba(95,217,138,.04);transform:translateX(2px);}
+.lzk-opt.selected{border-color:rgba(95,217,138,.4);background:rgba(95,217,138,.08);}
+.lzk-opt.correct{border-color:rgba(95,217,138,.5);background:rgba(95,217,138,.12);}
+.lzk-opt.wrong{border-color:rgba(232,97,77,.4);background:rgba(232,97,77,.08);}
+.lzk-opt.disabled{cursor:default;opacity:.7;}
+.lzk-opt.disabled.correct{opacity:1;}
+.lzk-opt-letter{width:22px;height:22px;border-radius:6px;background:rgba(95,217,138,.08);border:1px solid rgba(95,217,138,.15);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:var(--muted);flex-shrink:0;transition:all .18s;}
+.lzk-opt.selected .lzk-opt-letter{background:var(--accent);color:#0e1210;border-color:var(--accent);}
+.lzk-opt.correct .lzk-opt-letter{background:var(--accent);color:#0e1210;border-color:var(--accent);}
+.lzk-opt.wrong .lzk-opt-letter{background:var(--red);color:#fff;border-color:var(--red);}
+.lzk-opt-text{font-size:12.5px;line-height:1.4;padding-top:2px;color:var(--text);}
+.lzk-explain{margin-top:10px;padding:10px 12px;background:rgba(95,217,138,.05);border:1px solid rgba(95,217,138,.12);border-radius:10px;font-size:12px;line-height:1.5;color:var(--muted);animation:fadeUp .3s ease;}
+.lzk-explain strong{color:var(--accent);font-weight:600;}
+.lzk-nav{display:flex;justify-content:center;gap:8px;margin-top:14px;}
+.lzk-nav-btn{padding:8px 18px;background:rgba(95,217,138,.1);border:1px solid rgba(95,217,138,.25);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;transition:all .15s;}
+.lzk-nav-btn:hover{background:rgba(95,217,138,.2);transform:translateY(-1px);}
+.lzk-nav-btn:disabled{opacity:.3;pointer-events:none;}
+.lzk-progress{display:flex;gap:3px;margin-bottom:12px;flex-wrap:wrap;}
+.lzk-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .2s;cursor:pointer;}
+.lzk-dot.current{background:var(--accent);transform:scale(1.3);}
+.lzk-dot.correct{background:var(--accent);}
+.lzk-dot.wrong{background:var(--red);}
+.lzk-result{text-align:center;padding:24px 16px;animation:fadeUp .4s ease;}
+.lzk-result-icon{font-size:48px;margin-bottom:12px;}
+.lzk-result-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px;}
+.lzk-result-sub{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5;}
+.lzk-result-score{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--accent);margin-bottom:4px;}
+.lzk-result-detail{font-size:12px;color:var(--muted);}
+.lzk-retry-btn{margin-top:16px;padding:11px 28px;background:linear-gradient(135deg,rgba(95,217,138,.2),rgba(95,217,138,.08));border:1px solid rgba(95,217,138,.3);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;}
+.lzk-retry-btn:hover{background:rgba(95,217,138,.25);transform:translateY(-1px);}
+.lzk-mode-switch{display:flex;gap:4px;margin-bottom:14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:3px;}
+.lzk-mode-btn{flex:1;text-align:center;padding:7px 6px;border-radius:8px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;font-family:'Syne',sans-serif;}
+.lzk-mode-btn.active{background:rgba(95,217,138,.12);color:var(--accent);border:1px solid rgba(95,217,138,.2);}
+.lzk-mode-btn:not(.active){border:1px solid transparent;}
+@media(hover:none){
+  .lzk-opt{min-height:44px;-webkit-tap-highlight-color:transparent;}
+  .lzk-opt:active:not(.disabled){border-color:rgba(95,217,138,.4);background:rgba(95,217,138,.08);}
+  .lzk-nav-btn{min-height:44px;min-width:44px;-webkit-tap-highlight-color:transparent;}
+  .lzk-cat-btn{min-height:34px;-webkit-tap-highlight-color:transparent;}
+  .lzk-dot{width:10px;height:10px;min-width:10px;}
+  .lzk-mode-btn{min-height:40px;display:flex;align-items:center;justify-content:center;}
+}
 
 /* FOOTER */
 .rickroll-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px;}
@@ -739,6 +807,12 @@ function saveUser(){
     if(ex){ const p=JSON.parse(ex); if(p&&p.name) STATE=p; }
   }catch(e){}
   STATE.name=name;
+  // Reload LZK state for this user
+  try{
+    const lzkSaved=localStorage.getItem('elver59_lzk_'+name.toLowerCase());
+    if(lzkSaved){ const p=JSON.parse(lzkSaved); if(p) lzkState=Object.assign({current:0,answers:{},mode:'ueben'},p); }
+    else{ lzkState={current:0,answers:{},mode:'ueben'}; }
+  }catch(e){ lzkState={current:0,answers:{},mode:'ueben'}; }
   // Design des neuen Users anwenden (oder Fallback: Morgentau)
   const design=STATE._design||{theme:'pastel3',font:'Syne'};
   _persistDesign(design);
@@ -938,16 +1012,16 @@ const TERMINE = [
   // ── MÄRZ ──────────────────────────────────────────────────
   { d:'So. 15.03.',       t:'Biografie-Präsentation vorbereiten', s:'15 Min. · eigene Kindheit & prägende Bezugspersonen · für Seminar Mo. 16.03.', i:'20260315', ts:new Date('2026-03-15T20:00:00').getTime() },
   { d:'Mo. 16.03. 08:30', t:'Seminar: Überdenken der eigenen Kindheit', s:'Viktoria Miklautz · Biografie-Präsentation vor Gruppe (15 Min.)', i:'20260316T083000', ts:new Date('2026-03-16T08:30:00').getTime() },
-  { d:'Di. 17.03.',       t:'Peergroup + SA-Workshop mit Larissa', s:'5 Fragen zum SA-Leitfaden mitbringen · l.znidaric@elver.at', i:'20260317', ts:new Date('2026-03-17T08:30:00').getTime() },
+  { d:'Di. 17.03. 08:30', t:'Seminararbeitsbesprechung', s:'Znidaric/Grüner-Lawal · 08:30–14:30 Uhr', i:'20260317T083000', ts:new Date('2026-03-17T08:30:00').getTime() },
   { d:'Do. 27.03. 23:59', t:'Selbstkonzept abgeben', s:'l.znidaric@buteo.at · 2 A4-Seiten · Cambria 12 · Zeilenabstand 1,5', i:'20260327T235900', ts:new Date('2026-03-27T23:59:00').getTime() },
-  { d:'Mo. 30.03. 08:30', t:'Seminararbeitsbesprechung', s:'Znidaric / Grüner-Lawal', i:'20260330T083000', ts:new Date('2026-03-30T08:30:00').getTime() },
+  { d:'Mo. 30.03.',       t:'Peergroup', s:'', i:'20260330', ts:new Date('2026-03-30T08:30:00').getTime() },
   // ── APRIL ─────────────────────────────────────────────────
   { d:'Di. 07.04. 08:30', t:'1. LZK', s:'Grüner-Lawal · 08:30–11:30 Uhr', i:'20260407T083000', ts:new Date('2026-04-07T08:30:00').getTime() },
   { d:'So. 13.04. 23:59', t:'April-Präsentationen + Handouts abgeben', s:'TEAMS-Ordner „ReferentInnen Seminarunterlagen – Viktoria Miklautz"', i:'20260413T235900', ts:new Date('2026-04-13T23:59:00').getTime() },
   { d:'Di. 14.04.',       t:'Peergroup · Seminar Grundlagendokumente Teil 1', s:'Gruppen 1–3 · je 90 Min. · (Raum besetzt)', i:'20260414T083000', ts:new Date('2026-04-14T08:30:00').getTime() },
   { d:'Do. 16.04.',       t:'Seminar Grundlagendokumente Teil 2', s:'Gruppen 4–5 · je 90 Min.', i:'20260416T083000', ts:new Date('2026-04-16T08:30:00').getTime() },
   // ── MAI ───────────────────────────────────────────────────
-  { d:'Mo. 04.05.',       t:'Peergroup', s:'', i:'20260504', ts:new Date('2026-05-04T08:30:00').getTime() },
+  { d:'Mo. 04.05. 08:30', t:'Seminararbeitsbesprechung', s:'Znidaric/Grüner-Lawal · 08:30–12:30 Uhr', i:'20260504T083000', ts:new Date('2026-05-04T08:30:00').getTime() },
   { d:'Mi. 27.05. 08:30', t:'2. LZK', s:'Grüner-Lawal Irmi · 08:30–11:30 Uhr', i:'20260527T083000', ts:new Date('2026-05-27T08:30:00').getTime() },
   { d:'Fr. 29.05. 08:00', t:'KNF Rotes Kreuz', s:'Ganztag · 08:00–16:00 Uhr', i:'20260529T080000', ts:new Date('2026-05-29T08:00:00').getTime() },
   // ── ABSCHLUSS ─────────────────────────────────────────────
@@ -955,11 +1029,11 @@ const TERMINE = [
   { d:'Mo. 31.08. 07:00', t:'Abschlussprüfung', s:'Viktoria Miklautz / Gloria Ramic · 07:00–14:00 Uhr', i:'20260831T070000', ts:new Date('2026-08-31T07:00:00').getTime() },
 ];
 
-// Full Stundenplan
+// Full Stundenplan (Stand: PDF 18.02.2026)
 const SP = [
   {d:'2026-03-02',z:'08:30–11:30',l:'Einführungsseminar',r:'Grüner-Lawal',typ:'org'},
-  {d:'2026-03-03',z:'07:30–14:30',l:'Teamarbeit Management und Organisation',r:'Viktoria Miklautz',typ:'pers'},
-  {d:'2026-03-04',z:'08:30–14:30',l:'Kommunikationsformen und Techniken',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-03-03',z:'07:30–13:30',l:'Entwicklung von Geburt bis zum 15. LJ',r:'Viktoria Miklautz',typ:'entw'},
+  {d:'2026-03-04',z:'08:30–14:30',l:'Entwicklung von Geburt bis zum 15. LJ',r:'Viktoria Miklautz',typ:'entw'},
   {d:'2026-03-05',z:'08:30–14:30',l:'Grundbedürfnisse von Kindern und Jugendlichen\nGrundlagen der Bindungstheorien',r:'Sandra Peham',typ:'entw'},
   {d:'2026-03-06',z:'08:30–14:30',l:'Grundlagen der Bindungstheorien\nDidaktische und methodische Prinzipien',r:'Sandra Peham',typ:'entw'},
   {d:'2026-03-09',z:'',l:'Peergroup',r:'',typ:'peer'},
@@ -968,26 +1042,26 @@ const SP = [
   {d:'2026-03-12',z:'08:30–15:30',l:'Selbstkonzept und Rollenbild von Erziehenden\nGeschichte der eigenen Kindheit',r:'Viktoria Miklautz',typ:'pers'},
   {d:'2026-03-13',z:'08:30–14:30',l:'Kriterien der Beobachtung',r:'Sandra Peham',typ:'entw'},
   {d:'2026-03-16',z:'08:30–14:30',l:'Überdenken der eigenen Kindheit und der eigenen Erziehung',r:'Viktoria Miklautz',typ:'pers'},
-  {d:'2026-03-17',z:'',l:'Peergroup',r:'',typ:'peer'},
+  {d:'2026-03-17',z:'08:30–14:30',l:'Seminararbeitsbesprechung',r:'Znidaric/Grüner-Lawal',typ:'org'},
   {d:'2026-03-18',z:'08:30–16:30',l:'Sprachentwicklung',r:'Sandra Peham',typ:'entw'},
-  {d:'2026-03-19',z:'08:30–14:30',l:'Entwicklung von Geburt bis zum 15. LJ',r:'Viktoria Miklautz',typ:'entw'},
+  {d:'2026-03-19',z:'08:30–14:30',l:'Kommunikationsformen und Techniken',r:'Viktoria Miklautz',typ:'pers'},
   {d:'2026-03-20',z:'08:30–14:30',l:'Didaktische und methodische Prinzipien\nSozialformen\nRegel und Ordnung',r:'Sandra Peham',typ:'did'},
-  {d:'2026-03-23',z:'07:30–14:30',l:'Entwicklung von Geburt bis zum 15. LJ',r:'Viktoria Miklautz',typ:'entw'},
+  {d:'2026-03-23',z:'07:30–13:30',l:'Teamarbeit Management und Organisation',r:'Viktoria Miklautz',typ:'pers'},
   {d:'2026-03-24',z:'08:30–12:30',l:'Gesprächsführung',r:'Viktoria Miklautz',typ:'pers'},
   {d:'2026-03-25',z:'08:30–16:30',l:'Bildungsprozesse im Sozialen Netzwerk\nKennenlernen von Bildungs- und Spielmittel',r:'Sandra Peham',typ:'did'},
   {d:'2026-03-26',z:'08:30–14:30',l:'Aufgaben der Kinderbildungs- und -Betreuungseinrichtungen\nAufgaben der Kinderbetreuerin & TM-TV',r:'Viktoria Miklautz',typ:'org'},
   {d:'2026-03-27',z:'08:30–13:30',l:'Spiel und Spielformen',r:'Sandra Peham',typ:'did'},
   {d:'2026-03-28',z:'08:30–12:30',l:'Erziehungsstile und -konzepte (Montessori)',r:'Judith Ernst',typ:'did'},
-  {d:'2026-03-30',z:'08:30–14:30',l:'Seminararbeitsbesprechung',r:'Znidaric / Grüner-Lawal',typ:'org'},
+  {d:'2026-03-30',z:'',l:'Peergroup',r:'',typ:'peer'},
   {d:'2026-03-31',z:'',l:'frei (Raum besetzt)',r:'',typ:'frei'},
   {d:'2026-04-01',z:'08:30–14:30',l:'Verhaltensauffälligkeiten',r:'Maria Brandstetter',typ:'entw'},
   {d:'2026-04-02',z:'08:30–15:30',l:'Musik, Tanz und elementare Instrumente',r:'Gloria Ramic',typ:'did'},
   {d:'2026-04-03',z:'08:30–15:30',l:'Gesunde Ernährung',r:'Michaela Fux',typ:'did'},
   {d:'2026-04-06',z:'',l:'Ostermontag – frei',r:'',typ:'frei'},
   {d:'2026-04-07',z:'08:30–11:30',l:'1. LZK',r:'Grüner-Lawal',typ:'org'},
-  {d:'2026-04-08',z:'08:30–13:30',l:'Konfliktmanagement',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-04-08',z:'08:30–13:30',l:'Spiel und Spielformen',r:'Sandra Peham',typ:'did'},
   {d:'2026-04-09',z:'08:30–14:30',l:'Selbsterfahrung',r:'Viktoria Miklautz',typ:'pers'},
-  {d:'2026-04-10',z:'08:30–13:30',l:'Spiel und Spielformen',r:'Sandra Peham',typ:'did'},
+  {d:'2026-04-10',z:'08:30–13:30',l:'Konfliktmanagement',r:'Viktoria Miklautz',typ:'pers'},
   {d:'2026-04-11',z:'08:30–14:30',l:'Darstellendes Spiel (Jeux Dramatique)',r:'Judith Ernst',typ:'did'},
   {d:'2026-04-13',z:'07:30–12:30',l:'Geschlechtssensible Pädagogik',r:'Sandra Peham',typ:'entw'},
   {d:'2026-04-14',z:'',l:'Peergroup (Raum besetzt)',r:'',typ:'peer'},
@@ -995,17 +1069,17 @@ const SP = [
   {d:'2026-04-16',z:'',l:'frei (Raum besetzt)',r:'',typ:'frei'},
   {d:'2026-04-17',z:'08:30–14:30',l:'Bildnerisches Gestalten und Werken',r:'Sandra Peham',typ:'did'},
   {d:'2026-04-18',z:'08:30–14:30',l:'Bildnerisches Gestalten und Werken',r:'Sandra Peham',typ:'did'},
-  {d:'2026-04-20',z:'08:30–13:30',l:'Kommunikation und Kooperation mit Eltern',r:'Maria Brandstetter',typ:'pers'},
+  {d:'2026-04-20',z:'08:30–13:30',l:'Kommunikation und Kooperation mit Eltern',r:'Sandra Peham',typ:'pers'},
   {d:'2026-04-21',z:'08:30–13:30',l:'Konfliktmanagement',r:'Viktoria Miklautz',typ:'pers'},
-  {d:'2026-04-22',z:'08:30–14:30',l:'Interkulturelle Erziehung',r:'Sandra Peham',typ:'entw'},
-  {d:'2026-04-23',z:'08:30–14:30',l:'Soziale und Emotionale Erziehung',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-04-22',z:'08:30–14:30',l:'Soziale und Emotionale Erziehung',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-04-23',z:'08:30–14:30',l:'Interkulturelle Erziehung',r:'Sandra Peham',typ:'entw'},
   {d:'2026-04-24',z:'08:30–16:30',l:'Spracherziehung',r:'Sandra Peham',typ:'entw'},
   {d:'2026-04-27',z:'08:30–12:30',l:'Wirkung von Verlusterlebnissen',r:'Viktoria Miklautz',typ:'pers'},
   {d:'2026-04-28',z:'08:30–15:30',l:'Bewegungserziehung',r:'Elke Forstner',typ:'did'},
   {d:'2026-04-29',z:'',l:'frei (Raum besetzt)',r:'',typ:'frei'},
   {d:'2026-04-30',z:'',l:'frei (Raum besetzt)',r:'',typ:'frei'},
   {d:'2026-05-01',z:'',l:'Staatsfeiertag – frei',r:'',typ:'frei'},
-  {d:'2026-05-04',z:'',l:'Peergroup',r:'',typ:'peer'},
+  {d:'2026-05-04',z:'08:30–12:30',l:'Seminararbeitsbesprechung',r:'Znidaric/Grüner-Lawal',typ:'org'},
   {d:'2026-05-05',z:'08:30–12:30',l:'Gesundheit und Hygiene',r:'Barbara Petanjek',typ:'entw'},
   {d:'2026-05-06',z:'08:30–16:30',l:'Lernformen und Lerntypen',r:'Sandra Peham',typ:'did'},
   {d:'2026-05-07',z:'08:30–12:30',l:'Umwelt\nErnährung im 1. Lebensjahr',r:'Barbara Petanjek',typ:'entw'},
@@ -1026,9 +1100,9 @@ const SP = [
   {d:'2026-05-27',z:'08:30–11:30',l:'2. LZK',r:'Grüner-Lawal Irmi',typ:'org'},
   {d:'2026-05-28',z:'08:30–14:30',l:'Haftungs- und Versicherungsfragen\nDienst-/Arbeitsrecht und Betriebsmittel\nKenntnisse der einschlägigen Gesetze',r:'Viktoria Miklautz',typ:'org'},
   {d:'2026-05-29',z:'08:00–16:00',l:'KNF Rotes Kreuz',r:'Rotes Kreuz',typ:'org'},
-  {d:'2026-08-03',z:'08:30–14:30',l:'Gesprächsführung\nTeamarbeit, Management, Organisation',r:'Viktoria Miklautz',typ:'pers'},
-  {d:'2026-08-04',z:'08:30–14:30',l:'Kommunikationsformen und Techniken',r:'Viktoria Miklautz',typ:'pers'},
   {d:'2026-08-11',z:'08:30–14:30',l:'Selbstkonzept und Rollenbild von Erziehenden\nKriterien der Beobachtung\nPraktikumsnachbesprechung',r:'Sandra Peham',typ:'pers'},
+  {d:'2026-08-12',z:'08:30–14:30',l:'Gesprächsführung\nTeamarbeit, Management, Organisation',r:'Viktoria Miklautz',typ:'pers'},
+  {d:'2026-08-13',z:'08:30–14:30',l:'Kommunikationsformen und Techniken',r:'Viktoria Miklautz',typ:'pers'},
   {d:'2026-08-28',z:'07:00–16:00',l:'Abschlussprüfung',r:'Miklautz / Sandra Peham',typ:'pruef'},
   {d:'2026-08-31',z:'07:00–14:00',l:'Abschlussprüfung',r:'Miklautz / Gloria Ramic',typ:'pruef'},
 ];
@@ -1778,9 +1852,288 @@ function buildTasks(){
   return xcard('c-tk','✅','To Do\'s',secs,extra);
 }
 
+// ── LZK QUIZ ─────────────────────────────────────────────────
+const LZK_QUESTIONS = [
+  // Bindungstheorie
+  {cat:'Bindungstheorie',q:'Wer gilt als Begründer der Bindungstheorie?',opts:['Sigmund Freud','John Bowlby','Jean Piaget','Erik Erikson'],correct:1,explain:'John Bowlby entwickelte die Bindungstheorie in den 1950er-Jahren und betonte die Bedeutung früher emotionaler Bindungen für die Entwicklung.'},
+  {cat:'Bindungstheorie',q:'Welcher Bindungstyp zeichnet sich dadurch aus, dass das Kind die Bezugsperson als sichere Basis nutzt und bei Trennung Kummer zeigt?',opts:['Unsicher-vermeidend','Sicher gebunden','Unsicher-ambivalent','Desorganisiert'],correct:1,explain:'Sicher gebundene Kinder zeigen bei Trennung Kummer, lassen sich aber bei Rückkehr der Bezugsperson schnell beruhigen und nutzen sie als sichere Basis.'},
+  {cat:'Bindungstheorie',q:'Was beschreibt der „Fremde-Situations-Test" nach Mary Ainsworth?',opts:['Sprachentwicklungsstufen','Bindungsverhalten in standardisierten Trennungssituationen','Motorische Fähigkeiten bei Kleinkindern','Sozialverhalten in Gruppen'],correct:1,explain:'Mary Ainsworths Fremde-Situations-Test beobachtet das Verhalten von Kindern bei kurzen Trennungen und Wiedervereinigungen mit der Bezugsperson.'},
+  {cat:'Bindungstheorie',q:'Welches Verhalten zeigt ein unsicher-vermeidend gebundenes Kind bei Trennung?',opts:['Starkes Weinen und Klammern','Kaum sichtbare Reaktion, vermeidet Kontakt bei Rückkehr','Wechsel zwischen Nähe suchen und Aggression','Erstarren und orientierungsloses Verhalten'],correct:1,explain:'Unsicher-vermeidend gebundene Kinder zeigen wenig Trennungsstress und meiden bei Rückkehr den Kontakt zur Bezugsperson – sie haben gelernt, dass ihre Bedürfnisse nicht verlässlich beantwortet werden.'},
+  {cat:'Bindungstheorie',q:'Was ist die Hauptaufgabe einer Bezugsperson im Sinne der Bindungstheorie?',opts:['Das Kind möglichst früh zur Selbstständigkeit zu erziehen','Einen sicheren Hafen und eine sichere Basis zu bieten','Dem Kind möglichst viele Lernmaterialien bereitzustellen','Klare Regeln und Grenzen zu setzen'],correct:1,explain:'Die Bezugsperson soll als „sichere Basis" dienen, von der aus das Kind die Welt erkunden kann, und als „sicherer Hafen" bei Angst oder Stress.'},
+
+  // Grundbedürfnisse
+  {cat:'Grundbedürfnisse',q:'Welche Ebene steht in Maslows Bedürfnispyramide ganz unten?',opts:['Sicherheitsbedürfnisse','Selbstverwirklichung','Physiologische Grundbedürfnisse','Soziale Bedürfnisse'],correct:2,explain:'Die physiologischen Grundbedürfnisse (Nahrung, Schlaf, Wärme) bilden die Basis der Pyramide – ohne ihre Erfüllung können höhere Bedürfnisse nicht befriedigt werden.'},
+  {cat:'Grundbedürfnisse',q:'Welches psychische Grundbedürfnis hat ein Kind, das ständig nach Aufmerksamkeit sucht, vermutlich nicht ausreichend erfüllt?',opts:['Bedürfnis nach Autonomie','Bedürfnis nach Bindung und Zugehörigkeit','Bedürfnis nach Kompetenz','Bedürfnis nach Stimulation'],correct:1,explain:'Ständiges Aufmerksamkeitssuchen deutet oft auf ein unerfülltes Bedürfnis nach Bindung, Zugehörigkeit und emotionaler Sicherheit hin.'},
+  {cat:'Grundbedürfnisse',q:'Was versteht man unter dem Bedürfnis nach Autonomie bei Kindern?',opts:['Das Kind will allein gelassen werden','Das Kind will Entscheidungen treffen und Selbstwirksamkeit erleben','Das Kind braucht strikte Anleitung','Das Kind will mit Gleichaltrigen spielen'],correct:1,explain:'Autonomie bedeutet, dass Kinder eigene Entscheidungen treffen, handlungsfähig sein und Selbstwirksamkeit erleben wollen – ein Grundbedürfnis nach Deci & Ryan.'},
+
+  // Kommunikation
+  {cat:'Kommunikation',q:'Welches Kommunikationsmodell unterscheidet vier Seiten einer Nachricht?',opts:['Shannon-Weaver-Modell','Vier-Ohren-Modell von Schulz von Thun','Transaktionsanalyse','Sender-Empfänger-Modell'],correct:1,explain:'Das Vier-Ohren-Modell nach Friedemann Schulz von Thun besagt, dass jede Nachricht vier Ebenen hat: Sachinhalt, Selbstoffenbarung, Beziehung und Appell.'},
+  {cat:'Kommunikation',q:'Was bedeutet „aktives Zuhören"?',opts:['Dem Gegenüber Ratschläge geben','Aufmerksam zuhören, paraphrasieren und Gefühle widerspiegeln','Schweigend zuhören und nicken','Nur auf den Sachinhalt achten'],correct:1,explain:'Aktives Zuhören nach Carl Rogers umfasst aufmerksames Zuhören, Paraphrasieren des Gehörten und Widerspiegeln der Gefühle – es fördert Verständnis und Vertrauen.'},
+  {cat:'Kommunikation',q:'Was gehört zur nonverbalen Kommunikation?',opts:['E-Mails schreiben','Mimik, Gestik, Körperhaltung und Blickkontakt','Telefonieren','Briefe schreiben'],correct:1,explain:'Nonverbale Kommunikation umfasst alle Ausdrucksformen ohne Worte: Mimik, Gestik, Körperhaltung, Blickkontakt, Tonfall und räumliches Verhalten.'},
+  {cat:'Kommunikation',q:'Was sind „Ich-Botschaften" in der Gesprächsführung?',opts:['Aussagen, die das eigene Erleben beschreiben statt Vorwürfe zu machen','Botschaften, die nur von einer Person gesendet werden','Anweisungen an das Kind','Selbstgespräche der Fachkraft'],correct:0,explain:'Ich-Botschaften drücken eigenes Erleben und Gefühle aus (z.B. „Ich fühle mich…") statt Vorwürfe zu machen – sie vermeiden Abwehrreaktionen beim Gegenüber.'},
+
+  // Entwicklungspsychologie
+  {cat:'Entwicklung',q:'In welchem Alter beginnt ein Kind typischerweise, erste Wörter zu sprechen?',opts:['3–4 Monate','10–14 Monate','18–24 Monate','3 Jahre'],correct:1,explain:'Die meisten Kinder sprechen ihre ersten bedeutungsvollen Wörter im Alter von etwa 10–14 Monaten (z.B. „Mama", „Papa").'},
+  {cat:'Entwicklung',q:'Welche Entwicklungsphase beschreibt Erikson für Kleinkinder (1–3 Jahre)?',opts:['Urvertrauen vs. Misstrauen','Autonomie vs. Scham und Zweifel','Initiative vs. Schuldgefühl','Werksinn vs. Minderwertigkeitsgefühl'],correct:1,explain:'Nach Erik Erikson steht im Kleinkindalter (1–3 Jahre) die Krise „Autonomie vs. Scham und Zweifel" – das Kind will selbstständig handeln.'},
+  {cat:'Entwicklung',q:'Was versteht Piaget unter der „sensumotorischen Phase"?',opts:['Die Phase, in der Kinder abstrakt denken lernen','Die Phase (0–2 Jahre), in der Kinder durch Sinneserfahrungen und Bewegung lernen','Die Phase des Spracherwerbs','Die Phase der moralischen Entwicklung'],correct:1,explain:'In Piagets sensumotorischer Phase (0–2 Jahre) erkunden Kinder die Welt hauptsächlich durch ihre Sinne und motorische Aktivität, z.B. Greifen, Schmecken, Sehen.'},
+  {cat:'Entwicklung',q:'Was bedeutet „Objektpermanenz" bei Piaget?',opts:['Kinder können Objekte benennen','Kinder verstehen, dass Objekte weiter existieren, auch wenn sie nicht sichtbar sind','Kinder können Gegenstände sortieren','Kinder können mit Objekten spielen'],correct:1,explain:'Objektpermanenz entwickelt sich im Laufe der sensumotorischen Phase – das Kind versteht, dass ein Gegenstand weiter existiert, auch wenn er verdeckt ist.'},
+  {cat:'Entwicklung',q:'Was ist die „Zone der proximalen Entwicklung" nach Wygotski?',opts:['Der Bereich, den ein Kind allein bewältigen kann','Der Bereich zwischen dem, was ein Kind allein kann, und dem, was es mit Unterstützung schafft','Die Entfernung zwischen Wohnung und Schule','Der physische Raum im Kindergarten'],correct:1,explain:'Wygotskis Zone der proximalen Entwicklung beschreibt den Bereich, in dem ein Kind mit angemessener Unterstützung (Scaffolding) Aufgaben bewältigen kann, die es allein noch nicht schafft.'},
+
+  // Sprachentwicklung
+  {cat:'Sprachentwicklung',q:'Was versteht man unter „Lallphase" in der Sprachentwicklung?',opts:['Das Kind spricht erste Sätze','Das Kind produziert wiederholende Silbenketten (z.B. „bababa")','Das Kind versteht komplexe Anweisungen','Das Kind schreibt erste Buchstaben'],correct:1,explain:'In der Lallphase (ca. 6–10 Monate) experimentiert das Baby mit Lauten und produziert rhythmische Silbenwiederholungen wie „bababa" oder „mamama".'},
+  {cat:'Sprachentwicklung',q:'Was ist der „Wortschatzspurt"?',opts:['Ein Sprachtest für Dreijährige','Eine Phase, in der Kinder plötzlich sehr viele neue Wörter lernen (ca. 18 Monate)','Ein Trainingsprogramm für Sprachförderung','Das Erlernen von Fremdwörtern'],correct:1,explain:'Der Wortschatzspurt tritt typischerweise um das 18. Lebensmonat auf – Kinder lernen plötzlich viele neue Wörter pro Tag und erweitern ihren Wortschatz rapide.'},
+  {cat:'Sprachentwicklung',q:'Welche Methode der Sprachförderung bezeichnet das „korrektive Feedback"?',opts:['Dem Kind sagen, dass es falsch gesprochen hat','Die fehlerhafte Äußerung des Kindes in korrekter Form wiederholen','Dem Kind Vokabelkarten zeigen','Mit dem Kind nur in ganzen Sätzen sprechen'],correct:1,explain:'Beim korrektiven Feedback wiederholt die Fachkraft die Äußerung des Kindes korrekt, ohne explizit zu korrigieren. Kind: „Hund gebellt!" → Fachkraft: „Ja, der Hund hat gebellt!"'},
+
+  // Didaktik & Methodik
+  {cat:'Didaktik',q:'Was bedeutet das Prinzip der „Kindorientierung"?',opts:['Der Erwachsene bestimmt, was das Kind lernt','Das Kind und seine Bedürfnisse, Interessen und Fähigkeiten stehen im Mittelpunkt','Kinder sollen sich selbst überlassen werden','Kinder lernen nur durch Instruktion'],correct:1,explain:'Kindorientierung bedeutet, dass pädagogisches Handeln an den individuellen Bedürfnissen, Interessen, Stärken und dem Entwicklungsstand des Kindes ausgerichtet wird.'},
+  {cat:'Didaktik',q:'Was versteht man unter dem Prinzip der „Ganzheitlichkeit"?',opts:['Nur kognitive Förderung','Lernen mit allen Sinnen – Kopf, Herz und Hand','Alle Kinder lernen das Gleiche','Nur Bewegungsförderung'],correct:1,explain:'Ganzheitlichkeit (Pestalozzi: „Kopf, Herz und Hand") bedeutet, dass Lernen alle Bereiche umfasst: kognitiv, emotional, sozial und körperlich.'},
+  {cat:'Didaktik',q:'Was bedeutet „Scaffolding" in der Pädagogik?',opts:['Das Kind allein arbeiten lassen','Gezielte, vorübergehende Unterstützung, die schrittweise zurückgenommen wird','Dem Kind die Lösung vorgeben','Kinder in Gruppen einteilen'],correct:1,explain:'Scaffolding (Gerüstbau) bezeichnet die angemessene Unterstützung durch Erwachsene, die schrittweise reduziert wird, sobald das Kind die Aufgabe zunehmend selbstständig meistern kann.'},
+  {cat:'Didaktik',q:'Welche Sozialform beschreibt die Arbeit in kleinen Gruppen von 3–5 Kindern?',opts:['Einzelarbeit','Gruppenarbeit/Kleingruppenarbeit','Plenum','Partnerarbeit'],correct:1,explain:'Kleingruppenarbeit (3–5 Kinder) fördert Kooperation, soziale Kompetenz und ermöglicht intensive Betreuung – eine der wichtigsten Sozialformen in der Kinderbetreuung.'},
+
+  // Erziehungsstile
+  {cat:'Erziehungsstile',q:'Welchen Erziehungsstil beschreibt ein hohes Maß an Wärme UND klare Grenzen?',opts:['Autoritär','Laissez-faire','Autoritativ/demokratisch','Vernachlässigend'],correct:2,explain:'Der autoritative (demokratische) Erziehungsstil kombiniert emotionale Wärme, Akzeptanz und Zuwendung mit klaren, begründeten Regeln und Grenzen – gilt als entwicklungsförderlichster Stil.'},
+  {cat:'Erziehungsstile',q:'Was ist ein Kernprinzip der Montessori-Pädagogik?',opts:['Hilf mir, es selbst zu tun','Kinder brauchen ständige Anleitung','Alle Kinder lernen im gleichen Tempo','Fremdbestimmung fördert die Entwicklung'],correct:0,explain:'„Hilf mir, es selbst zu tun" ist das Leitmotiv Maria Montessoris – Kinder sollen in einer vorbereiteten Umgebung eigenständig lernen und handeln, begleitet von aufmerksamen Erwachsenen.'},
+  {cat:'Erziehungsstile',q:'Was bedeutet der autoritäre Erziehungsstil?',opts:['Hohe Kontrolle, wenig Wärme – Gehorsam steht im Vordergrund','Viel Wärme, keine Regeln','Gleichberechtigte Entscheidungsfindung','Völlige Freiheit des Kindes'],correct:0,explain:'Der autoritäre Stil ist gekennzeichnet durch hohe Kontrolle und strenge Regeln bei gleichzeitig wenig emotionaler Wärme – Gehorsam und Disziplin stehen im Vordergrund.'},
+
+  // Beobachtung
+  {cat:'Beobachtung',q:'Warum ist systematische Beobachtung in der Kinderbetreuung wichtig?',opts:['Um Kinder zu bewerten und zu benoten','Um den Entwicklungsstand zu erfassen und individuelle Förderung zu planen','Um Eltern Fehlverhalten der Kinder zu melden','Um Kinder miteinander zu vergleichen'],correct:1,explain:'Systematische Beobachtung dient dazu, den individuellen Entwicklungsstand zu erfassen, Stärken und Interessen zu erkennen und darauf aufbauend pädagogisches Handeln zu planen.'},
+  {cat:'Beobachtung',q:'Was ist der Unterschied zwischen „Beobachtung" und „Interpretation"?',opts:['Es gibt keinen Unterschied','Beobachtung beschreibt, was man sieht – Interpretation deutet das Verhalten','Beobachtung ist subjektiv, Interpretation objektiv','Interpretation kommt immer zuerst'],correct:1,explain:'Beobachtung ist die wertfreie Beschreibung dessen, was tatsächlich passiert. Interpretation ist die Deutung des Beobachteten – beides muss getrennt werden, um Fehleinschätzungen zu vermeiden.'},
+  {cat:'Beobachtung',q:'Welche Beobachtungsmethode eignet sich für einen kurzen, spontanen Moment?',opts:['Langzeitbeobachtung','Gelegenheitsbeobachtung / Kurzprotokoll','Standardisierter Test','Videodokumentation über Wochen'],correct:1,explain:'Eine Gelegenheitsbeobachtung (auch Anekdote oder Kurzprotokoll) hält spontan beobachtete Situationen fest – ideal für bemerkenswerte Momente im Alltag.'},
+
+  // Spiel
+  {cat:'Spiel & Spielformen',q:'Warum ist Spielen für die kindliche Entwicklung so wichtig?',opts:['Es dient nur der Unterhaltung','Kinder lernen im Spiel ganzheitlich – kognitiv, emotional, sozial und motorisch','Kinder sollen beschäftigt werden','Spielen ist erst ab dem Schulalter relevant'],correct:1,explain:'Spiel ist die Haupttätigkeit des Kindes und fördert ganzheitlich alle Entwicklungsbereiche: kognitive, emotionale, soziale und motorische Fähigkeiten werden im Spiel erprobt und erweitert.'},
+  {cat:'Spiel & Spielformen',q:'Welche Spielform ist typisch für Kinder unter 2 Jahren?',opts:['Regelspiel','Funktionsspiel / Übungsspiel','Rollenspiel','Konstruktionsspiel'],correct:1,explain:'Das Funktions- oder Übungsspiel (z.B. Greifen, Schütteln, Werfen) ist in den ersten zwei Lebensjahren vorherrschend – Kinder erkunden lustvoll Gegenstände und ihren eigenen Körper.'},
+  {cat:'Spiel & Spielformen',q:'Ab welchem Alter beginnen Kinder typischerweise mit dem Rollenspiel?',opts:['6 Monate','Etwa ab 2,5–3 Jahren','Ab 6 Jahren','Ab dem Schulalter'],correct:1,explain:'Ab etwa 2,5–3 Jahren entwickeln Kinder die Fähigkeit zum symbolischen Denken und beginnen Rollenspiele – sie schlüpfen in verschiedene Rollen und spielen Alltagssituationen nach.'},
+];
+
+let lzkState = { current:0, answers:{}, mode:'ueben' };
+// Load saved LZK state
+(function loadLzkState(){
+  try{
+    const saved = localStorage.getItem('elver59_lzk_'+(STATE.name||'').toLowerCase());
+    if(saved){ const p=JSON.parse(saved); if(p) lzkState=Object.assign({current:0,answers:{},mode:'ueben'},p); }
+  }catch(e){}
+})();
+function saveLzkState(){
+  try{ if(STATE.name) localStorage.setItem('elver59_lzk_'+STATE.name.toLowerCase(),JSON.stringify(lzkState)); }catch(e){}
+}
+
+let lzkFilter='all';
+
+function getLzkFiltered(){
+  if(lzkFilter==='all') return LZK_QUESTIONS;
+  return LZK_QUESTIONS.filter(q=>q.cat===lzkFilter);
+}
+
+function getLzkCats(){
+  const cats={};
+  LZK_QUESTIONS.forEach(q=>{ cats[q.cat]=(cats[q.cat]||0)+1; });
+  return Object.entries(cats);
+}
+
+function getLzkStats(){
+  const total=LZK_QUESTIONS.length;
+  let correct=0, answered=0;
+  Object.entries(lzkState.answers).forEach(([k,v])=>{
+    answered++;
+    if(v.correct) correct++;
+  });
+  return {total,correct,answered};
+}
+
+function buildLZK(){
+  const cats=getLzkCats();
+  const catBtns=`<button class="lzk-cat-btn active" onclick="lzkSetFilter('all')">Alle<span class="lzk-cat-count">${LZK_QUESTIONS.length}</span></button>`+
+    cats.map(([c,n])=>`<button class="lzk-cat-btn" onclick="lzkSetFilter('${c}')">${c}<span class="lzk-cat-count">${n}</span></button>`).join('');
+
+  const body=`<div class="lzk-wrap">
+    <div class="lzk-mode-switch">
+      <div class="lzk-mode-btn active" id="lzk-mode-ueben" onclick="lzkSetMode('ueben')">📖 Üben</div>
+      <div class="lzk-mode-btn" id="lzk-mode-test" onclick="lzkSetMode('test')">🎯 Prüfungsmodus</div>
+    </div>
+    <div class="lzk-header">
+      <div class="lzk-score-wrap">
+        <div class="lzk-score-ring">
+          <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="var(--border)" stroke-width="3"/><circle cx="22" cy="22" r="18" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" id="lzk-ring" stroke-dasharray="113.1" stroke-dashoffset="113.1"/></svg>
+          <div class="lzk-score-val" id="lzk-score-val">0%</div>
+        </div>
+        <div><div style="font-size:12px;font-weight:600;color:var(--text)" id="lzk-score-text">0 / ${LZK_QUESTIONS.length}</div><div class="lzk-score-label">richtig beantwortet</div></div>
+      </div>
+      <button class="lzk-reset-btn" onclick="lzkReset()">↺ Reset</button>
+    </div>
+    <div class="lzk-cats" id="lzk-cats">${catBtns}</div>
+    <div class="lzk-progress" id="lzk-progress"></div>
+    <div id="lzk-body"></div>
+    <div class="lzk-nav" id="lzk-nav">
+      <button class="lzk-nav-btn" id="lzk-prev" onclick="lzkNav(-1)">‹ Zurück</button>
+      <button class="lzk-nav-btn" id="lzk-next" onclick="lzkNav(1)">Weiter ›</button>
+    </div>
+  </div>`;
+  setTimeout(()=>{
+    const s=getLzkStats();
+    document.getElementById('c-lzk-d').textContent='1. LZK: 7. April · '+s.answered+'/'+s.total+' bearbeitet';
+    lzkRenderQ();
+    lzkUpdateStats();
+  },0);
+  return xcard('c-lzk','📝','LZK Vorbereitung',body);
+}
+
+function lzkSetMode(mode){
+  lzkState.mode=mode;
+  document.getElementById('lzk-mode-ueben').classList.toggle('active',mode==='ueben');
+  document.getElementById('lzk-mode-test').classList.toggle('active',mode==='test');
+  if(mode==='test'){
+    // Reset for test mode
+    lzkState.answers={}; lzkState.current=0; lzkFilter='all';
+    document.querySelectorAll('.lzk-cat-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  }
+  saveLzkState();
+  lzkRenderQ();
+  lzkUpdateStats();
+}
+
+function lzkSetFilter(cat){
+  lzkFilter=cat;
+  lzkState.current=0;
+  document.querySelectorAll('.lzk-cat-btn').forEach(b=>{
+    const bCat=b.textContent.replace(/\d+/g,'').trim();
+    b.classList.toggle('active', cat==='all'? bCat==='Alle' : bCat===cat);
+  });
+  lzkRenderQ();
+}
+
+function lzkNav(dir){
+  const qs=getLzkFiltered();
+  lzkState.current=Math.max(0,Math.min(qs.length-1,lzkState.current+dir));
+  saveLzkState();
+  lzkRenderQ();
+}
+
+function lzkJumpTo(idx){
+  lzkState.current=idx;
+  saveLzkState();
+  lzkRenderQ();
+}
+
+function lzkRenderQ(){
+  const qs=getLzkFiltered();
+  const wrap=document.getElementById('lzk-body');
+  const prog=document.getElementById('lzk-progress');
+  const nav=document.getElementById('lzk-nav');
+
+  if(!qs.length){ wrap.innerHTML='<div class="sp-empty">Keine Fragen in dieser Kategorie.</div>'; prog.innerHTML=''; nav.style.display='none'; return; }
+  nav.style.display='flex';
+
+  // Progress dots
+  prog.innerHTML=qs.map((q,i)=>{
+    const gi=LZK_QUESTIONS.indexOf(q);
+    const a=lzkState.answers[gi];
+    let cls='lzk-dot';
+    if(i===lzkState.current) cls+=' current';
+    if(a){ cls+=a.correct?' correct':' wrong'; }
+    return `<span class="${cls}" onclick="lzkJumpTo(${i})"></span>`;
+  }).join('');
+
+  // Check if all answered in test mode
+  if(lzkState.mode==='test'){
+    const allAnswered=qs.every(q=>lzkState.answers[LZK_QUESTIONS.indexOf(q)]!==undefined);
+    if(allAnswered && lzkState.current>=qs.length-1){
+      lzkShowResult(qs);
+      return;
+    }
+  }
+
+  const idx=Math.min(lzkState.current,qs.length-1);
+  const q=qs[idx];
+  const gi=LZK_QUESTIONS.indexOf(q);
+  const answered=lzkState.answers[gi];
+  const letters=['A','B','C','D'];
+
+  let optsHtml=q.opts.map((o,oi)=>{
+    let cls='lzk-opt';
+    if(answered){
+      cls+=' disabled';
+      if(oi===q.correct) cls+=' correct';
+      if(answered.picked===oi && !answered.correct) cls+=' wrong';
+    }
+    return `<div class="${cls}" onclick="lzkAnswer(${gi},${oi})">
+      <div class="lzk-opt-letter">${letters[oi]}</div>
+      <div class="lzk-opt-text">${o}</div>
+    </div>`;
+  }).join('');
+
+  let explainHtml='';
+  if(answered && lzkState.mode==='ueben'){
+    explainHtml=`<div class="lzk-explain">${answered.correct?'✅ <strong>Richtig!</strong> ':'❌ <strong>Falsch.</strong> '}${q.explain}</div>`;
+  }
+
+  wrap.innerHTML=`<div class="lzk-question-card${answered?(answered.correct?' answered-correct':' answered-wrong'):''}">
+    <div class="lzk-q-top"><span class="lzk-q-num">${idx+1}/${qs.length}</span><span class="lzk-q-cat">${q.cat}</span></div>
+    <div class="lzk-q-text">${q.q}</div>
+    <div class="lzk-options">${optsHtml}</div>
+    ${explainHtml}
+  </div>`;
+
+  document.getElementById('lzk-prev').disabled=idx===0;
+  document.getElementById('lzk-next').disabled=idx>=qs.length-1;
+}
+
+function lzkAnswer(gi,picked){
+  if(lzkState.answers[gi]) return;
+  const q=LZK_QUESTIONS[gi];
+  lzkState.answers[gi]={picked, correct:picked===q.correct};
+  saveLzkState();
+  lzkRenderQ();
+  lzkUpdateStats();
+  // Auto-advance in test mode
+  if(lzkState.mode==='test'){
+    setTimeout(()=>{ lzkNav(1); },350);
+  }
+}
+
+function lzkUpdateStats(){
+  const s=getLzkStats();
+  const pct=s.answered?Math.round(s.correct/s.answered*100):0;
+  const ring=document.getElementById('lzk-ring');
+  const val=document.getElementById('lzk-score-val');
+  const txt=document.getElementById('lzk-score-text');
+  if(ring) ring.style.strokeDashoffset=113.1-(113.1*(pct/100));
+  if(val) val.textContent=pct+'%';
+  if(txt) txt.textContent=s.correct+' / '+s.total;
+  const desc=document.getElementById('c-lzk-d');
+  if(desc) desc.textContent='1. LZK: 7. April · '+s.answered+'/'+s.total+' bearbeitet';
+}
+
+function lzkShowResult(qs){
+  const wrap=document.getElementById('lzk-body');
+  const nav=document.getElementById('lzk-nav');
+  nav.style.display='none';
+  let correct=0;
+  qs.forEach(q=>{ const a=lzkState.answers[LZK_QUESTIONS.indexOf(q)]; if(a&&a.correct) correct++; });
+  const pct=Math.round(correct/qs.length*100);
+  let icon='🎉', title='Ausgezeichnet!', sub='Du bist bestens vorbereitet für die LZK!';
+  if(pct<50){ icon='📚'; title='Weiter üben!'; sub='Schau dir die Themen nochmal genauer an.'; }
+  else if(pct<80){ icon='💪'; title='Gut gemacht!'; sub='Fast perfekt – ein bisschen Feinschliff noch!'; }
+  wrap.innerHTML=`<div class="lzk-result">
+    <div class="lzk-result-icon">${icon}</div>
+    <div class="lzk-result-title">${title}</div>
+    <div class="lzk-result-sub">${sub}</div>
+    <div class="lzk-result-score">${pct}%</div>
+    <div class="lzk-result-detail">${correct} von ${qs.length} Fragen richtig</div>
+    <button class="lzk-retry-btn" onclick="lzkReset()">↺ Nochmal versuchen</button>
+  </div>`;
+}
+
+function lzkReset(){
+  lzkState={current:0,answers:{},mode:lzkState.mode||'ueben'};
+  saveLzkState();
+  lzkRenderQ();
+  lzkUpdateStats();
+}
+
 // RENDER ALL
 document.getElementById('root').innerHTML =
-  buildStundenplan()+buildSeminar()+buildTermine()+buildTasks()+buildUnterlagen();
+  buildStundenplan()+buildLZK()+buildSeminar()+buildTermine()+buildTasks()+buildUnterlagen();
 
 // Auto-open cloud card if unlocked
 // Auto-open cloud card disabled — alle Karten starten geschlossen
