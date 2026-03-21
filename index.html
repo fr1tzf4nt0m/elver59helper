@@ -810,9 +810,9 @@ function saveUser(){
   // Reload LZK state for this user
   try{
     const lzkSaved=localStorage.getItem('elver59_lzk_'+name.toLowerCase());
-    if(lzkSaved){ const p=JSON.parse(lzkSaved); if(p && p._v===2) lzkState=Object.assign({current:0,answers:{},mode:'ueben',_v:2},p); else lzkState={current:0,answers:{},mode:'ueben',_v:2}; }
-    else{ lzkState={current:0,answers:{},mode:'ueben',_v:2}; }
-  }catch(e){ lzkState={current:0,answers:{},mode:'ueben',_v:2}; }
+    if(lzkSaved){ const p=JSON.parse(lzkSaved); if(p && p._v===2){ lzkState=Object.assign({current:0,answers:{},mode:'ueben',_v:2},p); lzkTestPool=p._testPool||[]; } else { lzkState={current:0,answers:{},mode:'ueben',_v:2}; lzkTestPool=[]; } }
+    else{ lzkState={current:0,answers:{},mode:'ueben',_v:2}; lzkTestPool=[]; }
+  }catch(e){ lzkState={current:0,answers:{},mode:'ueben',_v:2}; lzkTestPool=[]; }
   // Design des neuen Users anwenden (oder Fallback: Morgentau)
   const design=STATE._design||{theme:'pastel3',font:'Syne'};
   _persistDesign(design);
@@ -1958,7 +1958,7 @@ let lzkState = { current:0, answers:{}, mode:'ueben', _v:2 };
 (function loadLzkState(){
   try{
     const saved = localStorage.getItem('elver59_lzk_'+(STATE.name||'').toLowerCase());
-    if(saved){ const p=JSON.parse(saved); if(p && p._v===2) lzkState=Object.assign({current:0,answers:{},mode:'ueben',_v:2},p); }
+    if(saved){ const p=JSON.parse(saved); if(p && p._v===2){ lzkState=Object.assign({current:0,answers:{},mode:'ueben',_v:2},p); if(p._testPool) lzkTestPool=p._testPool; } }
   }catch(e){}
 })();
 function saveLzkState(){
@@ -1966,8 +1966,17 @@ function saveLzkState(){
 }
 
 let lzkFilter='all';
+let lzkTestPool=[]; // indices into LZK_QUESTIONS for test mode (12 random)
+
+function lzkShuffleTest(){
+  // Pick 12 random unique questions from all categories
+  const indices=[...Array(LZK_QUESTIONS.length).keys()];
+  for(let i=indices.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1));[indices[i],indices[j]]=[indices[j],indices[i]]; }
+  lzkTestPool=indices.slice(0,12);
+}
 
 function getLzkFiltered(){
+  if(lzkState.mode==='test') return lzkTestPool.map(i=>LZK_QUESTIONS[i]);
   if(lzkFilter==='all') return LZK_QUESTIONS;
   return LZK_QUESTIONS.filter(q=>q.cat===lzkFilter);
 }
@@ -1998,7 +2007,7 @@ function buildLZK(){
       <div class="lzk-mode-btn active" id="lzk-mode-ueben" onclick="lzkSetMode('ueben')">📖 Üben</div>
       <div class="lzk-mode-btn" id="lzk-mode-test" onclick="lzkSetMode('test')">🎯 Prüfungsmodus</div>
     </div>
-    <div class="lzk-header">
+    <div class="lzk-header" id="lzk-header">
       <div class="lzk-score-wrap">
         <div class="lzk-score-ring">
           <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="var(--border)" stroke-width="3"/><circle cx="22" cy="22" r="18" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" id="lzk-ring" stroke-dasharray="113.1" stroke-dashoffset="113.1"/></svg>
@@ -2019,6 +2028,14 @@ function buildLZK(){
   setTimeout(()=>{
     const s=getLzkStats();
     document.getElementById('c-lzk-d').textContent='1. LZK: 7. April · '+s.answered+'/'+s.total+' bearbeitet';
+    // Restore mode UI
+    if(lzkState.mode==='test'){
+      document.getElementById('lzk-mode-ueben').classList.remove('active');
+      document.getElementById('lzk-mode-test').classList.add('active');
+      document.getElementById('lzk-cats').style.display='none';
+      document.getElementById('lzk-header').style.display='none';
+      if(!lzkTestPool.length && lzkState._testPool) lzkTestPool=lzkState._testPool;
+    }
     lzkRenderQ();
     lzkUpdateStats();
   },0);
@@ -2029,10 +2046,15 @@ function lzkSetMode(mode){
   lzkState.mode=mode;
   document.getElementById('lzk-mode-ueben').classList.toggle('active',mode==='ueben');
   document.getElementById('lzk-mode-test').classList.toggle('active',mode==='test');
+  // Hide categories + score in test mode, show in practice
+  document.getElementById('lzk-cats').style.display=mode==='test'?'none':'flex';
+  document.getElementById('lzk-header').style.display=mode==='test'?'none':'flex';
   if(mode==='test'){
-    // Reset for test mode
-    lzkState.answers={}; lzkState.current=0; lzkFilter='all';
-    document.querySelectorAll('.lzk-cat-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+    lzkShuffleTest();
+    lzkState.answers={}; lzkState.current=0;
+    lzkState._testPool=lzkTestPool.slice(); // persist for reload
+  } else {
+    lzkTestPool=[];
   }
   saveLzkState();
   lzkRenderQ();
@@ -2134,7 +2156,13 @@ function lzkAnswer(gi,picked){
   lzkUpdateStats();
   // Auto-advance in test mode
   if(lzkState.mode==='test'){
-    setTimeout(()=>{ lzkNav(1); },350);
+    const qs=getLzkFiltered();
+    const allAnswered=qs.every(q2=>lzkState.answers[LZK_QUESTIONS.indexOf(q2)]!==undefined);
+    if(allAnswered){
+      setTimeout(()=>{ lzkShowResult(qs); document.getElementById('lzk-nav').style.display='none'; document.getElementById('lzk-progress').innerHTML=''; },600);
+    } else {
+      setTimeout(()=>{ lzkNav(1); },350);
+    }
   }
 }
 
@@ -2154,25 +2182,52 @@ function lzkUpdateStats(){
 function lzkShowResult(qs){
   const wrap=document.getElementById('lzk-body');
   const nav=document.getElementById('lzk-nav');
+  const prog=document.getElementById('lzk-progress');
   nav.style.display='none';
+  prog.innerHTML='';
   let correct=0;
   qs.forEach(q=>{ const a=lzkState.answers[LZK_QUESTIONS.indexOf(q)]; if(a&&a.correct) correct++; });
   const pct=Math.round(correct/qs.length*100);
   let icon='🎉', title='Ausgezeichnet!', sub='Du bist bestens vorbereitet für die LZK!';
   if(pct<50){ icon='📚'; title='Weiter üben!'; sub='Schau dir die Themen nochmal genauer an.'; }
   else if(pct<80){ icon='💪'; title='Gut gemacht!'; sub='Fast perfekt – ein bisschen Feinschliff noch!'; }
+
+  // Build review of wrong answers
+  let reviewHtml='';
+  if(lzkState.mode==='test'){
+    const wrongQs=qs.filter(q=>{ const a=lzkState.answers[LZK_QUESTIONS.indexOf(q)]; return a&&!a.correct; });
+    if(wrongQs.length){
+      reviewHtml='<div style="text-align:left;margin-top:18px;"><div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:10px;">Falsch beantwortet</div>';
+      wrongQs.forEach(q=>{
+        const a=lzkState.answers[LZK_QUESTIONS.indexOf(q)];
+        const letters=['A','B','C','D'];
+        reviewHtml+=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;">
+          <div style="font-size:12px;font-weight:500;margin-bottom:6px;line-height:1.4;">${q.q}</div>
+          <div style="font-size:11px;color:var(--red);margin-bottom:3px;">❌ Deine Antwort: ${letters[a.picked]} – ${q.opts[a.picked]}</div>
+          <div style="font-size:11px;color:var(--accent);margin-bottom:4px;">✅ Richtig: ${letters[q.correct]} – ${q.opts[q.correct]}</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.4;">${q.explain}</div>
+        </div>`;
+      });
+      reviewHtml+='</div>';
+    }
+  }
+
   wrap.innerHTML=`<div class="lzk-result">
     <div class="lzk-result-icon">${icon}</div>
     <div class="lzk-result-title">${title}</div>
     <div class="lzk-result-sub">${sub}</div>
     <div class="lzk-result-score">${pct}%</div>
     <div class="lzk-result-detail">${correct} von ${qs.length} Fragen richtig</div>
-    <button class="lzk-retry-btn" onclick="lzkReset()">↺ Nochmal versuchen</button>
+    ${reviewHtml}
+    <button class="lzk-retry-btn" onclick="lzkSetMode('test')">🔄 Neuer Test (12 Fragen)</button>
+    <button class="lzk-retry-btn" onclick="lzkSetMode('ueben')" style="background:transparent;border-color:var(--border);color:var(--muted);margin-top:6px;">📖 Zurück zum Üben</button>
   </div>`;
 }
 
 function lzkReset(){
   lzkState={current:0,answers:{},mode:lzkState.mode||'ueben',_v:2};
+  if(lzkState.mode==='test'){ lzkShuffleTest(); lzkState._testPool=lzkTestPool.slice(); }
+  else { lzkTestPool=[]; }
   saveLzkState();
   lzkRenderQ();
   lzkUpdateStats();
